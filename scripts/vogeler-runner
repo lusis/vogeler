@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+"""
+    Author: <Your name here>
+	Email:	<Your email here>
+	Date:	<today's date>
+"""
+import argparse
+from vogeler import VogelerRunner
+
+if __name__ == '__main__':
+    appdesc = 'Vogeler command runner'
+    parser = argparse.ArgumentParser(description=appdesc)
+    parser.add_argument('--command', '-c', help='Command to issue to clients', required=True)
+    parser.add_argument('--node', '-n', help='Clients to get the command. Use "all" for broadcast', required=True)
+    parser.add_argument('--host', '-H', help='Vogeler Queue Server', required=False)
+
+    args = parser.parse_args()
+
+def run(pargs):
+    command = pargs.command
+    if pargs.node == 'all':
+        routing_key = 'broadcasts.*'
+    else:
+        routing_key = pargs.node
+
+    if pargs.host:
+        p = VogelerRunner(routing_key, host=pargs.host)
+    else:
+        p = VogelerRunner(routing_key)
+
+    try:
+        p.message(command)
+        print "Sending %s to %s" % (pargs.command, pargs.node)
+    except:
+        raise
+
+run(args)
+# vim: set ts=4 et sw=4 sts=4 sta filetype=python :

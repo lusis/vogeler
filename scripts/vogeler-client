@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+"""
+    Author: <Your name here>
+	Email:	<Your email here>
+	Date:	<today's date>
+"""
+
+import subprocess, shlex
+import json
+from vogeler import VogelerClient
+from platform import node
+
+def process_request(request):
+    cmd = _validate_command(request)
+
+    try:
+        print "Rudy told me to: %s" % cmd
+        ret = subprocess.Popen(cmd, stdout = subprocess.PIPE).communicate()
+        response = { 'syskey' : node(), request : ret[0]}
+        c.message(response)
+    except subprocess.CalledProcessError:
+        print "Failed to run: %s" % cmd
+        raise
+
+def _validate_command(command):
+    cmd = command
+    accepted_commands = ('get_packages', 'get_procs', 'get_ports')
+
+    for t in accepted_commands:
+        if cmd in t:
+            print "Matched command: %s" % cmd
+            return _parse_command(cmd)
+        else:
+            print "Command not matched: %s" % cmd
+
+def _parse_command(command):
+    cmd = command
+
+    if cmd == 'get_packages':
+        return shlex.split('rpm -qa')
+
+    if cmd == 'get_procs':
+        return shlex.split('ps -ef --no-headers')
+
+    if cmd == 'get_ports':
+        return shlex.split('netstat -not')
+
+def startup():
+    c.monitor()
+
+def shutdown():
+    print "Shutting down"
+    c.close()
+    return 0
+    exit
+
+if __name__ == "__main__":
+    try:
+        c = VogelerClient(callback_function=process_request)
+        startup()
+    except KeyboardInterrupt:
+        shutdown()
+# vim: set ts=4 et sw=4 sts=4 sta filetype=python :
