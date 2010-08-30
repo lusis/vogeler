@@ -5,33 +5,35 @@
 	Date:	<today's date>
 """
 
+import argparse
 import subprocess, shlex
-import json
-from vogeler import VogelerClient
+from vogeler import VogelerClient, VogelerPlugin
 from platform import node
 
 def process_request(request):
     cmd = _validate_command(request)
 
     try:
-        print "Rudy told me to: %s" % cmd
         ret = subprocess.Popen(cmd, stdout = subprocess.PIPE).communicate()
         response = { 'syskey' : node(), request : ret[0]}
         c.message(response)
+        if args.oneshot == True:
+            print "Oneshot requested. Running command %s and exiting" % cmd
+            shutdown()
     except subprocess.CalledProcessError:
         print "Failed to run: %s" % cmd
         raise
 
 def _validate_command(command):
     cmd = command
-    accepted_commands = ('get_packages', 'get_procs', 'get_ports')
+    accepted_commands = ('get_packages', 'get_procs', 'get_ports', 'ping', 'inv')
 
-    for t in accepted_commands:
-        if cmd in t:
-            print "Matched command: %s" % cmd
-            return _parse_command(cmd)
-        else:
-            print "Command not matched: %s" % cmd
+    if cmd in accepted_commands:
+        print "Matched command: %s" % cmd
+        return _parse_command(cmd)
+
+    else:
+        print "Command not matched: %s" % cmd
 
 def _parse_command(command):
     cmd = command
@@ -45,6 +47,12 @@ def _parse_command(command):
     if cmd == 'get_ports':
         return shlex.split('netstat -not')
 
+    if cmd == 'ping':
+        return shlex.split('date')
+
+    if cmd == 'inv':
+        return shlex.split('facter -y')
+
 def startup():
     c.monitor()
 
@@ -54,10 +62,46 @@ def shutdown():
     return 0
     exit
 
-if __name__ == "__main__":
+def execute_run(pargs):
+    global plugins, c
     try:
+        if pargs.plugindir:
+            plugins = VogelerPlugin(plugin_dir=pargs.plugindir)
+        else:
+            plugins = VogelerPlugin()
         c = VogelerClient(callback_function=process_request)
         startup()
     except KeyboardInterrupt:
         shutdown()
+
+def list_plugins(pargs):
+    global plugins
+    try:
+        if pargs.plugindir == '':
+            plugins = VogelerPlugin()
+        else:
+            plugins = VogelerPlugin(plugin_dir=pargs.plugindir)
+    except:
+        raise
+
+if __name__ == "__main__":
+    appdesc = 'Vogeler client daemon'
+    parser = argparse.ArgumentParser(description=appdesc)
+    subparsers = parser.add_subparsers(help='commands')
+    parser.add_argument('--plugindir', '-p', help='Specifiy location of trusted plugins', required=False)
+    
+    # runtime options
+    runtime_parser = subparsers.add_parser('run', help='Runtime commands')
+    runtime_parser.add_argument('--oneshot', '-o', action="store_true", default=False, help='Exit after first command')
+    runtime_parser.add_argument('--allow-unsafe', '-u', action="store_true", default=False, help='WARNING: This options accepts any command that the client recieves. Use with caution!')
+    runtime_parser.set_defaults(func=execute_run)
+
+    # Noop options
+    list_parser = subparsers.add_parser('list', help='List plugins')
+    list_parser.add_argument('--system', '-s', action="store_true", default=False, help='Show system-wide plugins', required=False)
+    list_parser.set_defaults(func=list_plugins)
+
+    args = parser.parse_args()
+    args.func(args)
+
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

@@ -6,6 +6,7 @@
 """
 import datetime
 import argparse
+import yaml
 
 from vogeler import VogelerServer
 from couchdbkit import *
@@ -39,6 +40,11 @@ def process_message(message):
                 doc.current_procs=v_split
             if k == 'get_ports':
                 doc.open_ports=v
+            if k == 'ping':
+                doc.last_active_check=v
+            if k == 'inv':
+                inv_dict = yaml.load(v)
+                doc.facts=inv_dict
         except:
             return 1
             exit

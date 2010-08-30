@@ -4,9 +4,13 @@
 	Date:	08/19/2010
 """
 import json
+import os.path
+import shutil
+import ConfigParser
 
 from amqplib import client_0_8 as amqp
 from platform import node
+from glob import iglob
 
 ruser = "guest"
 rpass = "guest"
@@ -136,5 +140,47 @@ class VogelerRunner(object):
         if durable == True:
             msg.properties['deliver_mode'] = 2
         self.ch.basic_publish(msg, exchange=broadcast_exchange, routing_key=self.routing_key)
+
+class VogelerPlugin(object):
+    compiled_plugin_file = '/tmp/vogeler-plugins.cfg'
+    def __init__(self, plugin_dir='/etc/vogeler/plugins'):
+        print "Vogeler is parsing plugins"
+        self.registered_plugins = {}
+        self.plugin_dir = plugin_dir
+        self._compile_plugins()
+
+    def _compile_plugins(self):
+        try:
+            cpf = open(self.compiled_plugin_file, 'w')
+            header = "#This is a compiled vogeler plugin file. Please do not edit!!!\n"
+            cpf.write(header)
+            for filename in iglob(os.path.join(self.plugin_dir, '*.cfg')):
+                shutil.copyfileobj(open(filename, 'r'), cpf)
+            cpf.close()
+            self._read_plugin_file()
+        except:
+            print "Unable to create compiled plugin file"
+            raise
+
+    def _read_plugin_file(self):
+        configobj = ConfigParser.ConfigParser()
+        try:
+            configobj.read(self.compiled_plugin_file)
+            self._parse_plugin_file(config=configobj)
+        except:
+            raise
+
+    def _parse_plugin_file(self, config=''):
+        print "Found plugins: %s" % config.sections()
+        sections = config.sections()
+        for section in sections:
+            self._register_plugin({config[section]})
+            print "Registering plugin: %s" % config[section]
+
+    def _register_plugin(self, plugin_name):
+        pass
+
+    def execute_plugin(self, plugin_name):
+        pass
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
