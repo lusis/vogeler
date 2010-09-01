@@ -65,8 +65,8 @@ How it works
 As I said, this is inspired by mcollective. Interestingly enough, at a previous company I used the same queue server design to move information between network partitions. In that case, it was a combination of ActiveMQ,Camel, and Sinatra (a ruby project) so the concept is nothing new to me.
 
 Essentially the broker has 2 exchanges - a topic exchange and a direct exchange.
--	The clients bind queues under two routing keys "broadcast.\*" and one under thier hostname.
--	The server binds to the direct exchange under its own queue.
+* The clients bind queues under two routing keys "broadcast.\*" and one under thier hostname.
+* The server binds to the direct exchange under its own queue.
 
 Messages are dropped onto the topic exchange with a routing key by the _vogeler-runner_ script. Clients read the queue and respond to anything routed with 'broadcast.\*' or with thier hostname. This is a single channel to the RabbitMQ server with multiple bindings. By simply changing the routing key (specifying a node name when calling vogeler-runner), you can hit everyone or one box.
 
@@ -104,13 +104,13 @@ That's it. You could then go behind and write a CouchApp, a [Padrino app](http:/
 What's missing
 --------------
 A whole heck of a lot.
--	Logging: I haven't implemented logging yet so everything is stdout. I've got a good handle on Python logging already so that's just laziness on my part.
--	Unit Tests: Nose makes testing easy but actually writing unit tests in Python is still painful coming from the world of RSpec, Cucumber, Shoulda and the like.
--	Support for anything OTHER than RabbitMQ and CouchDB: Those are the technologies we use internally and my first target. I want to abstract out but Stomp support under RabbitMQ is still third-class citizen. Abstracting the datastore will probably come pretty quick. I'll probably NOT use a traditional RDBMS for this because things are SO dynamic. I don't even know what the names of your plugins are going to be. I would have to denormalize everything anyway so why use an RDBMS?
--	Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now it's only being used in one spot.
--	setup.py support: This is just something I have to learn
--	A setup mode for the server invocation
--	Some reporting capability
+* Logging: I haven't implemented logging yet so everything is stdout. I've got a good handle on Python logging already so that's just laziness on my part.
+* Unit Tests: Nose makes testing easy but actually writing unit tests in Python is still painful coming from the world of RSpec, Cucumber, Shoulda and the like.
+* Support for anything OTHER than RabbitMQ and CouchDB: Those are the technologies we use internally and my first target. I want to abstract out but Stomp support under RabbitMQ is still third-class citizen. Abstracting the datastore will probably come pretty quick. I'll probably NOT use a traditional RDBMS for this because things are SO dynamic. I don't even know what the names of your plugins are going to be. I would have to denormalize everything anyway so why use an RDBMS?
+* Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now it's only being used in one spot.
+* setup.py support: This is just something I have to learn
+* A setup mode for the server invocation
+* Some reporting capability
 
 How you can help
 ----------------
