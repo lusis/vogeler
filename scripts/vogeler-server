@@ -20,7 +20,9 @@ def process_message(message):
 
     response = message
     syskey = message['syskey']
+    format = message['format']
     del message['syskey']
+    del message['format']
 
     print "Incoming message from: %s" % syskey
 
@@ -32,19 +34,13 @@ def process_message(message):
     for k, v in response.iteritems():
         print "Got response for: %s" % k
         try:
-            if k == 'get_packages':
+            if format == 'list':
                 v_split = [s.strip() for s in v.split("\n")]
-                doc.system_packages=v_split
-            if k == 'get_procs':
-                v_split = [s.strip() for s in v.split("\n")]
-                doc.current_procs=v_split
-            if k == 'get_ports':
-                doc.open_ports=v
-            if k == 'ping':
-                doc.last_active_check=v
-            if k == 'inv':
-                inv_dict = yaml.load(v)
-                doc.facts=inv_dict
+                doc[k] = v_split
+
+            if format == 'yaml':
+                v_dict = yaml.load(v)
+                doc[k] = v_dict
         except:
             return 1
             exit

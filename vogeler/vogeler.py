@@ -7,6 +7,7 @@ import json
 import os.path
 import shutil
 import ConfigParser
+import subprocess, shlex
 
 from amqplib import client_0_8 as amqp
 from platform import node
@@ -143,12 +144,30 @@ class VogelerRunner(object):
 
 class VogelerPlugin(object):
     compiled_plugin_file = '/tmp/vogeler-plugins.cfg'
+    authorized_plugins = ()
+    plugin_registry = {}
     def __init__(self, plugin_dir='/etc/vogeler/plugins'):
         print "Vogeler is parsing plugins"
         self.registered_plugins = {}
         self.plugin_dir = plugin_dir
         self._compile_plugins()
 
+    def execute_plugin(self, plugin):
+        if plugin in self.authorized_plugins:
+            try:
+                command = self.plugin_registry[plugin]['command']
+                format = self.plugin_registry[plugin]['result_format']
+                result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
+                return self.format_response(plugin, result, format)
+            except subprocess.CalledProcessError:
+                raise VogelerException("Failed to run command: "+self.plugin_registry[plugin]['command'])
+        else:
+            raise VogelerException('Command not authorized')
+
+    def format_response(self, plugin, output, format):
+        message = { 'syskey' : node(), plugin : output[0], 'format' : format }
+        return message
+        
     def _compile_plugins(self):
         try:
             cpf = open(self.compiled_plugin_file, 'w')
@@ -163,24 +182,45 @@ class VogelerPlugin(object):
             raise
 
     def _read_plugin_file(self):
-        configobj = ConfigParser.ConfigParser()
+        configobj = ConfigParser.SafeConfigParser()
         try:
             configobj.read(self.compiled_plugin_file)
             self._parse_plugin_file(config=configobj)
         except:
             raise
 
-    def _parse_plugin_file(self, config=''):
-        print "Found plugins: %s" % config.sections()
-        sections = config.sections()
-        for section in sections:
-            self._register_plugin({config[section]})
-            print "Registering plugin: %s" % config[section]
+    def _parse_plugin_file(self, config):
+        plugins = config.sections()
+        print "Found plugins: %s" % plugins
+        for plugin in plugins:
+            plugin_details = dict(config.items(plugin))
+            try:
+                self._register_plugin(plugin_details)
+                print "Registering plugin: %s" % plugin_details
+            except:
+                print "Registration failed for plugin: %s" % plugin
 
-    def _register_plugin(self, plugin_name):
-        pass
+        self._authorize_plugins()
 
-    def execute_plugin(self, plugin_name):
-        pass
+    def _authorize_plugins(self):
+        print "Authorizing registered plugins"
+        try:
+            self.authorized_plugins = tuple(self.plugin_registry.keys())
+        except:
+            raise
 
+    def _register_plugin(self, plugin_details):
+        plugin = plugin_details.pop("name")
+        try:
+            self.plugin_registry[plugin] = plugin_details
+        except:
+            raise
+
+class VogelerException(Exception):
+
+    def __init__(self, value):
+        self.parameter(value)
+
+    def __str__(self):
+        return repr(self.parameter)
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
