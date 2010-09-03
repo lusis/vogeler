@@ -1,8 +1,3 @@
-"""
-    Author: John E. Vincent
-	Email:	jvincent@tsys.com
-	Date:	08/19/2010
-"""
 import json
 import os.path
 import shutil
