@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 """
-    Author: <Your name here>
-	Email:	<Your email here>
-	Date:	<today's date>
+    Author: John E. Vincent
+	Email:	lusis.org+github.com@gmail.com
 """
 
 import argparse
 import subprocess, shlex
 import pprint
-from vogeler import VogelerClient, VogelerPlugin, VogelerException
+from vogeler.vogeler import VogelerClient, VogelerPlugin, VogelerException
 from platform import node
 
 pp = pprint.PrettyPrinter(indent=4)

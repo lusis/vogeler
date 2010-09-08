@@ -1,0 +1,13 @@
+README
+setup.cfg
+setup.py
+etc/_design/system_records/views/all/map.js
+etc/_design/system_records/views/by_name/map.js
+etc/_design/system_records/views/packages_by_host/map.js
+etc/plugins/facter.cfg
+etc/plugins/rpms.cfg
+scripts/vogeler-client
+scripts/vogeler-runner
+scripts/vogeler-server
+vogeler/__init__.py
+vogeler/vogeler.py

@@ -1,9 +1,0 @@
-setup.cfg
-setup.py
-vogeler/__init__.py
-vogeler.egg-info/PKG-INFO
-vogeler.egg-info/SOURCES.txt
-vogeler.egg-info/dependency_links.txt
-vogeler.egg-info/entry_points.txt
-vogeler.egg-info/not-zip-safe
-vogeler.egg-info/top_level.txt

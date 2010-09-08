@@ -2,3 +2,6 @@
 *.swp
 .hgignore
 .hg/*
+*~
+dist/*
+vogeler.egg-info/*

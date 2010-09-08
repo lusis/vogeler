@@ -1,5 +1,5 @@
 import json
-import os.path
+import os, os.path
 import shutil
 import ConfigParser
 import subprocess, shlex
@@ -210,9 +210,11 @@ class VogelerPlugin(object):
             self.plugin_registry[plugin] = plugin_details
         except:
             raise
+class VogelerEncryption(object):
+    keyfile = '/etc/vogeler/encryption.key'
+    pass
 
 class VogelerException(Exception):
-
     def __init__(self, value):
         self.parameter(value)
 

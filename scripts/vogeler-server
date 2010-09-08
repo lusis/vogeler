@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 """
-    Author: <Your name here>
-	Email:	<Your email here>
-	Date:	<today's date>
+    Author: John E. Vincent
+	Email:	lusis.org+github.com@gmail.com
 """
 import datetime
 import argparse
 import yaml
 
-from vogeler import VogelerServer
+from vogeler.vogeler import VogelerServer
 from couchdbkit import *
 from couchdbkit.loaders import FileSystemDocsLoader
 
