@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-version = '0.2'
+version = '0.4'
 
 if __name__ == "__main__":
 
@@ -11,11 +11,13 @@ if __name__ == "__main__":
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
-              'Intended Audience :: Developers',
+              'Intended Audience :: System Administrators',
               'License :: OSI Approved :: GNU General Public License (GPL)',
               'Natural Language :: English',
+              'Programming Language :: Python :: 2.6',
               'Programming Language :: Python :: 2.7',
-              'Topic :: Software Development :: Libraries :: Python Modules',
+              'Topic :: System :: System Administration',
+              'Operating System :: POSIX :: Linux',
           ],
           keywords='cmdb',
           author='John E. Vincent',
@@ -24,7 +26,13 @@ if __name__ == "__main__":
           packages=[
             "vogeler",
           ],
-          install_requires=['pyyaml','amqplib', 'couchdbkit'],
+          install_requires=[
+            'pyyaml',
+            'amqplib',
+            'couchdbkit',
+            'argparse',
+            'anyjson',
+          ],
           scripts=[
             "scripts/vogeler-client",
             "scripts/vogeler-runner",

@@ -5,3 +5,4 @@
 *~
 dist/*
 vogeler.egg-info/*
+build/*

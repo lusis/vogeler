@@ -8,14 +8,14 @@ It's very basic right now. Python is NOT my first language. I'm a Rubyist at hea
 
 Getting started
 ---------------
-The first thing you Pythonistas might notice is that my setup stuff does squat. I haven't even gotten to that point to learn how setup.py works for my own stuff.
+So Vogeler has a real working setup.py now. Got some advice from a trusted Python guy. I've also uploaded it to PyPi so you can install from there if you like.
 
 Here's what you'll need:
 
 * RabbitMQ (2.0 is what I'm using)
 * CouchDB (1.0.1 is what I'm using)
 * Python 2.7 (Not even testing on anything else right now)
-* Modules: couchdbkit, amqplib, ConfigParser
+* Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)
 
 The rest of the modules appear to be standard in 2.7 (json and such). I suppose I could dump a list of everything in my virtualenv...
 
