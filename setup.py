@@ -16,7 +16,7 @@ if __name__ == "__main__":
               'Natural Language :: English',
               'Programming Language :: Python :: 2.6',
               'Programming Language :: Python :: 2.7',
-              'Topic :: System :: System Administration',
+              'Topic :: System :: Systems Administration',
               'Operating System :: POSIX :: Linux',
           ],
           keywords='cmdb',
