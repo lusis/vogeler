@@ -57,7 +57,7 @@ def startup():
     SystemRecord.set_db(db)
 
     # Load our views
-    loader = FileSystemDocsLoader('../etc/_design')
+    loader = FileSystemDocsLoader('etc/vogeler/_design')
     loader.sync(db, verbose=True)
     s.monitor()
 

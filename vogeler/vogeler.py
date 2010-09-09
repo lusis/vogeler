@@ -35,7 +35,7 @@ def setup_client(host=''):
     except:
         raise
     return ch, client_queue
-        
+
 def setup_server(host=''):
     if host == '':
         host = default_host
@@ -112,7 +112,7 @@ class VogelerServer(object):
             raise
         while self.ch.callbacks:
             self.ch.wait()
-    
+
     def message(self, message, durable=True):
         print "Vogeler(Server) is sending a message"
         msg = amqp.Message(json.dumps(message))

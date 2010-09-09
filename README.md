@@ -14,7 +14,7 @@ Here's what you'll need:
 
 * RabbitMQ (2.0 is what I'm using)
 * CouchDB (1.0.1 is what I'm using)
-* Python 2.7 (Not even testing on anything else right now)
+* Python 2.6/2.7 (Not even testing on anything else right now)
 * Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)
 
 The rest of the modules appear to be standard in 2.7 (json and such). I suppose I could dump a list of everything in my virtualenv...
