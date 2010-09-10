@@ -14,10 +14,11 @@ Here's what you'll need:
 
 * RabbitMQ (2.0 is what I'm using)
 * CouchDB (1.0.1 is what I'm using)
-* Python 2.6/2.7 (Not even testing on anything else right now)
+* Python 2.6/2.7 (2.6 tested on Ubuntu 10.04/2.7 tested on CentOS 5.5 with ActivePython 2.7 and Python 2.7)
 * Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)
 
 The rest of the modules appear to be standard in 2.7 (json and such). I suppose I could dump a list of everything in my virtualenv...
+In cases where 2.6 doesn't natively support a module, I've required it in setup (anyjson, pyyaml)
 
 Setup
 -----
@@ -29,15 +30,32 @@ So I don't have a full setup script yet. There are some things you'll need to do
 
 Also make sure couchdb is running on the standard port (5984)
 
-Now you'll need to fire up the server first. He creates all the main configuration with the broker and also loads some basic views in CouchDB:
-(from the scripts directory)
-	PYTHONPATH=../vogeler ./vogeler-server
+Now you'll need to fire up the server first. He creates all the main configuration with the broker and optionally loads some basic views in CouchDB:
 
-	(vogeler)[jvincent@jvincent-lnx-vm scripts]$ PYTHONPATH=../vogeler ./vogeler-server 
+	vogeler-server
+
 	Vogeler(Server) is starting up
 
-Now you can start the client (again from the scripts directory):
-	PYTHONPATH=../vogeler ./vogeler-client -p ../etc/plugins/ run
+Currently a few options are working:
+
+* _--dbname_: The name of the database to created in CouchDB
+* _-l_: Load design docs
+* _--loadpath_: The path to load the design docs. By default this will use 'etc/vogeler/\_design' from the directory where vogeler-server is called.
+
+By default, loading of design docs does not happen. This will probably kept this way but for now I'm trying to determine the best way to handle install of design docs/plugins during setup.py (if root - use /etc/vogeler, otherwise install in another location possibly relative to virtualenv?)
+
+Should you choose to load design docs, the output is similar to this:
+
+	vogeler-server -l --loadpath $VIRTUAL_ENV/etc/vogeler/_design --dbname=sysrecs2
+
+	Loading design docs from /home/jvincent/.python-envs/vogeler-dev/etc/vogeler/_design
+	Vogeler(Server) is starting up
+
+You should see the design docs in the database 'sysrecs2' under Futon.
+
+Now you can start the client:
+
+	vogeler-client -p ../etc/plugins/ run
 
 	Vogeler is parsing plugins
 	Found plugins: ['facter', 'rpm']
@@ -46,20 +64,25 @@ Now you can start the client (again from the scripts directory):
 	Authorizing registered plugins
 	Vogeler(Client) is starting up
 
+For now you'll have to pass the location to plugins, otherwise they won't work. I'm working in a virtualenv for all testing so plugins are install in "$VIRTUAL\_ENV/etc/vogeler". Same goes for design docs, by the way.
+
 So you now have Vogeler running. Right now, all interaction with Vogeler is done through a runner script:
-(from the scripts directory on my CentOS5 box with facter installed)
-	(vogeler)[jvincent@jvincent-lnx-vm scripts]$ PYTHONPATH=../vogeler ./vogeler-runner -c facter -n all
+
+	vogeler-runner -c facter -n all
+
 	Vogeler(Runner) is sending a message
 	Sending facter to all
 
 In the client window:
+
 	Vogeler(Client) is sending a message
 
 In the server window:
-	Incoming message from: jvincent-lnx-vm.localdomain
+
+	Incoming message from: <hostname>
 	Got response for: facter
 
-Now check couchdb and you should have, under the system\_records database a new document under your hostname. In that document is a record for the output of 'facter -y'.
+Now check couchdb and you should have, under the system\_records (or dbname if specified) database a new document under your hostname. In that document is a record for the output of 'facter -y'.
 
 How it works
 ------------
@@ -110,10 +133,15 @@ A whole heck of a lot.
 * Logging: I haven't implemented logging yet so everything is stdout. I've got a good handle on Python logging already so that's just laziness on my part.
 * Unit Tests: Nose makes testing easy but actually writing unit tests in Python is still painful coming from the world of RSpec, Cucumber, Shoulda and the like.
 * Support for anything OTHER than RabbitMQ and CouchDB: Those are the technologies we use internally and my first target. I want to abstract out but Stomp support under RabbitMQ is still third-class citizen. Abstracting the datastore will probably come pretty quick. I'll probably NOT use a traditional RDBMS for this because things are SO dynamic. I don't even know what the names of your plugins are going to be. I would have to denormalize everything anyway so why use an RDBMS?
-* Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now it's only being used in one spot.
-* setup.py support: This is just something I have to learn
-* A setup mode for the server invocation
+* Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now it's only being used in a few spots.
+* A setup mode for the server invocation: Partial support is there now. Most options are simple stubs that do nothing.
 * Some reporting capability
+
+Is it usable?
+-------------
+Actually, yes. You'll need to get your hands dirty but once I added the ability to skip design doc loading, you could use it. The current design implies that RabbitMQ, CouchDB and vogeler-server run on the same host. vogeler-client is not yet parameterized to accept a hostname for the queue host but my current testing uses SSH tunnels back to the server:
+
+From the server host, create an SSH tunnel on localhost 5672 back to the rabbitmq host on the remote client. Then when you run vogeler-client, it will behave as if the queue server is local. You could also use an iptables rule to accomplish it. Obviously this doesn't scale but you can use it for testing multiple clients.
 
 How you can help
 ----------------

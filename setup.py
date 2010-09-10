@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-version = '0.4'
+version = '0.6'
 
 if __name__ == "__main__":
 

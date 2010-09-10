@@ -7,13 +7,25 @@ import datetime
 import argparse
 import yaml
 
-from vogeler.vogeler import VogelerServer
-from couchdbkit import *
+from vogeler.vogeler import VogelerServer, VogelerException
+#from couchdbkit import *
+import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
 
-class SystemRecord(Document):
-    system_name = StringProperty()
-    updated_at = DateTimeProperty()
+class SystemRecord(couch.Document):
+    system_name = couch.StringProperty()
+    updated_at = couch.DateTimeProperty()
+
+def setup(pargs):
+    pass
+
+def load(lp):
+    try:
+        print "Loading design docs from %s" % lp
+        loader = FileSystemDocsLoader(lp)
+        loader.sync(db, verbose=True)
+    except:
+        raise VogelerException('Failed to load design docs')
 
 def process_message(message):
 
@@ -51,14 +63,57 @@ def process_message(message):
     except:
         raise
 
-def startup():
-    server = Server()
-    db = server.get_or_create_db("system_records")
+def startup(pargs):
+    global s, dbname, db
+
+    if pargs.dbhost:
+        dbhost = pargs.dbhost
+
+    if pargs.dbport:
+        dbport = pargs.dbport
+
+    if pargs.dbuser:
+        dbuser = pargs.dbuser
+
+    if pargs.dbpass:
+        dbpass = pargs.dbpass
+
+    if pargs.qhost:
+        qhost = pargs.qhost
+
+    if pargs.qport:
+        qport = pargs.qport
+
+    if pargs.quser:
+        quser = pargs.quser
+
+    if pargs.qpass:
+        qpass = pargs.qpass
+
+    if pargs.config:
+        config = pargs.config
+
+    if pargs.dbname:
+        dbname = pargs.dbname
+    else:
+        dbname = 'system_records'
+
+    if pargs.setup:
+        setup(pargs)
+
+    if pargs.loadpath:
+        loadpath = pargs.loadpath
+    else:
+        loadpath = 'etc/vogeler/_design'
+
+    server = couch.Server()
+    db = server.get_or_create_db(dbname)
     SystemRecord.set_db(db)
 
-    # Load our views
-    loader = FileSystemDocsLoader('etc/vogeler/_design')
-    loader.sync(db, verbose=True)
+    if pargs.load == True:
+        load(loadpath)
+
+    s = VogelerServer(callback_function=process_message)
     s.monitor()
 
 def shutdown():
@@ -68,9 +123,26 @@ def shutdown():
     exit
 
 if __name__ == "__main__":
+    appdesc = 'Vogeler server'
+    parser = argparse.ArgumentParser(description=appdesc)
+    parser.add_argument('--dbhost', '-dh', help='CouchDB server address', required=False)
+    parser.add_argument('--dbport', '-dp', help='CouchDB server port', required=False)
+    parser.add_argument('--dbuser', help='CouchDB user', required=False)
+    parser.add_argument('--dbpass', help='CouchDB password', required=False)
+    parser.add_argument('--dbname', help='CouchDB name', required=False)
+    parser.add_argument('--qhost', '-qh', help='RabbitMQ server address', required=False)
+    parser.add_argument('--qport', '-qp', help='RabbitMQ server port', required=False)
+    parser.add_argument('--quser', help='RabbitMQ user', required=False)
+    parser.add_argument('--qpass', help='RabbitMQ password', required=False)
+    parser.add_argument('--config', '-c', help='Path to configuration file', default='/etc/vogeler', required=False)
+    parser.add_argument('--setup', '-s', help='Setup exchanges and create db/load design docs in CouchDB', required=False)
+    parser.add_argument('--load', '-l', action='store_true', default=False, help='Load design docs in CouchDB')
+    parser.add_argument('--loadpath', '-lp', help='Path to design docs', required=False)
+
+    args = parser.parse_args()
+
     try:
-        s = VogelerServer(callback_function=process_message)
-        startup()
+        startup(args)
     except KeyboardInterrupt:
         shutdown()
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

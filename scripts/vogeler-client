@@ -64,7 +64,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=appdesc)
     subparsers = parser.add_subparsers(help='commands')
     parser.add_argument('--plugindir', '-p', help='Specifiy location of trusted plugins', required=False)
-    
+
     # runtime options
     runtime_parser = subparsers.add_parser('run', help='Runtime commands')
     runtime_parser.add_argument('--oneshot', '-o', action="store_true", default=False, help='Exit after first command')
