@@ -1,6 +1,17 @@
-from distutils.core import setup
+import sys
 
-version = '0.6'
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+version = '0.6.2'
+
+# Anyone know a better way to do python version conditionals in install_requires?
+modules = ['amqplib', 'couchdbkit', 'pyyaml']
+if sys.version_info < (2, 7):
+    two_six = ['argparse', 'anyjson']
+    modules.extend(two_six)
 
 if __name__ == "__main__":
 
@@ -26,13 +37,7 @@ if __name__ == "__main__":
           packages=[
             "vogeler",
           ],
-          install_requires=[
-            'pyyaml',
-            'amqplib',
-            'couchdbkit',
-            'argparse',
-            'anyjson',
-          ],
+          install_requires=modules,
           scripts=[
             "scripts/vogeler-client",
             "scripts/vogeler-runner",
