@@ -6,3 +6,5 @@
 dist/*
 vogeler.egg-info/*
 build/*
+setup.cfg
+MANIFEST
