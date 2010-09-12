@@ -6,11 +6,13 @@
 import datetime
 import argparse
 import yaml
+import sys
 
-from vogeler.vogeler import VogelerServer, VogelerException
-#from couchdbkit import *
 import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
+from restkit import BasicAuth
+
+from vogeler.vogeler import VogelerServer, VogelerException
 
 class SystemRecord(couch.Document):
     system_name = couch.StringProperty()
@@ -19,16 +21,18 @@ class SystemRecord(couch.Document):
 def setup(pargs):
     pass
 
-def load(lp):
+def load(lp, database):
     try:
         print "Loading design docs from %s" % lp
         loader = FileSystemDocsLoader(lp)
-        loader.sync(db, verbose=True)
+        loader.sync(database, verbose=True)
+        print "Design docs loaded"
+        return 0
     except:
         raise VogelerException('Failed to load design docs')
+        return 1
 
 def process_message(message):
-
     response = message
     syskey = message['syskey']
     format = message['format']
@@ -46,98 +50,90 @@ def process_message(message):
         print "Got response for: %s" % k
         try:
             if format == 'list':
-                v_split = [s.strip() for s in v.split("\n")]
+                v_split = [z.strip() for z in v.split("\n")]
                 doc[k] = v_split
 
             if format == 'yaml':
                 v_dict = yaml.load(v)
                 doc[k] = v_dict
         except:
-            return 1
-            exit
+            sys.exit(1)
 
     try:
-        doc.system_name=syskey
-        doc.updated_at=datetime.datetime.utcnow()
+        doc.system_name = syskey
+        doc.updated_at = datetime.datetime.utcnow()
         doc.save()
     except:
-        raise
+        raise VogelerException("Unable to save record from request")
 
 def startup(pargs):
-    global s, dbname, db
-
-    if pargs.dbhost:
-        dbhost = pargs.dbhost
-
-    if pargs.dbport:
-        dbport = pargs.dbport
-
-    if pargs.dbuser:
-        dbuser = pargs.dbuser
-
-    if pargs.dbpass:
-        dbpass = pargs.dbpass
-
-    if pargs.qhost:
-        qhost = pargs.qhost
-
-    if pargs.qport:
-        qport = pargs.qport
-
-    if pargs.quser:
-        quser = pargs.quser
-
-    if pargs.qpass:
-        qpass = pargs.qpass
+    global s
 
     if pargs.config:
         config = pargs.config
 
-    if pargs.dbname:
-        dbname = pargs.dbname
-    else:
-        dbname = 'system_records'
-
     if pargs.setup:
         setup(pargs)
 
-    if pargs.loadpath:
-        loadpath = pargs.loadpath
+    if pargs.load:
+        explicit_load = True
+        loadpath = pargs.load
     else:
+        explicit_load = False
         loadpath = 'etc/vogeler/_design'
 
-    server = couch.Server()
-    db = server.get_or_create_db(dbname)
+    server = couch.Server(uri=pargs.dbhost)
+
+    db = server.get_or_create_db(pargs.dbname)
     SystemRecord.set_db(db)
 
-    if pargs.load == True:
-        load(loadpath)
+    if explicit_load == True:
+        rc = load(loadpath, db)
+        sys.exit(rc)
+    else:
+        print "Skipping design document load"
 
-    s = VogelerServer(callback_function=process_message)
+    s = VogelerServer(callback_function=process_message,
+                    host=pargs.qhost,
+                    username=pargs.quser,
+                    password=pargs.qpass)
     s.monitor()
 
 def shutdown():
     print "Shutting down"
     s.close()
-    return 0
-    exit
+    sys.exit(0)
 
 if __name__ == "__main__":
-    appdesc = 'Vogeler server'
+    appdesc = 'Vogeler server daemon'
     parser = argparse.ArgumentParser(description=appdesc)
-    parser.add_argument('--dbhost', '-dh', help='CouchDB server address', required=False)
-    parser.add_argument('--dbport', '-dp', help='CouchDB server port', required=False)
-    parser.add_argument('--dbuser', help='CouchDB user', required=False)
-    parser.add_argument('--dbpass', help='CouchDB password', required=False)
-    parser.add_argument('--dbname', help='CouchDB name', required=False)
-    parser.add_argument('--qhost', '-qh', help='RabbitMQ server address', required=False)
-    parser.add_argument('--qport', '-qp', help='RabbitMQ server port', required=False)
-    parser.add_argument('--quser', help='RabbitMQ user', required=False)
-    parser.add_argument('--qpass', help='RabbitMQ password', required=False)
-    parser.add_argument('--config', '-c', help='Path to configuration file', default='/etc/vogeler', required=False)
-    parser.add_argument('--setup', '-s', help='Setup exchanges and create db/load design docs in CouchDB', required=False)
-    parser.add_argument('--load', '-l', action='store_true', default=False, help='Load design docs in CouchDB')
-    parser.add_argument('--loadpath', '-lp', help='Path to design docs', required=False)
+    parser.add_argument('--config', help='Configuration file', default='/etc/vogeler', required=False)
+
+    runtime = parser.add_argument_group('startup options')
+    runtime.add_argument('--dbhost',
+            help='CouchDB server uri (i.e. http://localhost:5984 or http://user:pass@localhost:5984)',
+            default='http://127.0.0.1:5984',
+            required=False)
+    runtime.add_argument('--dbname',
+            help='CouchDB database name',
+            default='system_records',
+            required=False)
+    runtime.add_argument('--qhost',
+            help='RabbitMQ server address',
+            default='localhost',
+            required=False)
+    runtime.add_argument('--quser',
+            help='RabbitMQ user',
+            default='guest',
+            required=False)
+    runtime.add_argument('--qpass',
+            help='RabbitMQ password',
+            default='guest',
+            required=False)
+
+    configuration = parser.add_argument_group('setup options')
+    configuration.add_argument('--setup', '-s', action='store_true', default=False, help='Setup exchanges and create db/load design docs in CouchDB', required=False)
+    configuration.add_argument('--load', '-l', help='Load design docs in CouchDB. Provide full path to desgin docs')
 
     args = parser.parse_args()
 

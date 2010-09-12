@@ -5,15 +5,12 @@
 """
 
 import argparse
-import subprocess, shlex
 import pprint
 from vogeler.vogeler import VogelerClient, VogelerPlugin, VogelerException
-from platform import node
 
 pp = pprint.PrettyPrinter(indent=4)
 
 def process_request(request):
-
     try:
         results = plugins.execute_plugin(request)
         c.message(results)
@@ -39,7 +36,10 @@ def execute_run(pargs):
             plugins = VogelerPlugin(plugin_dir=pargs.plugindir)
         else:
             plugins = VogelerPlugin()
-        c = VogelerClient(callback_function=process_request)
+        c = VogelerClient(callback_function=process_request,
+                    host=pargs.qhost,
+                    username=pargs.quser,
+                    password=pargs.qpass)
         startup()
     except KeyboardInterrupt:
         shutdown()
@@ -63,17 +63,41 @@ if __name__ == "__main__":
     appdesc = 'Vogeler client daemon'
     parser = argparse.ArgumentParser(description=appdesc)
     subparsers = parser.add_subparsers(help='commands')
-    parser.add_argument('--plugindir', '-p', help='Specifiy location of trusted plugins', required=False)
+    parser.add_argument('--plugindir', '-p',
+                    help='Specifiy location of trusted plugins',
+                    required=False)
 
     # runtime options
     runtime_parser = subparsers.add_parser('run', help='Runtime commands')
-    runtime_parser.add_argument('--oneshot', '-o', action="store_true", default=False, help='Exit after first command')
-    runtime_parser.add_argument('--allow-unsafe', '-u', action="store_true", default=False, help='WARNING: This options accepts any command that the client recieves. Use with caution!')
+    runtime_parser.add_argument('--oneshot', '-o',
+                    action="store_true",
+                    default=False,
+                    help='Exit after first command')
+    runtime_parser.add_argument('--allow-unsafe', '-u',
+                    action="store_true",
+                    default=False,
+                    help='WARNING: This options accepts any command that the client recieves. Use with caution!')
+    runtime_parser.add_argument('--qhost',
+                    help='RabbitMQ server address',
+                    default='127.0.0.1',
+                    required=False)
+    runtime_parser.add_argument('--quser',
+                    help='RabbitMQ user',
+                    default='guest',
+                    required=False)
+    runtime_parser.add_argument('--qpass',
+                    help='RabbitMQ password',
+                    default='guest',
+                    required=False)
     runtime_parser.set_defaults(func=execute_run)
 
     # Noop options
     list_parser = subparsers.add_parser('list', help='List plugins')
-    list_parser.add_argument('--system', '-s', action="store_true", default=False, help='Show system-wide plugins', required=False)
+    list_parser.add_argument('--system', '-s',
+                    action="store_true",
+                    default=False,
+                    help='Show system-wide plugins',
+                    required=False)
     list_parser.set_defaults(func=list_plugins)
 
     args = parser.parse_args()

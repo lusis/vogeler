@@ -8,8 +8,6 @@ from amqplib import client_0_8 as amqp
 from platform import node
 from glob import iglob
 
-ruser = "guest"
-rpass = "guest"
 default_host = "localhost"
 vhost = "/vogeler"
 master_exchange = "vogeler.master.in"
@@ -17,14 +15,12 @@ broadcast_exchange = "vogeler.broadcast.out"
 default_role = 'client'
 client_id = node()
 
-def setup_client(host=''):
-    if host == '':
-        host = default_host
+def setup_client(host='', username='', password=''):
     node_name = client_id
     client_queue = node_name
     try:
         # Get a channel
-        ch = setup_amqp(host)
+        ch = setup_amqp(host, username, password)
         # define our incoming and outgoing queues
         ch.queue_declare(node_name, durable=True, auto_delete=False)
         # bind our queues to the channel
@@ -36,13 +32,11 @@ def setup_client(host=''):
         raise
     return ch, client_queue
 
-def setup_server(host=''):
-    if host == '':
-        host = default_host
+def setup_server(host='', username='', password=''):
     server_queue = 'master.in'
     try:
         # Get a channel
-        ch = setup_amqp(host)
+        ch = setup_amqp(host, username, password)
         # Setup our exchanges
         ## broadcast exchange for clients to recieve messages
         ch.exchange_declare(broadcast_exchange, 'topic', durable=True, auto_delete=False)
@@ -56,9 +50,13 @@ def setup_server(host=''):
         raise
     return ch, server_queue
 
-def setup_amqp(queue_host):
+def setup_amqp(phost, puserid, ppassword):
     try:
-        conn = amqp.Connection(host=queue_host, userid=ruser, password=rpass, virtual_host=vhost, insist=False)
+        conn = amqp.Connection(host=phost,
+            userid=puserid,
+            password=ppassword,
+            virtual_host=vhost,
+            insist=False)
         ch = conn.channel()
         ch.access_request(vhost, active=True, read=True, write=True)
     except:
@@ -66,8 +64,8 @@ def setup_amqp(queue_host):
     return ch
 
 class VogelerClient(object):
-    def __init__(self, callback_function=None):
-        self.ch, self.queue = setup_client()
+    def __init__(self, callback_function=None, **kwargs):
+        self.ch, self.queue = setup_client(kwargs['host'], kwargs['username'], kwargs['password'])
         self.callback_function = callback_function
 
     def callback(self, msg):
@@ -95,8 +93,8 @@ class VogelerClient(object):
         self.ch.close()
 
 class VogelerServer(object):
-    def __init__(self, callback_function=None):
-        self.ch, self.queue = setup_server()
+    def __init__(self, callback_function=None, **kwargs):
+        self.ch, self.queue = setup_server(kwargs['host'], kwargs['username'], kwargs['password'])
         self.callback_function = callback_function
 
     def callback(self, msg):
@@ -124,11 +122,9 @@ class VogelerServer(object):
         self.ch.close()
 
 class VogelerRunner(object):
-    def __init__(self, destination, host=''):
-        if host == '':
-            host = default_host
+    def __init__(self, destination, **kwargs):
         self.routing_key = destination
-        self.ch = setup_amqp(host)
+        self.ch = setup_amqp(kwargs['host'], kwargs['username'], kwargs['password'])
 
     def message(self, message, durable=True):
         print "Vogeler(Runner) is sending a message"

@@ -9,9 +9,24 @@ from vogeler.vogeler import VogelerRunner
 if __name__ == '__main__':
     appdesc = 'Vogeler command runner'
     parser = argparse.ArgumentParser(description=appdesc)
-    parser.add_argument('--command', '-c', help='Command to issue to clients', required=True)
-    parser.add_argument('--node', '-n', help='Clients to get the command. Use "all" for broadcast', required=True)
-    parser.add_argument('--host', '-H', help='Vogeler Queue Server', required=False)
+    parser.add_argument('--command', '-c',
+                help='Command to issue to clients',
+                required=True)
+    parser.add_argument('--node', '-n',
+                help='Clients to get the command. Use "all" for broadcast',
+                required=True)
+    parser.add_argument('--host', '-H',
+                help='Vogeler Queue Server',
+                default='127.0.0.1',
+                required=False)
+    parser.add_argument('--username', '-u',
+                help='Vogeler Queue Server Username',
+                default='guest',
+                required=False)
+    parser.add_argument('--password', '-p',
+                help='Vogeler Queue Server Password',
+                default='guest',
+                required=False)
 
     args = parser.parse_args()
 
@@ -22,10 +37,10 @@ def run(pargs):
     else:
         routing_key = pargs.node
 
-    if pargs.host:
-        p = VogelerRunner(routing_key, host=pargs.host)
-    else:
-        p = VogelerRunner(routing_key)
+    p = VogelerRunner(routing_key,
+            host=pargs.host,
+            username=pargs.username,
+            password=pargs.password)
 
     try:
         p.message(command)
