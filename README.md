@@ -17,8 +17,7 @@ Here's what you'll need:
 * Python 2.6/2.7 (2.6 tested on Ubuntu 10.04/2.7 tested on CentOS 5.5 with ActivePython 2.7 and Python 2.7)
 * Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)
 
-The rest of the modules appear to be standard in 2.7 (json and such). I suppose I could dump a list of everything in my virtualenv...
-In cases where 2.6 doesn't natively support a module, I've required it in setup (anyjson, pyyaml)
+The rest of the modules appear to be standard in 2.7 (json and such). In cases where 2.6 doesn't natively support a module, I've required it in setup (anyjson, pyyaml)
 
 Setup
 -----
@@ -28,28 +27,35 @@ So I don't have a full setup script yet. There are some things you'll need to do
 	rabbitmqctl add_vhost /vogeler
 	rabbitmqctl set_permissions -p /vogeler guest ".*" ".*" ".*"
 
-Also make sure couchdb is running on the standard port (5984)
-
 Now you'll need to fire up the server first. He creates all the main configuration with the broker and optionally loads some basic views in CouchDB:
 
 	vogeler-server
 
 	Vogeler(Server) is starting up
 
-Currently a few options are working:
+If you want to load the design docs:
+
+	vogeler-server -l /path/to/design/docs
+	vogeler-server
+
+Some key options:
 
 * _--dbname_: The name of the database to created in CouchDB
-* _-l_: Load design docs
-* _--loadpath_: The path to load the design docs. By default this will use 'etc/vogeler/\_design' from the directory where vogeler-server is called.
+* _-l_: Load design docs. Requires a path to the design docs root. This is a one-shot operation. The process exits afterwards.
+* _--dbhost_ - a RestKit formatted URI
+* _--qhost_ - The hostname/ip address of the rabbitmq instance
+* _--quser_ - Username for rabbitmq
+* _--qpass_ - Password for rabbitmq
+
 
 By default, loading of design docs does not happen. This will probably kept this way but for now I'm trying to determine the best way to handle install of design docs/plugins during setup.py (if root - use /etc/vogeler, otherwise install in another location possibly relative to virtualenv?)
 
 Should you choose to load design docs, the output is similar to this:
 
-	vogeler-server -l --loadpath $VIRTUAL_ENV/etc/vogeler/_design --dbname=sysrecs2
+	vogeler-server -l $VIRTUAL_ENV/etc/vogeler/_design --dbname=sysrecs2
 
 	Loading design docs from /home/jvincent/.python-envs/vogeler-dev/etc/vogeler/_design
-	Vogeler(Server) is starting up
+	Design docs loaded
 
 You should see the design docs in the database 'sysrecs2' under Futon.
 
@@ -66,12 +72,26 @@ Now you can start the client:
 
 For now you'll have to pass the location to plugins, otherwise they won't work. I'm working in a virtualenv for all testing so plugins are install in "$VIRTUAL\_ENV/etc/vogeler". Same goes for design docs, by the way.
 
+If this node is a remote node (i.e. not the same place rabbitmq is running), you can pass _--qhost <rabbitmq host/ipaddr>_ to the script like so:
+
+	vogeler-client -p etc/vogeler/plugins/ run --qhost 10.10.10.2
+
 So you now have Vogeler running. Right now, all interaction with Vogeler is done through a runner script:
 
 	vogeler-runner -c facter -n all
 
 	Vogeler(Runner) is sending a message
 	Sending facter to all
+
+As with server and client, runner also takes an argument to specify the rabbitmq properties:
+
+	vogeler-runner -c facter -n all --qhost 10.10.10.2
+
+To target a specific node:
+
+	vogeler-runner -c facter -n <node fqdn> [--qhost 10.10.10.2]
+
+_See the running vogeler-client window for the named host vice the other running nodes_
 
 In the client window:
 
@@ -136,12 +156,16 @@ A whole heck of a lot.
 * Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now it's only being used in a few spots.
 * A setup mode for the server invocation: Partial support is there now. Most options are simple stubs that do nothing.
 * Some reporting capability
+* Durability tuning for queues and messages
 
 Is it usable?
 -------------
-Actually, yes. You'll need to get your hands dirty but once I added the ability to skip design doc loading, you could use it. The current design implies that RabbitMQ, CouchDB and vogeler-server run on the same host. vogeler-client is not yet parameterized to accept a hostname for the queue host but my current testing uses SSH tunnels back to the server:
+Actually, yes. All hostnames, usernames and passwords are configurable options now. I haven't tested it daemonized or anything but at this point, I'm ready to instantiate a few hundred EC2 instances myself and test it out. Global configuration file and plugin placement is still wonky though.
 
-From the server host, create an SSH tunnel on localhost 5672 back to the rabbitmq host on the remote client. Then when you run vogeler-client, it will behave as if the queue server is local. You could also use an iptables rule to accomplish it. Obviously this doesn't scale but you can use it for testing multiple clients.
+One big security gotcha is that passwords are currently visible in the process list. Gotta figure out how to hide those in python.
+Also, you'll need to ensure that any node you want to specifically target with _vogeler-runner_ has been started at least once. Once registered, offline clients will get messages when they come back online but they need to be started at least once to create the durable queues.
+
+Likewise, even if _vogeler-server_ is offline, any client messages will be parsed when it comes back online.
 
 How you can help
 ----------------

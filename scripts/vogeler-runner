@@ -15,15 +15,15 @@ if __name__ == '__main__':
     parser.add_argument('--node', '-n',
                 help='Clients to get the command. Use "all" for broadcast',
                 required=True)
-    parser.add_argument('--host', '-H',
+    parser.add_argument('--qhost',
                 help='Vogeler Queue Server',
                 default='127.0.0.1',
                 required=False)
-    parser.add_argument('--username', '-u',
+    parser.add_argument('--quser',
                 help='Vogeler Queue Server Username',
                 default='guest',
                 required=False)
-    parser.add_argument('--password', '-p',
+    parser.add_argument('--qpass',
                 help='Vogeler Queue Server Password',
                 default='guest',
                 required=False)
@@ -38,9 +38,9 @@ def run(pargs):
         routing_key = pargs.node
 
     p = VogelerRunner(routing_key,
-            host=pargs.host,
-            username=pargs.username,
-            password=pargs.password)
+            host=pargs.qhost,
+            username=pargs.quser,
+            password=pargs.qpass)
 
     try:
         p.message(command)
