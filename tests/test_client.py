@@ -1,6 +1,8 @@
 import unittest
 import json
+
 from vogeler.vogeler import VogelerClient, VogelerException
+import fixtures.message as message
 
 class ClientTestCase(unittest.TestCase):
 
@@ -8,7 +10,7 @@ class ClientTestCase(unittest.TestCase):
         self.assert_(type(obj)) is typ
 
     def echo(self, request):
-        return request
+        print request
 
     def test_vogeler_client_init(self):
         """Test that creating a Client object works"""
@@ -47,13 +49,13 @@ class ClientTestCase(unittest.TestCase):
 
     def test_client_callback(self):
         """Test that client callbacks work"""
-        pass
-        #message_body = 'this is a test'
-        #test_message = json.dumps(message_body)
-        #c = VogelerClient(callback_function=self.echo,
-        #                host='localhost',
-        #                username='guest',
-        #                password='guest')
-        #m = c.callback(test_message)
-        #self.assertEquals(m, message_body)
+        sample_text = 'this is a test'
+        message_body = json.dumps(sample_text)
+        test_message = message.SampleMessage(message_body)
+        c = VogelerClient(callback_function=None,
+                        host='localhost',
+                        username='guest',
+                        password='guest')
+        m = c.callback(test_message)
+        self.assertEquals(m.message, sample_text)
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
