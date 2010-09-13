@@ -1,4 +1,5 @@
 import unittest
+import json
 from vogeler.vogeler import VogelerClient, VogelerException
 
 class ClientTestCase(unittest.TestCase):
@@ -43,4 +44,16 @@ class ClientTestCase(unittest.TestCase):
                         username='guest',
                         password='guest')
         self.assertIsNone(c.message(test_message, durable=False))
+
+    def test_client_callback(self):
+        """Test that client callbacks work"""
+        pass
+        #message_body = 'this is a test'
+        #test_message = json.dumps(message_body)
+        #c = VogelerClient(callback_function=self.echo,
+        #                host='localhost',
+        #                username='guest',
+        #                password='guest')
+        #m = c.callback(test_message)
+        #self.assertEquals(m, message_body)
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
