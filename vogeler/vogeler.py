@@ -8,11 +8,9 @@ from amqplib import client_0_8 as amqp
 from platform import node
 from glob import iglob
 
-default_host = "localhost"
 vhost = "/vogeler"
 master_exchange = "vogeler.master.in"
 broadcast_exchange = "vogeler.broadcast.out"
-default_role = 'client'
 client_id = node()
 
 def setup_client(host='', username='', password=''):
@@ -65,8 +63,11 @@ def setup_amqp(phost, puserid, ppassword):
 
 class VogelerClient(object):
     def __init__(self, callback_function=None, **kwargs):
-        self.ch, self.queue = setup_client(kwargs['host'], kwargs['username'], kwargs['password'])
-        self.callback_function = callback_function
+        try:
+            self.ch, self.queue = setup_client(kwargs['host'], kwargs['username'], kwargs['password'])
+            self.callback_function = callback_function
+        except:
+            raise VogelerException()
 
     def callback(self, msg):
         message = json.loads(msg.body)
@@ -78,7 +79,8 @@ class VogelerClient(object):
             print "Vogeler(Client) is starting up"
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
         except:
-            raise
+            raise VogelerException()
+
         while self.ch.callbacks:
             self.ch.wait()
 
@@ -94,8 +96,11 @@ class VogelerClient(object):
 
 class VogelerServer(object):
     def __init__(self, callback_function=None, **kwargs):
-        self.ch, self.queue = setup_server(kwargs['host'], kwargs['username'], kwargs['password'])
-        self.callback_function = callback_function
+        try:
+            self.ch, self.queue = setup_server(kwargs['host'], kwargs['username'], kwargs['password'])
+            self.callback_function = callback_function
+        except:
+            raise VogelerException()
 
     def callback(self, msg):
         message = json.loads(msg.body)
@@ -107,7 +112,8 @@ class VogelerServer(object):
             print "Vogeler(Server) is starting up"
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
         except:
-            raise
+            raise VogelerException()
+
         while self.ch.callbacks:
             self.ch.wait()
 
@@ -147,18 +153,18 @@ class VogelerPlugin(object):
         if plugin in self.authorized_plugins:
             try:
                 command = self.plugin_registry[plugin]['command']
-                format = self.plugin_registry[plugin]['result_format']
+                plugin_format = self.plugin_registry[plugin]['result_format']
                 result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
-                return self.format_response(plugin, result, format)
+                return self.format_response(plugin, result, plugin_format)
             except subprocess.CalledProcessError:
-                raise VogelerException("Failed to run command: "+self.plugin_registry[plugin]['command'])
+                raise VogelerException(), "Failed to run command: "+self.plugin_registry[plugin]['command']
         else:
-            raise VogelerException('Command not authorized')
+            raise VogelerException(), 'Command not authorized'
 
-    def format_response(self, plugin, output, format):
-        message = { 'syskey' : node(), plugin : output[0], 'format' : format }
+    def format_response(self, plugin, output, plugin_format):
+        message = { 'syskey' : node(), plugin : output[0], 'format' : plugin_format }
         return message
-        
+ 
     def _compile_plugins(self):
         try:
             cpf = open(self.compiled_plugin_file, 'w')
@@ -169,8 +175,7 @@ class VogelerPlugin(object):
             cpf.close()
             self._read_plugin_file()
         except:
-            print "Unable to create compiled plugin file"
-            raise
+            raise VogelerException(), "Unable to compile plugin file"
 
     def _read_plugin_file(self):
         configobj = ConfigParser.SafeConfigParser()
@@ -178,7 +183,7 @@ class VogelerPlugin(object):
             configobj.read(self.compiled_plugin_file)
             self._parse_plugin_file(config=configobj)
         except:
-            raise
+            raise VogelerException(), "Unable to read plugin file"
 
     def _parse_plugin_file(self, config):
         plugins = config.sections()
@@ -189,7 +194,7 @@ class VogelerPlugin(object):
                 self._register_plugin(plugin_details)
                 print "Registering plugin: %s" % plugin_details
             except:
-                print "Registration failed for plugin: %s" % plugin
+                raise VogelerException(), "Registration failed for plugin "+plugin
 
         self._authorize_plugins()
 
@@ -211,9 +216,6 @@ class VogelerEncryption(object):
     pass
 
 class VogelerException(Exception):
-    def __init__(self, value):
-        self.parameter(value)
+    pass
 
-    def __str__(self):
-        return repr(self.parameter)
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

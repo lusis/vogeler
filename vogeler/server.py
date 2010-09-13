@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""
+    Author: <Your name here>
+	Email:	<Your email here>
+	Date:	<today's date>
+"""
+
+# vim: set ts=4 et sw=4 sts=4 sta filetype=python :
