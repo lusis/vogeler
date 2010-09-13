@@ -26,4 +26,21 @@ class ClientTestCase(unittest.TestCase):
                         username='foobar',
                         password='baz')
 
+    def test_client_message_durable(self):
+        """Test that client can send durable messages"""
+        test_message = 'this is a test'
+        c = VogelerClient(callback_function=self.echo,
+                        host='localhost',
+                        username='guest',
+                        password='guest')
+        self.assertIsNone(c.message(test_message))
+
+    def test_client_message_nondurable(self):
+        """Test that client can send non-durable messages"""
+        test_message = 'this is a test'
+        c = VogelerClient(callback_function=self.echo,
+                        host='localhost',
+                        username='guest',
+                        password='guest')
+        self.assertIsNone(c.message(test_message, durable=False))
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
