@@ -129,8 +129,11 @@ class VogelerServer(object):
 
 class VogelerRunner(object):
     def __init__(self, destination, **kwargs):
-        self.routing_key = destination
-        self.ch = setup_amqp(kwargs['host'], kwargs['username'], kwargs['password'])
+        try:
+            self.routing_key = destination
+            self.ch = setup_amqp(kwargs['host'], kwargs['username'], kwargs['password'])
+        except:
+            raise VogelerException()
 
     def message(self, message, durable=True):
         print "Vogeler(Runner) is sending a message"
@@ -138,6 +141,9 @@ class VogelerRunner(object):
         if durable == True:
             msg.properties['deliver_mode'] = 2
         self.ch.basic_publish(msg, exchange=broadcast_exchange, routing_key=self.routing_key)
+
+    def close(self):
+        self.ch.close()
 
 class VogelerPlugin(object):
     compiled_plugin_file = '/tmp/vogeler-plugins.cfg'
@@ -156,15 +162,15 @@ class VogelerPlugin(object):
                 plugin_format = self.plugin_registry[plugin]['result_format']
                 result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
                 return self.format_response(plugin, result, plugin_format)
-            except subprocess.CalledProcessError:
-                raise VogelerException(), "Failed to run command: "+self.plugin_registry[plugin]['command']
+            except:
+                raise VogelerException()
         else:
-            raise VogelerException(), 'Command not authorized'
+            raise VogelerException()
 
     def format_response(self, plugin, output, plugin_format):
         message = { 'syskey' : node(), plugin : output[0], 'format' : plugin_format }
         return message
- 
+
     def _compile_plugins(self):
         try:
             cpf = open(self.compiled_plugin_file, 'w')
@@ -175,7 +181,7 @@ class VogelerPlugin(object):
             cpf.close()
             self._read_plugin_file()
         except:
-            raise VogelerException(), "Unable to compile plugin file"
+            raise VogelerException()
 
     def _read_plugin_file(self):
         configobj = ConfigParser.SafeConfigParser()
@@ -183,7 +189,7 @@ class VogelerPlugin(object):
             configobj.read(self.compiled_plugin_file)
             self._parse_plugin_file(config=configobj)
         except:
-            raise VogelerException(), "Unable to read plugin file"
+            raise VogelerException()
 
     def _parse_plugin_file(self, config):
         plugins = config.sections()
@@ -194,7 +200,7 @@ class VogelerPlugin(object):
                 self._register_plugin(plugin_details)
                 print "Registering plugin: %s" % plugin_details
             except:
-                raise VogelerException(), "Registration failed for plugin "+plugin
+                raise VogelerException()
 
         self._authorize_plugins()
 
@@ -203,14 +209,14 @@ class VogelerPlugin(object):
         try:
             self.authorized_plugins = tuple(self.plugin_registry.keys())
         except:
-            raise
+            raise VogelerException()
 
     def _register_plugin(self, plugin_details):
         plugin = plugin_details.pop("name")
         try:
             self.plugin_registry[plugin] = plugin_details
         except:
-            raise
+            raise VogelerException()
 class VogelerEncryption(object):
     keyfile = '/etc/vogeler/encryption.key'
     pass
