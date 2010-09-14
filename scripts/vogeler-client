@@ -6,7 +6,10 @@
 
 import argparse
 import pprint
-from vogeler.vogeler import VogelerClient, VogelerPlugin, VogelerException
+
+from vogeler.client import VogelerClient
+from vogeler.exceptions import VogelerException
+from vogeler.plugins import VogelerPlugin
 
 pp = pprint.PrettyPrinter(indent=4)
 

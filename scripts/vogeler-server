@@ -8,34 +8,17 @@ import argparse
 import yaml
 import sys
 
-import couchdbkit as couch
-from couchdbkit.loaders import FileSystemDocsLoader
-from restkit import BasicAuth
-
-from vogeler.vogeler import VogelerServer, VogelerException
-
-class SystemRecord(couch.Document):
-    system_name = couch.StringProperty()
-    updated_at = couch.DateTimeProperty()
+from vogeler.persistence import couch
+from vogeler.server import VogelerServer
+from vogeler.exceptions import VogelerException
 
 def setup(pargs):
     pass
 
-def load(lp, database):
-    try:
-        print "Loading design docs from %s" % lp
-        loader = FileSystemDocsLoader(lp)
-        loader.sync(database, verbose=True)
-        print "Design docs loaded"
-        return 0
-    except:
-        raise VogelerException('Failed to load design docs')
-        return 1
-
 def process_message(message):
     response = message
     syskey = message['syskey']
-    format = message['format']
+    message_format = message['format']
     del message['syskey']
     del message['format']
 
@@ -44,19 +27,20 @@ def process_message(message):
     # now we save the record
     # check if the systemrecord already exists
     # if not, create it. if so, update it
-    doc = SystemRecord.get_or_create(syskey)
+    doc = couch.SystemRecord.get_or_create(syskey)
 
     for k, v in response.iteritems():
         print "Got response for: %s" % k
         try:
-            if format == 'list':
+            if message_format == 'list':
                 v_split = [z.strip() for z in v.split("\n")]
                 doc[k] = v_split
 
-            if format == 'yaml':
+            if message_format == 'yaml':
                 v_dict = yaml.load(v)
                 doc[k] = v_dict
         except:
+            raise VogelerException()
             sys.exit(1)
 
     try:
@@ -82,13 +66,13 @@ def startup(pargs):
         explicit_load = False
         loadpath = 'etc/vogeler/_design'
 
-    server = couch.Server(uri=pargs.dbhost)
+    server = couch.couch.Server(uri=pargs.dbhost)
 
     db = server.get_or_create_db(pargs.dbname)
-    SystemRecord.set_db(db)
+    couch.SystemRecord.set_db(db)
 
     if explicit_load == True:
-        rc = load(loadpath, db)
+        rc = couch.load(loadpath, db)
         sys.exit(rc)
     else:
         print "Skipping design document load"

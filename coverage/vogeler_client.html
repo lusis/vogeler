@@ -5,7 +5,7 @@
     
     
     <meta http-equiv='X-UA-Compatible' content='IE=emulateIE7' />
-    <title>Coverage for vogeler.server: 61%</title>
+    <title>Coverage for vogeler.client: 61%</title>
     <link rel='stylesheet' href='style.css' type='text/css'>
     <script type='text/javascript' src='jquery-1.3.2.min.js'></script>
     <script type='text/javascript' src='coverage_html.js'></script>
@@ -17,7 +17,7 @@
 
 <div id='header'>
     <div class='content'>
-        <h1>Coverage for <b>vogeler.server</b> :
+        <h1>Coverage for <b>vogeler.client</b> :
             <span class='pc_cov'>61%</span>
         </h1>
         <h2 class='stats'>
@@ -74,6 +74,7 @@
 <p id='n36' class='stm run hide_run'><a href='#n36'>36</a></p>
 <p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
 <p id='n38' class='pln'><a href='#n38'>38</a></p>
+<p id='n39' class='pln'><a href='#n39'>39</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -82,10 +83,10 @@
 <p id='t3' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>exceptions</span> <span class='key'>import</span> <span class='nam'>VogelerException</span><span class='strut'>&nbsp;</span></p>
 <p id='t4' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>messaging</span> <span class='key'>import</span> <span class='nam'>amqp</span><span class='strut'>&nbsp;</span></p>
 <p id='t5' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t6' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerServer</span><span class='op'>(</span><span class='nam'>object</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t6' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerClient</span><span class='op'>(</span><span class='nam'>object</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t7' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>__init__</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>,</span> <span class='nam'>callback_function</span><span class='op'>=</span><span class='nam'>None</span><span class='op'>,</span> <span class='op'>**</span><span class='nam'>kwargs</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t8' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t9' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>,</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>queue</span> <span class='op'>=</span> <span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>setup_server</span><span class='op'>(</span><span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;host&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;username&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;password&#39;</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t9' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>,</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>queue</span> <span class='op'>=</span> <span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>setup_client</span><span class='op'>(</span><span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;host&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;username&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;password&#39;</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t10' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>callback_function</span> <span class='op'>=</span> <span class='nam'>callback_function</span><span class='strut'>&nbsp;</span></p>
 <p id='t11' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t12' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerException</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
@@ -97,7 +98,7 @@
 <p id='t18' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t19' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>monitor</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t20' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t21' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>print</span> <span class='str'>&quot;Vogeler(Server) is starting up&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t21' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>print</span> <span class='str'>&quot;Vogeler(Client) is starting up&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t22' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>basic_consume</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>queue</span><span class='op'>,</span> <span class='nam'>callback</span><span class='op'>=</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>callback</span><span class='op'>,</span> <span class='nam'>no_ack</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t23' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t24' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerException</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
@@ -106,15 +107,16 @@
 <p id='t27' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>wait</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t28' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t29' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>message</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>,</span> <span class='nam'>message</span><span class='op'>,</span> <span class='nam'>durable</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t30' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>print</span> <span class='str'>&quot;Vogeler(Server) is sending a message&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t30' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>print</span> <span class='str'>&quot;Vogeler(Client) is sending a message&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t31' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>msg</span> <span class='op'>=</span> <span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>Message</span><span class='op'>(</span><span class='nam'>json</span><span class='op'>.</span><span class='nam'>dumps</span><span class='op'>(</span><span class='nam'>message</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t32' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>if</span> <span class='nam'>durable</span> <span class='op'>==</span> <span class='nam'>True</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t33' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>msg</span><span class='op'>.</span><span class='nam'>properties</span><span class='op'>[</span><span class='str'>&#39;delivery_mode&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='num'>2</span><span class='strut'>&nbsp;</span></p>
-<p id='t34' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>basic_publish</span><span class='op'>(</span><span class='nam'>msg</span><span class='op'>,</span> <span class='nam'>exchange</span><span class='op'>=</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>broadcast_exchange</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t34' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>basic_publish</span><span class='op'>(</span><span class='nam'>msg</span><span class='op'>,</span> <span class='nam'>exchange</span><span class='op'>=</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>master_exchange</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t35' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t36' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>close</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t37' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>close</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t38' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>

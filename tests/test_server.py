@@ -1,7 +1,9 @@
 import unittest
 import json
 
-from vogeler.vogeler import VogelerServer, VogelerException
+from vogeler.server import VogelerServer
+from vogeler.exceptions import VogelerException
+
 import fixtures.message as message
 
 class ServerTestCase(unittest.TestCase):

@@ -4,7 +4,8 @@
 	Email:	lusis.org+github.com@gmail.com
 """
 import argparse
-from vogeler.vogeler import VogelerRunner
+
+from vogeler.runner import VogelerRunner
 
 if __name__ == '__main__':
     appdesc = 'Vogeler command runner'

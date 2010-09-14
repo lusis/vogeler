@@ -1,8 +1,8 @@
 import unittest
-import json
 
-from vogeler.vogeler import VogelerRunner, VogelerException
-import fixtures.message as message
+from vogeler.runner import VogelerRunner
+from vogeler.exceptions import VogelerException
+
 
 class RunnerTestCase(unittest.TestCase):
 

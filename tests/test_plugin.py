@@ -1,10 +1,11 @@
 import unittest
-import json
 import os, os.path
 import re
 
 from platform import node
-from vogeler.vogeler import VogelerPlugin, VogelerException
+
+from vogeler.plugins import VogelerPlugin
+from vogeler.exceptions import VogelerException
 
 class PluginTestCase(unittest.TestCase):
 
@@ -16,12 +17,11 @@ class PluginTestCase(unittest.TestCase):
         self.assertTrue(type(obj)) is typ
 
     def assertFileContains(self, source, string):
-       if os.path.isfile(source) == True:
-           fh = open(source, 'r')
-           file_contents = fh.read()
-           p = re.compile(string)
-           self.assertRegexpMatches(file_contents, p)
-
+        if os.path.isfile(source) == True:
+            fh = open(source, 'r')
+            file_contents = fh.read()
+            p = re.compile(string)
+            self.assertRegexpMatches(file_contents, p)
 
     def test_vogeler_plugin_init(self):
         """Test that creating a Plugin object works"""
@@ -48,12 +48,12 @@ class PluginTestCase(unittest.TestCase):
         """Test that execute does NOT work with an unauthorized plugin"""
         with self.assertRaises(VogelerException):
             p = VogelerPlugin()
-            results = p.execute_plugin('invalid')
+            p.execute_plugin('invalid')
 
     def test_execute_failing_plugin(self):
         """Test that execute does NOT work with a broken plugin"""
         with self.assertRaises(VogelerException):
             p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/')
-            results = p.execute_plugin('broken')
+            p.execute_plugin('broken')
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
