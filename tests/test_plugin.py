@@ -30,13 +30,13 @@ class PluginTestCase(unittest.TestCase):
 
     def test_vogeler_plugin_init_with_fixture(self):
         """Test that creating a Plugin object with a path works"""
-        p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/')
+        p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/plugins/')
         self.assertType(p, 'vogeler.vogeler.VogelerPlugin')
         self.assertFileContains('/tmp/vogeler-plugins.cfg', 'facter')
 
     def test_execute_valid_plugin(self):
         """Test that execute plugin works properly"""
-        p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/')
+        p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/plugins/')
         results = p.execute_plugin('facter')
         syskey_subset = {'syskey' : node()}
         format_subset = {'format' : 'yaml'}
@@ -53,7 +53,7 @@ class PluginTestCase(unittest.TestCase):
     def test_execute_failing_plugin(self):
         """Test that execute does NOT work with a broken plugin"""
         with self.assertRaises(VogelerException):
-            p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/')
+            p = VogelerPlugin(plugin_dir=os.path.dirname(__file__)+'/fixtures/plugins/')
             p.execute_plugin('broken')
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
