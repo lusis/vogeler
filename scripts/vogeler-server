@@ -72,7 +72,7 @@ def startup(pargs):
     couch.SystemRecord.set_db(db)
 
     if explicit_load == True:
-        rc = couch.load(loadpath, db)
+        rc = couch.load_views(loadpath, db)
         sys.exit(rc)
     else:
         print "Skipping design document load"
