@@ -2,7 +2,7 @@ Vogeler
 =======
 
 This somewhat pisspoor codebase in front of you is the beginings of something I've come to call Vogeler. 
-It is essentially a python-based CMDB insipired by [mcollective](http://github.com/mcollective/marionette-collective).
+It is essentially a python-based CMDB framework insipired by [mcollective's](http://github.com/mcollective/marionette-collective) architecture (message queue-based communication) as well as similar professional implementations I've done.
 
 It's very basic right now. Python is NOT my first language. I'm a Rubyist at heart but the company I work for uses Python for all the system-side stuff so I've had to learn it. Vogeler is part of that process.
 
@@ -38,11 +38,12 @@ If you want to load the design docs:
 	vogeler-server -l /path/to/design/docs
 	vogeler-server
 
+By default, vogeler-server will attempt to use the couchdb persistence backend (couch://localhost:5984). You can change that with --dbhost. Current, only couch persistence is supported so all you're buying yourself is being able to run couchdb on another server.
+
 Some key options:
 
-* _--dbname_: The name of the database to created in CouchDB
+* _--dbhost_: the persistence uri to use (i.e. couch://localhost:5984/system_records
 * _-l_: Load design docs. Requires a path to the design docs root. This is a one-shot operation. The process exits afterwards.
-* _--dbhost_ - a RestKit formatted URI
 * _--qhost_ - The hostname/ip address of the rabbitmq instance
 * _--quser_ - Username for rabbitmq
 * _--qpass_ - Password for rabbitmq
@@ -52,12 +53,12 @@ By default, loading of design docs does not happen. This will probably kept this
 
 Should you choose to load design docs, the output is similar to this:
 
-	vogeler-server -l $VIRTUAL_ENV/etc/vogeler/_design --dbname=sysrecs2
+	vogeler-server -l $VIRTUAL_ENV/etc/vogeler/_design --dbhost couch://localhost:5984/sysrecs3
 
 	Loading design docs from /home/jvincent/.python-envs/vogeler-dev/etc/vogeler/_design
 	Design docs loaded
 
-You should see the design docs in the database 'sysrecs2' under Futon.
+You should see the design docs in the database 'sysrecs3' under Futon.
 
 Now you can start the client:
 
@@ -137,8 +138,10 @@ Another One:
 	name = rpm
 	description = Grabs packages installed on a system using rpm
 	command = rpm -qa
-	result_format = list
+	result_format = output
 	command_alias = get_rpms
+
+Currently, result\_formats are listed in _vogeler/db/couch.py_. I plan on moving those out to a more global area that each persistence engine can import.
 
 When the client starts up, it checks the plugin directory and "compiles" all the .cfg files into one big file. This is similar to what Nagios started doing in v3. This way you can modify, create, delete plugins without affecting the running client instance.
 
@@ -151,9 +154,8 @@ What's missing
 A whole heck of a lot.
 
 * Logging: I haven't implemented logging yet so everything is stdout. I've got a good handle on Python logging already so that's just laziness on my part.
-* Unit Tests: Nose makes testing easy but actually writing unit tests in Python is still painful coming from the world of RSpec, Cucumber, Shoulda and the like.
-* Support for anything OTHER than RabbitMQ and CouchDB: Those are the technologies we use internally and my first target. I want to abstract out but Stomp support under RabbitMQ is still third-class citizen. Abstracting the datastore will probably come pretty quick. I'll probably NOT use a traditional RDBMS for this because things are SO dynamic. I don't even know what the names of your plugins are going to be. I would have to denormalize everything anyway so why use an RDBMS?
-* Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now it's only being used in a few spots.
+* Support for anything OTHER than RabbitMQ and CouchDB: Those are the technologies we use internally and my first target. I want to abstract out but Stomp support under RabbitMQ is still third-class citizen. Abstracting the datastore will probably come pretty quick. I'll probably NOT use a traditional RDBMS for this because things are SO dynamic. I don't even know what the names of your plugins are going to be. I would have to denormalize everything anyway so why use an RDBMS? Swapable persistence is already in place but only the couchdb backend has been defined.
+* Better exception handling: I've got a VogelerException class that I want to wrap everything in. Right now VogelerException is really basic.
 * A setup mode for the server invocation: Partial support is there now. Most options are simple stubs that do nothing.
 * Some reporting capability
 * Durability tuning for queues and messages

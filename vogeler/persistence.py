@@ -8,6 +8,7 @@ from vogeler.exceptions import VogelerException
 import vogeler.persistence as engine
 # Create or find and then use the system_records db
 c = engine.create_engine('couch://127.0.0.1:5984/system_records')
+c.create_db()
 # create or find the nodename node
 c.create('nodename')
 # update the nodename node with the given attributes
@@ -22,6 +23,7 @@ c.update('nodename', 'my_yaml_data', myyaml, 'yaml')
 c.update('nodename', 'my_string', 'some sting data', 'string')
 myxml = some_xml_data
 c.update('nodename', 'my_raw_data', myxml, 'raw')
+c.drop_db()
 """
 def create_engine(dsn, **credentials):
     try:

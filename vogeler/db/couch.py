@@ -18,25 +18,39 @@ class VogelerStore(object):
             db = kwargs['db']
             connection_string = "http://%s:%s" % (host, port)
             self.server = couch.Server(uri=connection_string)
-            self.create_db(db)
-            self.use_db(db)
+            self.dbname = db
         except:
             raise
             #raise VogelerException()
 
-    def create_db(self, dbname):
+    def create_db(self, dbname=''):
         try:
-            self.db = self.server.get_or_create_db(dbname)
-            SystemRecord.set_db(self.db)
-        except:
-            raise VogelerException()
+            if dbname == '':
+                dbname = self.dbname
 
-    def use_db(self, dbname):
-        try:
             self.db = self.server.get_or_create_db(dbname)
             SystemRecord.set_db(self.db)
         except:
-            raise VogelerException()
+            raise
+
+    def drop_db(self, dbname=''):
+        try:
+            if dbname == '':
+                dbname = self.dbname
+
+            self.server.delete_db(dbname)
+        except:
+            raise
+
+    def use_db(self, dbname=''):
+        try:
+            if dbname == '':
+                dbname = self.dbname
+
+            self.db = self.server.get_or_create_db(dbname)
+            SystemRecord.set_db(self.db)
+        except:
+            raise
 
     def create(self, node_name):
         node = SystemRecord.get_or_create(node_name)
@@ -86,6 +100,7 @@ class VogelerStore(object):
             loader = FileSystemDocsLoader(self.loadpath)
             loader.sync(self.db, verbose=True)
             print "Design docs loaded"
+            return 0
         except:
             raise VogelerException()
 

@@ -3,12 +3,10 @@
     Author: John E. Vincent
 	Email:	lusis.org+github.com@gmail.com
 """
-import datetime
 import argparse
-import yaml
 import sys
 
-from vogeler.persistence import couch
+import vogeler.persistence as engine
 from vogeler.server import VogelerServer
 from vogeler.exceptions import VogelerException
 
@@ -24,34 +22,18 @@ def process_message(message):
 
     print "Incoming message from: %s" % syskey
 
-    # now we save the record
-    # check if the systemrecord already exists
-    # if not, create it. if so, update it
-    doc = couch.SystemRecord.get_or_create(syskey)
+    db.create(syskey)
 
     for k, v in response.iteritems():
         print "Got response for: %s" % k
         try:
-            if message_format == 'list':
-                v_split = [z.strip() for z in v.split("\n")]
-                doc[k] = v_split
-
-            if message_format == 'yaml':
-                v_dict = yaml.load(v)
-                doc[k] = v_dict
+            db.update(syskey, k, v, message_format)
         except:
-            raise VogelerException()
+            raise
             sys.exit(1)
 
-    try:
-        doc.system_name = syskey
-        doc.updated_at = datetime.datetime.utcnow()
-        doc.save()
-    except:
-        raise VogelerException("Unable to save record from request")
-
 def startup(pargs):
-    global s
+    global s, db
 
     if pargs.config:
         config = pargs.config
@@ -66,13 +48,12 @@ def startup(pargs):
         explicit_load = False
         loadpath = 'etc/vogeler/_design'
 
-    server = couch.couch.Server(uri=pargs.dbhost)
-
-    db = server.get_or_create_db(pargs.dbname)
-    couch.SystemRecord.set_db(db)
+    db = engine.create_engine(pargs.dbhost)
+    db.create_db()
 
     if explicit_load == True:
-        rc = couch.load_views(loadpath, db)
+        print "Loading design docs from: %s" % loadpath
+        rc = db.load_views(loadpath)
         sys.exit(rc)
     else:
         print "Skipping design document load"
@@ -95,12 +76,8 @@ if __name__ == "__main__":
 
     runtime = parser.add_argument_group('startup options')
     runtime.add_argument('--dbhost',
-            help='CouchDB server uri (i.e. http://localhost:5984 or http://user:pass@localhost:5984)',
-            default='http://127.0.0.1:5984',
-            required=False)
-    runtime.add_argument('--dbname',
-            help='CouchDB database name',
-            default='system_records',
+            help='Persistence uri (i.e. couch://localhost:5984/system_records or couch://user:pass@localhost:5984/system_records)',
+            default='couch://127.0.0.1:5984/system_records',
             required=False)
     runtime.add_argument('--qhost',
             help='RabbitMQ server address',
