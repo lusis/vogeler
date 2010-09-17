@@ -70,25 +70,24 @@
 <p id='n32' class='stm run hide_run'><a href='#n32'>32</a></p>
 <p id='n33' class='stm run hide_run'><a href='#n33'>33</a></p>
 <p id='n34' class='stm mis'><a href='#n34'>34</a></p>
-<p id='n35' class='pln'><a href='#n35'>35</a></p>
-<p id='n36' class='stm mis'><a href='#n36'>36</a></p>
-<p id='n37' class='pln'><a href='#n37'>37</a></p>
+<p id='n35' class='stm mis'><a href='#n35'>35</a></p>
+<p id='n36' class='pln'><a href='#n36'>36</a></p>
+<p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
 <p id='n38' class='stm run hide_run'><a href='#n38'>38</a></p>
 <p id='n39' class='stm run hide_run'><a href='#n39'>39</a></p>
 <p id='n40' class='stm run hide_run'><a href='#n40'>40</a></p>
 <p id='n41' class='stm run hide_run'><a href='#n41'>41</a></p>
 <p id='n42' class='stm run hide_run'><a href='#n42'>42</a></p>
 <p id='n43' class='stm run hide_run'><a href='#n43'>43</a></p>
-<p id='n44' class='stm run hide_run'><a href='#n44'>44</a></p>
+<p id='n44' class='pln'><a href='#n44'>44</a></p>
 <p id='n45' class='pln'><a href='#n45'>45</a></p>
-<p id='n46' class='pln'><a href='#n46'>46</a></p>
                 
             </td>
             <td class='text' valign='top'>
 <p id='t1' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>urlparse</span><span class='strut'>&nbsp;</span></p>
 <p id='t2' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>db</span><span class='op'>.</span><span class='nam'>couch</span> <span class='key'>as</span> <span class='nam'>couch</span><span class='strut'>&nbsp;</span></p>
 <p id='t3' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t4' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>exceptions</span> <span class='key'>import</span> <span class='nam'>VogelerException</span><span class='strut'>&nbsp;</span></p>
+<p id='t4' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>exceptions</span> <span class='key'>import</span> <span class='nam'>VogelerPersistenceException</span><span class='strut'>&nbsp;</span></p>
 <p id='t5' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t6' class='pln'><span class='str'>&quot;&quot;&quot;vogeler.persisistence is used like so:</span><span class='strut'>&nbsp;</span></p>
 <p id='t7' class='pln'><span class='strut'>&nbsp;</span></p>
@@ -119,18 +118,17 @@
 <p id='t32' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>engine</span> <span class='op'>=</span> <span class='nam'>eval</span><span class='op'>(</span><span class='nam'>connect_string</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t33' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>engine</span><span class='strut'>&nbsp;</span></p>
 <p id='t34' class='stm mis'>&nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t35' class='pln'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='com'>#raise VogelerException()</span><span class='strut'>&nbsp;</span></p>
-<p id='t36' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span><span class='strut'>&nbsp;</span></p>
-<p id='t37' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t38' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_parse_url</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>parsed</span> <span class='op'>=</span> <span class='nam'>urlparse</span><span class='op'>.</span><span class='nam'>urlparse</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>s</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>scheme</span><span class='strut'>&nbsp;</span></p>
-<p id='t41' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>netloc</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&#39;:&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t42' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>d</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&quot;/&quot;</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>]</span><span class='strut'>&nbsp;</span></p>
-<p id='t43' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>params</span> <span class='op'>=</span> <span class='str'>&quot;host=&#39;%s&#39;, port=&#39;%s&#39;, db=&#39;%s&#39;&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span><span class='op'>,</span> <span class='nam'>d</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t44' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='op'>(</span><span class='nam'>s</span><span class='op'>,</span> <span class='nam'>params</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t45' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t46' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
+<p id='t35' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerPersistenceException</span><span class='op'>(</span><span class='str'>&quot;Unable to connect to backend database: %s&quot;</span> <span class='op'>%</span> <span class='nam'>connect_string</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_parse_url</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t38' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>parsed</span> <span class='op'>=</span> <span class='nam'>urlparse</span><span class='op'>.</span><span class='nam'>urlparse</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>s</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>scheme</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>netloc</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&#39;:&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>d</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&quot;/&quot;</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>]</span><span class='strut'>&nbsp;</span></p>
+<p id='t42' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>params</span> <span class='op'>=</span> <span class='str'>&quot;host=&#39;%s&#39;, port=&#39;%s&#39;, db=&#39;%s&#39;&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span><span class='op'>,</span> <span class='nam'>d</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t43' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='op'>(</span><span class='nam'>s</span><span class='op'>,</span> <span class='nam'>params</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t44' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t45' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>

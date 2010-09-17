@@ -5,7 +5,7 @@
     
     
     <meta http-equiv='X-UA-Compatible' content='IE=emulateIE7' />
-    <title>Coverage for vogeler.server: 61%</title>
+    <title>Coverage for vogeler.server: 59%</title>
     <link rel='stylesheet' href='style.css' type='text/css'>
     <script type='text/javascript' src='jquery-1.3.2.min.js'></script>
     <script type='text/javascript' src='coverage_html.js'></script>
@@ -18,12 +18,12 @@
 <div id='header'>
     <div class='content'>
         <h1>Coverage for <b>vogeler.server</b> :
-            <span class='pc_cov'>61%</span>
+            <span class='pc_cov'>59%</span>
         </h1>
         <h2 class='stats'>
-            30 statements
-            <span class='run hide_run' onclick='toggle_lines(this, "run")'>20 run</span>
-            <span class='mis' onclick='toggle_lines(this, "mis")'>10 missing</span>
+            33 statements
+            <span class='run hide_run' onclick='toggle_lines(this, "run")'>21 run</span>
+            <span class='mis' onclick='toggle_lines(this, "mis")'>12 missing</span>
             <span class='exc' onclick='toggle_lines(this, "exc")'>0 excluded</span>
             
                 <span class='par run hide_run' onclick='toggle_lines(this, "par")'>0 partial</span>
@@ -70,16 +70,19 @@
 <p id='n32' class='stm run hide_run'><a href='#n32'>32</a></p>
 <p id='n33' class='stm run hide_run'><a href='#n33'>33</a></p>
 <p id='n34' class='stm run hide_run'><a href='#n34'>34</a></p>
-<p id='n35' class='pln'><a href='#n35'>35</a></p>
-<p id='n36' class='stm run hide_run'><a href='#n36'>36</a></p>
-<p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
+<p id='n35' class='stm run hide_run'><a href='#n35'>35</a></p>
+<p id='n36' class='stm mis'><a href='#n36'>36</a></p>
+<p id='n37' class='stm mis'><a href='#n37'>37</a></p>
 <p id='n38' class='pln'><a href='#n38'>38</a></p>
+<p id='n39' class='stm run hide_run'><a href='#n39'>39</a></p>
+<p id='n40' class='stm run hide_run'><a href='#n40'>40</a></p>
+<p id='n41' class='pln'><a href='#n41'>41</a></p>
                 
             </td>
             <td class='text' valign='top'>
 <p id='t1' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>json</span><span class='strut'>&nbsp;</span></p>
 <p id='t2' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t3' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>exceptions</span> <span class='key'>import</span> <span class='nam'>VogelerException</span><span class='strut'>&nbsp;</span></p>
+<p id='t3' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>exceptions</span> <span class='key'>import</span> <span class='nam'>VogelerServerException</span><span class='strut'>&nbsp;</span></p>
 <p id='t4' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>messaging</span> <span class='key'>import</span> <span class='nam'>amqp</span><span class='strut'>&nbsp;</span></p>
 <p id='t5' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t6' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerServer</span><span class='op'>(</span><span class='nam'>object</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
@@ -88,7 +91,7 @@
 <p id='t9' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>,</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>queue</span> <span class='op'>=</span> <span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>setup_server</span><span class='op'>(</span><span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;host&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;username&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;password&#39;</span><span class='op'>]</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t10' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>callback_function</span> <span class='op'>=</span> <span class='nam'>callback_function</span><span class='strut'>&nbsp;</span></p>
 <p id='t11' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t12' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerException</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t12' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerServerException</span><span class='op'>(</span><span class='str'>&quot;Unable to connect to messaging system on %s as %s&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;host&#39;</span><span class='op'>]</span><span class='op'>,</span> <span class='nam'>kwargs</span><span class='op'>[</span><span class='str'>&#39;username&#39;</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t13' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t14' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>callback</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>,</span> <span class='nam'>msg</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t15' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>message</span> <span class='op'>=</span> <span class='nam'>json</span><span class='op'>.</span><span class='nam'>loads</span><span class='op'>(</span><span class='nam'>msg</span><span class='op'>.</span><span class='nam'>body</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
@@ -100,21 +103,24 @@
 <p id='t21' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>print</span> <span class='str'>&quot;Vogeler(Server) is starting up&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t22' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>basic_consume</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>queue</span><span class='op'>,</span> <span class='nam'>callback</span><span class='op'>=</span><span class='nam'>self</span><span class='op'>.</span><span class='nam'>callback</span><span class='op'>,</span> <span class='nam'>no_ack</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t23' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t24' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerException</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t24' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerServerException</span><span class='op'>(</span><span class='str'>&quot;Unable to consume queue&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t25' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t26' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>while</span> <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>callbacks</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t27' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>wait</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t28' class='pln'><span class='strut'>&nbsp;</span></p>
 <p id='t29' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>message</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>,</span> <span class='nam'>message</span><span class='op'>,</span> <span class='nam'>durable</span><span class='op'>=</span><span class='nam'>True</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t30' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>print</span> <span class='str'>&quot;Vogeler(Server) is sending a message&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t31' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>msg</span> <span class='op'>=</span> <span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>Message</span><span class='op'>(</span><span class='nam'>json</span><span class='op'>.</span><span class='nam'>dumps</span><span class='op'>(</span><span class='nam'>message</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t32' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>if</span> <span class='nam'>durable</span> <span class='op'>==</span> <span class='nam'>True</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t33' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>msg</span><span class='op'>.</span><span class='nam'>properties</span><span class='op'>[</span><span class='str'>&#39;delivery_mode&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='num'>2</span><span class='strut'>&nbsp;</span></p>
-<p id='t34' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>basic_publish</span><span class='op'>(</span><span class='nam'>msg</span><span class='op'>,</span> <span class='nam'>exchange</span><span class='op'>=</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>broadcast_exchange</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t35' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t36' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>close</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t37' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>close</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t31' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t32' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>msg</span> <span class='op'>=</span> <span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>Message</span><span class='op'>(</span><span class='nam'>json</span><span class='op'>.</span><span class='nam'>dumps</span><span class='op'>(</span><span class='nam'>message</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t33' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>if</span> <span class='nam'>durable</span> <span class='op'>==</span> <span class='nam'>True</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t34' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>msg</span><span class='op'>.</span><span class='nam'>properties</span><span class='op'>[</span><span class='str'>&#39;delivery_mode&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='num'>2</span><span class='strut'>&nbsp;</span></p>
+<p id='t35' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>basic_publish</span><span class='op'>(</span><span class='nam'>msg</span><span class='op'>,</span> <span class='nam'>exchange</span><span class='op'>=</span><span class='nam'>amqp</span><span class='op'>.</span><span class='nam'>broadcast_exchange</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerServerException</span><span class='op'>(</span><span class='str'>&quot;Unable to publish message to the queue&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t38' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>close</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>self</span><span class='op'>.</span><span class='nam'>ch</span><span class='op'>.</span><span class='nam'>close</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='pln'><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>
