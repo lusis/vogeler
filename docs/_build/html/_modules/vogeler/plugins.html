@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vogeler.plugins &mdash; Vogeler v0.8.7 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Vogeler v0.8.7 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for vogeler.plugins</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">ConfigParser</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">shutil</span><span class="o">,</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">shlex</span>
+
+<span class="kn">from</span> <span class="nn">platform</span> <span class="kn">import</span> <span class="n">node</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">iglob</span>
+
+<span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerPluginException</span>
+
+<div class="viewcode-block" id="VogelerPlugin"><a class="viewcode-back" href="../../plugins.html#vogeler.plugins.VogelerPlugin">[docs]</a><span class="k">class</span> <span class="nc">VogelerPlugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">compiled_plugin_file</span> <span class="o">=</span> <span class="s">&#39;/tmp/vogeler-plugins.cfg&#39;</span>
+    <span class="n">authorized_plugins</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">plugin_registry</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_dir</span><span class="o">=</span><span class="s">&#39;/etc/vogeler/plugins&#39;</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Vogeler is parsing plugins&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registered_plugins</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_dir</span> <span class="o">=</span> <span class="n">plugin_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compile_plugins</span><span class="p">()</span>
+
+<div class="viewcode-block" id="VogelerPlugin.execute_plugin"><a class="viewcode-back" href="../../plugins.html#vogeler.plugins.VogelerPlugin.execute_plugin">[docs]</a>    <span class="k">def</span> <span class="nf">execute_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized_plugins</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="p">[</span><span class="n">plugin</span><span class="p">][</span><span class="s">&#39;command&#39;</span><span class="p">]</span>
+                <span class="n">plugin_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="p">[</span><span class="n">plugin</span><span class="p">][</span><span class="s">&#39;result_format&#39;</span><span class="p">]</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">stdout</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_response</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plugin_format</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c">#raise VogelerPluginException(&quot;Unable to execute plugin: %s&quot; % command)</span>
+                <span class="k">print</span> <span class="s">&quot;Unable to execute plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">command</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Plugin </span><span class="si">%s</span><span class="s"> not authorized. Ignoring&quot;</span> <span class="o">%</span> <span class="n">plugin</span>
+            <span class="k">pass</span>
+            <span class="c">#raise VogelerPluginException(&quot;Plugin - %s - not authorized for this host&quot; % plugin)</span>
+</div>
+<div class="viewcode-block" id="VogelerPlugin.format_response"><a class="viewcode-back" href="../../plugins.html#vogeler.plugins.VogelerPlugin.format_response">[docs]</a>    <span class="k">def</span> <span class="nf">format_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">plugin_format</span><span class="p">):</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;syskey&#39;</span> <span class="p">:</span> <span class="n">node</span><span class="p">(),</span> <span class="n">plugin</span> <span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;format&#39;</span> <span class="p">:</span> <span class="n">plugin_format</span> <span class="p">}</span>
+        <span class="k">return</span> <span class="n">message</span>
+</div>
+    <span class="k">def</span> <span class="nf">_compile_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cpf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compiled_plugin_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="s">&quot;#This is a compiled vogeler plugin file. Please do not edit!!!</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="n">cpf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">iglob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plugin_dir</span><span class="p">,</span> <span class="s">&#39;*.cfg&#39;</span><span class="p">)):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">),</span> <span class="n">cpf</span><span class="p">)</span>
+            <span class="n">cpf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_plugin_file</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to compile plugin files&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_read_plugin_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">configobj</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">SafeConfigParser</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">configobj</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compiled_plugin_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_plugin_file</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">configobj</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to parse compiled plugin file&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_plugin_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="n">plugins</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span>
+        <span class="k">print</span> <span class="s">&quot;Found plugins: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugins</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">:</span>
+            <span class="n">plugin_details</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">plugin</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_register_plugin</span><span class="p">(</span><span class="n">plugin_details</span><span class="p">)</span>
+                <span class="k">print</span> <span class="s">&quot;Registering plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin_details</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to parse plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_authorize_plugins</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_authorize_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Authorizing registered plugins&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">authorized_plugins</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to authorize plugins: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_register_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_details</span><span class="p">):</span>
+        <span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin_details</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="p">[</span><span class="n">plugin</span><span class="p">]</span> <span class="o">=</span> <span class="n">plugin_details</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to register plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+
+<span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, John E. Vincent.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
+    </div>
+  </body>
+</html>

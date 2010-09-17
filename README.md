@@ -19,6 +19,14 @@ Here's what you'll need:
 
 The rest of the modules appear to be standard in 2.7 (json and such). In cases where 2.6 doesn't natively support a module, I've required it in setup (anyjson, pyyaml)
 
+Now just do a:
+	
+	pip install vogeler
+
+And you should have it installed.
+
+The design docs and plugins will be installed to /tmp/vogeler/. Move those to a permanent location somewhere you feel comfortable.
+
 Setup
 -----
 
@@ -53,7 +61,7 @@ By default, loading of design docs does not happen. This will probably kept this
 
 Should you choose to load design docs, the output is similar to this:
 
-	vogeler-server -l $VIRTUAL_ENV/etc/vogeler/_design --dbhost couch://localhost:5984/sysrecs3
+	vogeler-server -l /tmp/vogeler/_design --dbhost couch://localhost:5984/sysrecs3
 
 	Loading design docs from /home/jvincent/.python-envs/vogeler-dev/etc/vogeler/_design
 	Design docs loaded
@@ -62,7 +70,7 @@ You should see the design docs in the database 'sysrecs3' under Futon.
 
 Now you can start the client:
 
-	vogeler-client -p ../etc/plugins/ run
+	vogeler-client -p /tmp/vogeler/plugins/ run
 
 	Vogeler is parsing plugins
 	Found plugins: ['facter', 'rpm']
@@ -75,7 +83,7 @@ For now you'll have to pass the location to plugins, otherwise they won't work. 
 
 If this node is a remote node (i.e. not the same place rabbitmq is running), you can pass _--qhost <rabbitmq host/ipaddr>_ to the script like so:
 
-	vogeler-client -p etc/vogeler/plugins/ run --qhost 10.10.10.2
+	vogeler-client -p /tmp/vogeler/plugins/ run --qhost 10.10.10.2
 
 So you now have Vogeler running. Right now, all interaction with Vogeler is done through a runner script:
 

@@ -3,12 +3,14 @@ from platform import node
 
 from vogeler.exceptions import VogelerException
 
+#.. attribute::`vogeler.queue.amqp.vhost`
 vhost = "/vogeler"
 master_exchange = "vogeler.master.in"
 broadcast_exchange = "vogeler.broadcast.in"
 client_id = node()
 
 def setup_client(host='', username='', password=''):
+    """Setup a client AMQP binding"""
     node_name = client_id
     client_queue = node_name
     try:
@@ -26,6 +28,7 @@ def setup_client(host='', username='', password=''):
     return ch, client_queue
 
 def setup_server(host='', username='', password=''):
+    """Setup a server AMQP binding"""
     server_queue = 'master.in'
     try:
         # Get a channel
@@ -44,6 +47,7 @@ def setup_server(host='', username='', password=''):
     return ch, server_queue
 
 def setup_amqp(phost, puserid, ppassword):
+    """Generic AMQP channel creation"""
     try:
         conn = amqp.Connection(host=phost,
             userid=puserid,
