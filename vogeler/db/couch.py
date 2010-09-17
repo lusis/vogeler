@@ -3,7 +3,7 @@ import datetime, yaml
 import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
 
-from vogeler.exceptions import VogelerException
+from vogeler.exceptions import VogelerPersistenceException
 
 class SystemRecord(couch.Document):
     system_name = couch.StringProperty()
@@ -21,7 +21,6 @@ class VogelerStore(object):
             self.dbname = db
         except:
             raise
-            #raise VogelerException()
 
     def create_db(self, dbname=''):
         try:
@@ -53,21 +52,29 @@ class VogelerStore(object):
             raise
 
     def create(self, node_name):
-        node = SystemRecord.get_or_create(node_name)
         try:
+            node = SystemRecord.get_or_create(node_name)
             node.system_name = node_name
             node.created_at = datetime.datetime.utcnow()
             node.save()
         except:
-            raise VogelerException()
+            raise
+
+    def get(self, node_name):
+        try:
+            node = SystemRecord.get(node_name)
+            self.node = node
+            return node
+        except:
+            raise
 
     def touch(self, node_name):
-        node = SystemRecord.get_or_create(node_name)
         try:
+            node = SystemRecord.get(node_name)
             node.updated_at = datetime.datetime.utcnow()
             node.save()
         except:
-            raise VogelerException()
+            raise
 
     def update(self, node_name, key, value, datatype):
         node = SystemRecord.get_or_create(node_name)
@@ -102,6 +109,6 @@ class VogelerStore(object):
             print "Design docs loaded"
             return 0
         except:
-            raise VogelerException()
+            raise VogelerPersistenceException("Document load path not found: %s" % lp)
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

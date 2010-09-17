@@ -1,7 +1,7 @@
 import urlparse
 import vogeler.db.couch as couch
 
-from vogeler.exceptions import VogelerException
+from vogeler.exceptions import VogelerPersistenceException
 
 """vogeler.persisistence is used like so:
 
@@ -32,8 +32,7 @@ def create_engine(dsn, **credentials):
         engine = eval(connect_string)
         return engine
     except:
-        #raise VogelerException()
-        raise
+        raise VogelerPersistenceException("Unable to connect to backend database: %s" % connect_string)
 
 def _parse_url(url):
     parsed = urlparse.urlparse(url)
