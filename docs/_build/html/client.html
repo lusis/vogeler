@@ -23,8 +23,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Vogeler v0.8.7 documentation" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="encryption.html" />
-    <link rel="prev" title="Vogeler" href="intro/intro.html" /> 
+    <link rel="up" title="Project Documentation" href="modules.html" />
+    <link rel="next" title="Encryption Documentation" href="encryption.html" />
+    <link rel="prev" title="Project Documentation" href="modules.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,12 +38,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="encryption.html" title="&lt;no title&gt;"
+          <a href="encryption.html" title="Encryption Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="intro/intro.html" title="Vogeler"
+          <a href="modules.html" title="Project Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Project Documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -60,10 +62,53 @@
 <dt id="vogeler.client.VogelerClient">
 <em class="property">class </em><tt class="descclassname">vogeler.client.</tt><tt class="descname">VogelerClient</tt><big>(</big><em>callback_function=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/vogeler/client.html#VogelerClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.client.VogelerClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for operating as a Vogeler client instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>callback_function</strong> (<em>none</em>) &#8211; Callback function to use when messages are recieved</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="vogeler.client.VogelerClient.callback_function">
+<tt class="descname">callback_function</tt><a class="headerlink" href="#vogeler.client.VogelerClient.callback_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>External callback used for processing messages</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vogeler.client.VogelerClient.ch">
+<tt class="descname">ch</tt><a class="headerlink" href="#vogeler.client.VogelerClient.ch" title="Permalink to this definition">¶</a></dt>
+<dd><p>an instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.channel.Channel</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vogeler.client.VogelerClient.queue">
+<tt class="descname">queue</tt><a class="headerlink" href="#vogeler.client.VogelerClient.queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>an instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.channel.Queue</span></tt></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="vogeler.client.VogelerClient.callback">
 <tt class="descname">callback</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/vogeler/client.html#VogelerClient.callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.client.VogelerClient.callback" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Wrapper method for handling callbacks on message reciept.
+The message body is JSON decoded and passed up to <a class="reference internal" href="#vogeler.client.VogelerClient.callback_function" title="vogeler.client.VogelerClient.callback_function"><tt class="xref py py-attr docutils literal"><span class="pre">callback_function</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> &#8211; Instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.basic_message.Message</span></tt></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.client.VogelerClient.close">
@@ -78,7 +123,16 @@
 <dl class="method">
 <dt id="vogeler.client.VogelerClient.monitor">
 <tt class="descname">monitor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/vogeler/client.html#VogelerClient.monitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.client.VogelerClient.monitor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for watching a queue infinitely for messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="exceptions.html#vogeler.exceptions.VogelerClientException" title="vogeler.exceptions.VogelerClientException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerClientException</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -100,11 +154,11 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="intro/intro.html"
-                        title="previous chapter">Vogeler</a></p>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">Project Documentation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="encryption.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+                        title="next chapter">Encryption Documentation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/client.txt"
@@ -137,12 +191,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="encryption.html" title="&lt;no title&gt;"
+          <a href="encryption.html" title="Encryption Documentation"
              >next</a> |</li>
         <li class="right" >
-          <a href="intro/intro.html" title="Vogeler"
+          <a href="modules.html" title="Project Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Project Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
