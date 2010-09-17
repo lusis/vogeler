@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.8'
+version = '0.8.3'
 
 # Anyone know a better way to do python version conditionals in install_requires?
 modules = ['amqplib', 'couchdbkit', 'pyyaml']
@@ -33,7 +33,7 @@ if __name__ == "__main__":
           keywords='cmdb',
           author='John E. Vincent',
           author_email='lusis.org+github.com@gmail.com',
-          url='http://github.com/lusis/vogeler',
+          url='http://lusis.github.com/vogeler',
           packages=[
             "vogeler",
           ],
@@ -44,9 +44,9 @@ if __name__ == "__main__":
             "scripts/vogeler-server",
           ],
           data_files=[
-            ("etc/vogeler/plugins", ['etc/plugins/facter.cfg', 'etc/plugins/rpms.cfg', 'etc/plugins/ps.cfg']),
-            ("etc/vogeler/_design/system_records/views/all", ['etc/_design/system_records/views/all/map.js']),
-            ("etc/vogeler/_design/system_records/views/by_name", ['etc/_design/system_records/views/by_name/map.js']),
-            ("etc/vogeler/_design/system_records/views/packages_by_host", ['etc/_design/system_records/views/packages_by_host/map.js'])
+            ("share/doc/vogeler/plugins", ['etc/plugins/facter.cfg', 'etc/plugins/rpms.cfg', 'etc/plugins/ps.cfg']),
+            ("share/doc/vogeler/_design/system_records/views/all", ['etc/_design/system_records/views/all/map.js']),
+            ("share/doc/vogeler/_design/system_records/views/by_name", ['etc/_design/system_records/views/by_name/map.js']),
+            ("share/doc/vogeler/_design/system_records/views/packages_by_host", ['etc/_design/system_records/views/packages_by_host/map.js'])
             ]
           )
