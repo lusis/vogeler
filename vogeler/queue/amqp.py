@@ -22,7 +22,7 @@ def setup_client(host='', username='', password=''):
         ## this is for messages intended for us over the same topic exchange
         ch.queue_bind(client_queue, broadcast_exchange, routing_key=node_name)
     except:
-        raise VogelerException()
+        raise
     return ch, client_queue
 
 def setup_server(host='', username='', password=''):
@@ -40,7 +40,7 @@ def setup_server(host='', username='', password=''):
         # And then we bind to our channel
         ch.queue_bind(server_queue, master_exchange)
     except:
-        raise VogelerException()
+        raise
     return ch, server_queue
 
 def setup_amqp(phost, puserid, ppassword):
@@ -53,7 +53,7 @@ def setup_amqp(phost, puserid, ppassword):
         ch = conn.channel()
         ch.access_request(vhost, active=True, read=True, write=True)
     except:
-        raise VogelerException()
+        raise
     return ch
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

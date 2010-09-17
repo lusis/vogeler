@@ -24,9 +24,13 @@ class VogelerPlugin(object):
                 result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
                 return self.format_response(plugin, result, plugin_format)
             except:
-                raise VogelerPluginException("Unable to execute plugin: %s" % command)
+                #raise VogelerPluginException("Unable to execute plugin: %s" % command)
+                print "Unable to execute plugin: %s" % command
+                pass
         else:
-            raise VogelerPluginException("Plugin - %s - not authorized for this host" % plugin)
+            print "Plugin %s not authorized. Ignoring" % plugin
+            pass
+            #raise VogelerPluginException("Plugin - %s - not authorized for this host" % plugin)
 
     def format_response(self, plugin, output, plugin_format):
         message = { 'syskey' : node(), plugin : output[0], 'format' : plugin_format }

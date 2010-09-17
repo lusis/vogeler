@@ -8,7 +8,7 @@ import argparse
 import pprint
 
 from vogeler.client import VogelerClient
-from vogeler.exceptions import VogelerException
+from vogeler.exceptions import VogelerClientException
 from vogeler.plugins import VogelerPlugin
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -20,8 +20,8 @@ def process_request(request):
         if args.oneshot == True:
             print "Oneshot requested. Running command %s and exiting" % request
             shutdown()
-    except VogelerException:
-        print "VogelerException raised"
+    except:
+        raise VogelerClientException("Unable to process request: %s" % request)
 
 def startup():
     c.monitor()
@@ -39,6 +39,7 @@ def execute_run(pargs):
             plugins = VogelerPlugin(plugin_dir=pargs.plugindir)
         else:
             plugins = VogelerPlugin()
+
         c = VogelerClient(callback_function=process_request,
                     host=pargs.qhost,
                     username=pargs.quser,
@@ -46,6 +47,8 @@ def execute_run(pargs):
         startup()
     except KeyboardInterrupt:
         shutdown()
+    except:
+        raise VogelerClientException("Unable to start up")
 
 def list_plugins(pargs):
     global plugins
@@ -60,7 +63,7 @@ def list_plugins(pargs):
             plugins = VogelerPlugin(plugin_dir=pargs.plugindir)
             pp.pprint(plugins.plugin_registry)
     except:
-        raise
+        raise VogelerClientException("Unable to list plugins")
 
 if __name__ == "__main__":
     appdesc = 'Vogeler client daemon'

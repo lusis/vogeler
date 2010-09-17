@@ -8,29 +8,33 @@ import sys
 
 import vogeler.persistence as engine
 from vogeler.server import VogelerServer
-from vogeler.exceptions import VogelerException
+from vogeler.exceptions import VogelerServerException
 
 def setup(pargs):
     pass
 
 def process_message(message):
-    response = message
-    syskey = message['syskey']
-    message_format = message['format']
-    del message['syskey']
-    del message['format']
+    try:
+        response = message
+        syskey = message['syskey']
+        message_format = message['format']
+        del message['syskey']
+        del message['format']
 
-    print "Incoming message from: %s" % syskey
+        print "Incoming message from: %s" % syskey
 
-    db.create(syskey)
+        db.create(syskey)
 
-    for k, v in response.iteritems():
-        print "Got response for: %s" % k
-        try:
-            db.update(syskey, k, v, message_format)
-        except:
-            raise
-            sys.exit(1)
+        for k, v in response.iteritems():
+            print "Got response for: %s" % k
+            try:
+                db.update(syskey, k, v, message_format)
+            except:
+                raise VogelerServerException("Error in repsonse handling")
+    except TypeError:
+        print "Invalid message: %s. Discarding" % message
+    except:
+        raise
 
 def startup(pargs):
     global s, db
