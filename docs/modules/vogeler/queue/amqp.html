@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vogeler.queue.amqp &mdash; Vogeler v0.8.7 documentation</title>
+    <link rel="stylesheet" href="../../../static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../static/jquery.js"></script>
+    <script type="text/javascript" src="../../../static/underscore.js"></script>
+    <script type="text/javascript" src="../../../static/doctools.js"></script>
+    <link rel="top" title="Vogeler v0.8.7 documentation" href="../../../index.html" />
+    <link rel="up" title="vogeler.queue" href="../queue.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../vogeler.html" >vogeler</a> &raquo;</li>
+          <li><a href="../queue.html" accesskey="U">vogeler.queue</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for vogeler.queue.amqp</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">amqplib</span> <span class="kn">import</span> <span class="n">client_0_8</span> <span class="k">as</span> <span class="n">amqp</span>
+<span class="kn">from</span> <span class="nn">platform</span> <span class="kn">import</span> <span class="n">node</span>
+
+<span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerException</span>
+
+<span class="n">vhost</span> <span class="o">=</span> <span class="s">&quot;/vogeler&quot;</span>
+<span class="n">master_exchange</span> <span class="o">=</span> <span class="s">&quot;vogeler.master.in&quot;</span>
+<span class="n">broadcast_exchange</span> <span class="o">=</span> <span class="s">&quot;vogeler.broadcast.in&quot;</span>
+<span class="n">client_id</span> <span class="o">=</span> <span class="n">node</span><span class="p">()</span>
+
+<div class="viewcode-block" id="setup_client"><a class="viewcode-back" href="../../../messaging/amqp.html#vogeler.queue.amqp.setup_client">[docs]</a><span class="k">def</span> <span class="nf">setup_client</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">node_name</span> <span class="o">=</span> <span class="n">client_id</span>
+    <span class="n">client_queue</span> <span class="o">=</span> <span class="n">node_name</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Get a channel</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">setup_amqp</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="c"># define our incoming and outgoing queues</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">queue_declare</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">durable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">auto_delete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c"># bind our queues to the channel</span>
+        <span class="c">## this is for broadcast messages from the Vogeler server</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">queue_bind</span><span class="p">(</span><span class="n">client_queue</span><span class="p">,</span> <span class="n">broadcast_exchange</span><span class="p">,</span> <span class="n">routing_key</span><span class="o">=</span><span class="s">&#39;broadcasts.*&#39;</span><span class="p">)</span>
+        <span class="c">## this is for messages intended for us over the same topic exchange</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">queue_bind</span><span class="p">(</span><span class="n">client_queue</span><span class="p">,</span> <span class="n">broadcast_exchange</span><span class="p">,</span> <span class="n">routing_key</span><span class="o">=</span><span class="n">node_name</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">return</span> <span class="n">ch</span><span class="p">,</span> <span class="n">client_queue</span>
+</div>
+<div class="viewcode-block" id="setup_server"><a class="viewcode-back" href="../../../messaging/amqp.html#vogeler.queue.amqp.setup_server">[docs]</a><span class="k">def</span> <span class="nf">setup_server</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">server_queue</span> <span class="o">=</span> <span class="s">&#39;master.in&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Get a channel</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">setup_amqp</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="c"># Setup our exchanges</span>
+        <span class="c">## broadcast exchange for clients to recieve messages</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="n">broadcast_exchange</span><span class="p">,</span> <span class="s">&#39;topic&#39;</span><span class="p">,</span> <span class="n">durable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">auto_delete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c">## direct exchange for server to get messages from clients</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">exchange_declare</span><span class="p">(</span><span class="n">master_exchange</span><span class="p">,</span> <span class="s">&#39;direct&#39;</span><span class="p">,</span> <span class="n">durable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">auto_delete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c"># Now our own queues</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">queue_declare</span><span class="p">(</span><span class="n">server_queue</span><span class="p">,</span> <span class="n">durable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">auto_delete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c"># And then we bind to our channel</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">queue_bind</span><span class="p">(</span><span class="n">server_queue</span><span class="p">,</span> <span class="n">master_exchange</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">return</span> <span class="n">ch</span><span class="p">,</span> <span class="n">server_queue</span>
+</div>
+<div class="viewcode-block" id="setup_amqp"><a class="viewcode-back" href="../../../messaging/amqp.html#vogeler.queue.amqp.setup_amqp">[docs]</a><span class="k">def</span> <span class="nf">setup_amqp</span><span class="p">(</span><span class="n">phost</span><span class="p">,</span> <span class="n">puserid</span><span class="p">,</span> <span class="n">ppassword</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">amqp</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">phost</span><span class="p">,</span>
+            <span class="n">userid</span><span class="o">=</span><span class="n">puserid</span><span class="p">,</span>
+            <span class="n">password</span><span class="o">=</span><span class="n">ppassword</span><span class="p">,</span>
+            <span class="n">virtual_host</span><span class="o">=</span><span class="n">vhost</span><span class="p">,</span>
+            <span class="n">insist</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">channel</span><span class="p">()</span>
+        <span class="n">ch</span><span class="o">.</span><span class="n">access_request</span><span class="p">(</span><span class="n">vhost</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">return</span> <span class="n">ch</span>
+
+<span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../vogeler.html" >vogeler</a> &raquo;</li>
+          <li><a href="../queue.html" >vogeler.queue</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, John E. Vincent.
+      Last updated on Sep 18, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
+    </div>
+  </body>
+</html>

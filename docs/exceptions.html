@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Exceptions Documentation &mdash; Vogeler v0.8.7 documentation</title>
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.8.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="Vogeler v0.8.7 documentation" href="index.html" />
+    <link rel="up" title="Project Documentation" href="modules.html" />
+    <link rel="next" title="Persistence Documentation" href="persistence.html" />
+    <link rel="prev" title="Encryption Documentation" href="encryption.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="persistence.html" title="Persistence Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="encryption.html" title="Encryption Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Project Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="exceptions-documentation">
+<h1>Exceptions Documentation<a class="headerlink" href="#exceptions-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This page contains the Exceptions Module documentation.</p>
+<div class="section" id="module-vogeler.exceptions">
+<span id="the-exceptions-module"></span><h2>The <a class="reference external" href="http://docs.python.org/library/exceptions.html#module-exceptions" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">exceptions</span></tt></a> Module<a class="headerlink" href="#module-vogeler.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerClientException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerClientException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerClientException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerClientException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the client component</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerEncryptionException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerEncryptionException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerEncryptionException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerEncryptionException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the encryption component</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Base class for all exceptions</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerMessagingException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerMessagingException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerMessagingException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerMessagingException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the messaging component</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerPersistenceException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerPersistenceException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerPersistenceException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerPersistenceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the persistence engine</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerPluginException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerPluginException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerPluginException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerPluginException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the plugin component</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerRunnerException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerRunnerException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerRunnerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerRunnerException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the runner component</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vogeler.exceptions.VogelerServerException">
+<em class="property">exception </em><tt class="descclassname">vogeler.exceptions.</tt><tt class="descname">VogelerServerException</tt><a class="reference internal" href="modules/vogeler/exceptions.html#VogelerServerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.exceptions.VogelerServerException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vogeler.exceptions.VogelerException" title="vogeler.exceptions.VogelerException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerException</span></tt></a></p>
+<p>Exception for an error in the server component</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Exceptions Documentation</a><ul>
+<li><a class="reference internal" href="#module-vogeler.exceptions">The <tt class="docutils literal"><span class="pre">exceptions</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="encryption.html"
+                        title="previous chapter">Encryption Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="persistence.html"
+                        title="next chapter">Persistence Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="sources/exceptions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="persistence.html" title="Persistence Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="encryption.html" title="Encryption Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Project Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, John E. Vincent.
+      Last updated on Sep 18, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
+    </div>
+  </body>
+</html>

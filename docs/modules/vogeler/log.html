@@ -1,0 +1,139 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vogeler.log &mdash; Vogeler v0.8.7 documentation</title>
+    <link rel="stylesheet" href="../../static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../static/jquery.js"></script>
+    <script type="text/javascript" src="../../static/underscore.js"></script>
+    <script type="text/javascript" src="../../static/doctools.js"></script>
+    <link rel="top" title="Vogeler v0.8.7 documentation" href="../../index.html" />
+    <link rel="up" title="vogeler" href="../vogeler.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../vogeler.html" accesskey="U">vogeler</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for vogeler.log</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span>
+
+<span class="n">DEFAULT_LOG_FMT</span>     <span class="o">=</span> <span class="s">&#39;[</span><span class="si">%(asctime)s</span><span class="s">: </span><span class="si">%(levelname)s</span><span class="s">] </span><span class="si">%(processName)s</span><span class="s"> - </span><span class="si">%(message)s</span><span class="s">&#39;</span>
+<span class="n">DEFAULT_LOG_LEVEL</span>   <span class="o">=</span>  <span class="s">&#39;WARN&#39;</span>
+<span class="n">DEFAULT_LOG_FILE</span>    <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="get_logger"><a class="viewcode-back" href="../../log.html#vogeler.log.get_logger">[docs]</a><span class="k">def</span> <span class="nf">get_logger</span><span class="p">(</span><span class="n">logLevel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get an instance of :class:`logging.Logger`</span>
+
+<span class="sd">    :param logLevel: Log level to use</span>
+<span class="sd">    :param name: Name to display in logging for this instance</span>
+
+<span class="sd">    :returns: isntance of :class:`logging.Logger`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span> <span class="ow">or</span> <span class="s">&quot;vogeler.default&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">logLevel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logLevel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span>
+</div>
+<div class="viewcode-block" id="setup_logger"><a class="viewcode-back" href="../../log.html#vogeler.log.setup_logger">[docs]</a><span class="k">def</span> <span class="nf">setup_logger</span><span class="p">(</span><span class="n">logLevel</span><span class="o">=</span><span class="n">DEFAULT_LOG_LEVEL</span><span class="p">,</span> <span class="n">logFile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">logFormat</span><span class="o">=</span><span class="n">DEFAULT_LOG_FMT</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;vogeler&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets up a logger instance for logging</span>
+
+<span class="sd">    :param logLevel: Log level to use.</span>
+<span class="sd">    :param logFile: Log file to write.</span>
+<span class="sd">    :param logFormat: Format of log messages</span>
+<span class="sd">    :param name: Name to display in logging this instance</span>
+
+<span class="sd">    :returns: instance of :class:`logging.Logger`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="n">logLevel</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">logFile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logFile</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+
+    <span class="n">ch</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">logFormat</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logger</span>
+
+<span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../vogeler.html" >vogeler</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, John E. Vincent.
+      Last updated on Sep 18, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
+    </div>
+  </body>
+</html>
