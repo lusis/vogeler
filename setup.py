@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.8.7'
+version = '0.8.8'
 
 # Anyone know a better way to do python version conditionals in install_requires?
 modules = ['amqplib', 'couchdbkit', 'pyyaml']

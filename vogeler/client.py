@@ -1,7 +1,10 @@
 import json
 
+import vogeler.log as logger
 from vogeler.exceptions import VogelerClientException
 from vogeler.messaging import amqp
+
+log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-client')
 
 class VogelerClient(object):
     """
@@ -37,14 +40,14 @@ class VogelerClient(object):
         """
         Wrapper method for handling callbacks on message reciept.
         The message body is JSON decoded and passed up to :attr:`callback_function`
-        
+
         :param msg: Instance of :class:`amqplib.client_0_8.basic_message.Message`
 
         """
         try:
             message = json.loads(msg.body)
         except:
-            print "Message not in JSON format"
+            log.error("Message not in JSON format")
 
         if(self.callback_function):
             self.callback_function(message)
@@ -56,9 +59,10 @@ class VogelerClient(object):
         :raises: :class:`vogeler.exceptions.VogelerClientException`
         """
         try:
-            print "Vogeler(Client) is starting up"
+            log.info("Vogeler(Client) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
         except:
+            log.fatal("Error Consuming queue")
             raise VogelerClientException("Error consuming queue")
 
         while self.ch.callbacks:
@@ -72,12 +76,12 @@ class VogelerClient(object):
 
         :param bool durable: Sets the durable flag on the message causing it to persists
 
-        .. attribute:: msg 
+        .. attribute:: msg
 
             instance of :class:`amqplib.client_0_8.basic_message.Message` wrapped in JSON
 
         """
-        print "Vogeler(Client) is sending a message"
+        log.info("Vogeler(Client) is sending a message")
         msg = amqp.amqp.Message(json.dumps(message))
         if durable == True:
             msg.properties['delivery_mode'] = 2
@@ -87,6 +91,7 @@ class VogelerClient(object):
             raise VogelerClientException("Error publishing message to queue")
 
     def close(self):
+        """Close the channel with the broker"""
         self.ch.close()
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

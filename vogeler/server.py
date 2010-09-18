@@ -1,8 +1,10 @@
 import json
 
+import vogeler.log as logger
 from vogeler.exceptions import VogelerServerException
 from vogeler.messaging import amqp
 
+log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-server')
 class VogelerServer(object):
     def __init__(self, callback_function=None, **kwargs):
         try:
@@ -18,7 +20,7 @@ class VogelerServer(object):
 
     def monitor(self):
         try:
-            print "Vogeler(Server) is starting up"
+            log.info("Vogeler(Server) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
         except:
             raise VogelerServerException("Unable to consume queue")
@@ -27,7 +29,7 @@ class VogelerServer(object):
             self.ch.wait()
 
     def message(self, message, durable=True):
-        print "Vogeler(Server) is sending a message"
+        log.info("Vogeler(Server) is sending a message")
         try:
             msg = amqp.amqp.Message(json.dumps(message))
             if durable == True:

@@ -21,7 +21,7 @@ def process_request(request):
             print "Oneshot requested. Running command %s and exiting" % request
             shutdown()
     except:
-        raise VogelerClientException("Unable to process request: %s" % request)
+        raise #VogelerClientException("Unable to process request: %s" % request)
 
 def startup():
     c.monitor()
@@ -48,7 +48,7 @@ def execute_run(pargs):
     except KeyboardInterrupt:
         shutdown()
     except:
-        raise VogelerClientException("Unable to start up")
+        raise #VogelerClientException("Unable to start up")
 
 def list_plugins(pargs):
     global plugins
@@ -63,7 +63,7 @@ def list_plugins(pargs):
             plugins = VogelerPlugin(plugin_dir=pargs.plugindir)
             pp.pprint(plugins.plugin_registry)
     except:
-        raise VogelerClientException("Unable to list plugins")
+        raise #VogelerClientException("Unable to list plugins")
 
 if __name__ == "__main__":
     appdesc = 'Vogeler client daemon'

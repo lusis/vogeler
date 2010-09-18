@@ -4,14 +4,17 @@ import os, shutil, subprocess, shlex
 from platform import node
 from glob import iglob
 
+import vogeler.log as logger
 from vogeler.exceptions import VogelerPluginException
+
+log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-plugins')
 
 class VogelerPlugin(object):
     compiled_plugin_file = '/tmp/vogeler-plugins.cfg'
     authorized_plugins = ()
     plugin_registry = {}
     def __init__(self, plugin_dir='/etc/vogeler/plugins'):
-        print "Vogeler is parsing plugins"
+        log.info("Vogeler is parsing plugins")
         self.registered_plugins = {}
         self.plugin_dir = plugin_dir
         self._compile_plugins()
@@ -25,10 +28,10 @@ class VogelerPlugin(object):
                 return self.format_response(plugin, result, plugin_format)
             except:
                 #raise VogelerPluginException("Unable to execute plugin: %s" % command)
-                print "Unable to execute plugin: %s" % command
+                log.debug("Unable to execute plugin: %s" % command)
                 pass
         else:
-            print "Plugin %s not authorized. Ignoring" % plugin
+            log.warn("Plugin %s not authorized. Ignoring" % plugin)
             pass
             #raise VogelerPluginException("Plugin - %s - not authorized for this host" % plugin)
 
@@ -58,19 +61,19 @@ class VogelerPlugin(object):
 
     def _parse_plugin_file(self, config):
         plugins = config.sections()
-        print "Found plugins: %s" % plugins
+        log.info("Found plugins: %s" % plugins)
         for plugin in plugins:
             plugin_details = dict(config.items(plugin))
             try:
                 self._register_plugin(plugin_details)
-                print "Registering plugin: %s" % plugin_details
+                log.info("Registering plugin: %s" % plugin_details)
             except:
                 raise VogelerPluginException("Unable to parse plugin: %s" % plugin)
 
         self._authorize_plugins()
 
     def _authorize_plugins(self):
-        print "Authorizing registered plugins"
+        log.info("Authorizing registered plugins")
         try:
             self.authorized_plugins = tuple(self.plugin_registry.keys())
         except:
@@ -81,6 +84,6 @@ class VogelerPlugin(object):
         try:
             self.plugin_registry[plugin] = plugin_details
         except:
-            raise VogelerPluginException("Unable to register plugin: %s" % plugin)
+            log.debug("Unable to register plugin: %s" % plugin)
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

@@ -4,7 +4,7 @@ Amqp Messaging Backend
 This page contains the Amqp Module documentation.
 
 The :mod:`vogeler.queue.amqp` Module
-----------------------
+-------------------------------------
 
 .. autofunction:: vogeler.queue.amqp.setup_client
 
