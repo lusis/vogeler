@@ -10,12 +10,22 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-   :glob:
 
-   intro/*
-   *
-   messaging/*
-   persistence/*
+   intro/intro
+   vogeler-client
+   vogeler-server
+   vogeler-runner
+   client
+   server
+   runner
+   messaging
+   messaging/amqp
+   persistence
+   persistence/couch
+   plugins
+   log
+   exceptions
+   encryption
 
 
 Indices and tables

@@ -1,7 +1,8 @@
-Server Documentation
-====================
+:class:`VogelerServer`
+======================
+This instantiates an instance of a :class:`vogeler.server.VogelerServer` for operating in the Server role.
 
-This page contains the Server Module documentation.
+The job of the server role is to consume messages on a direct exchange from clients, parse said messages and persist the to a database.
 
 The :mod:`server` Module
 ------------------------

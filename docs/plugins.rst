@@ -1,7 +1,7 @@
-Plugins Documentation
+:mod:`plugins`
 =====================
 
-This page contains the Plugins Module documentation.
+Base class for dealing with plugins
 
 The :mod:`plugins` Module
 -------------------------

@@ -25,7 +25,17 @@ myxml = some_xml_data
 c.update('nodename', 'my_raw_data', myxml, 'raw')
 c.drop_db()
 """
-def create_engine(dsn, **credentials):
+def create_engine(dsn):
+    """
+    Create a connection to a persistence backend.
+
+    :param string dsn: A :class:`urlparse` parseable url defining a persistence backend
+
+        e.g. `couch://127.0.0.1:5984/system_records`
+
+    :returns: engine. instance of :class:`VogelerPersistence`
+
+    """
     try:
         scheme, params = _parse_url(dsn)
         connect_string = "%s.VogelerStore(%s)" % (scheme, params)

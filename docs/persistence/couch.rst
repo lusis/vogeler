@@ -1,7 +1,7 @@
-Couch Documentation
-===================
+:mod:`vogeler.db.couch`
+===========================
 
-This page contains the Couch Module documentation.
+CouchDB persistence engine
 
 The :mod:`vogeler.db.couch` Module
 -----------------------------------

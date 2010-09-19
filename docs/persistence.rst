@@ -1,7 +1,7 @@
-Persistence Documentation
+:mod:`persistence`
 =========================
 
-This page contains the Persistence Module documentation.
+An interface for interacting with swappable persistence backends.
 
 The :mod:`persistence` Module
 -----------------------------
@@ -10,3 +10,4 @@ The :mod:`persistence` Module
     :members:
     :undoc-members:
     :show-inheritance:
+

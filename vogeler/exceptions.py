@@ -9,6 +9,14 @@ class VogelerServerException(VogelerException):
 
 class VogelerClientException(VogelerException):
     """Exception for an error in the client component"""
+    pass
+
+class VogelerClientConnectionException(VogelerClientException):
+    """Exception for an error attempting to connect to the message queue"""
+
+class VogelerClientPluginException(VogelerClientException):
+    """Exception for an error in the client component"""
+    pass
 
 class VogelerRunnerException(VogelerException):
     """Exception for an error in the runner component"""
@@ -18,6 +26,30 @@ class VogelerMessagingException(VogelerException):
 
 class VogelerPluginException(VogelerException):
     """Exception for an error in the plugin component"""
+    pass
+
+class VogelerPluginExecutionException(VogelerPluginException):
+    """Exception for an error executing a plugin"""
+    pass
+
+class VogelerPluginAuthorizationException(VogelerPluginException):
+    """Exception for an unauthorized plugin"""
+    pass
+
+class VogelerPluginRegistrationException(VogelerPluginException):
+    """Exception for failed plugin registration"""
+    pass
+
+class VogelerPluginParsingException(VogelerPluginException):
+    """Exception for plugin parsing."""
+    pass
+
+class VogelerPluginCompiledParsingException(VogelerPluginException):
+    """Exception for compiled plugin parsing. Fatal error"""
+    pass
+
+class VogelerPluginCompilationException(VogelerPluginException):
+    """Exception for plugin compilation. Fatal error"""
 
 class VogelerEncryptionException(VogelerException):
     """Exception for an error in the encryption component"""

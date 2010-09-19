@@ -42,7 +42,7 @@ Now just do a:
 
 And you should have it installed.
 
-The design docs and plugins will be installed to /tmp/vogeler/.
+The design docs and plugins will be installed to :file:`/tmp/vogeler/`.
 Move those to a permanent location somewhere you feel comfortable.
 
 Setup
@@ -63,7 +63,6 @@ views in CouchDB:
 ::
 
     vogeler-server
-    
     Vogeler(Server) is starting up
 
 If you want to load the design docs:
@@ -74,7 +73,7 @@ If you want to load the design docs:
     vogeler-server
 
 By default, vogeler-server will attempt to use the couchdb
-persistence backend (couch://localhost:5984). You can change that
+persistence backend (``couch://localhost:5984``). You can change that
 with --dbhost. Current, only couch persistence is supported so all
 you're buying yourself is being able to run couchdb on another
 server.
@@ -83,7 +82,7 @@ Some key options:
 
 
 -  *--dbhost*: the persistence uri to use (i.e.
-   couch://localhost:5984/system\_records
+   ``couch://localhost:5984/system_records``)
 -  *-l*: Load design docs. Requires a path to the design docs root.
    This is a one-shot operation. The process exits afterwards.
 -  *--qhost* - The hostname/ip address of the rabbitmq instance
@@ -228,15 +227,29 @@ Futon.
 To that end, plugins are nothing more that standard INI format
 files using ConfigParser to do the dirty work.
 
-Sample Plugin File: [facter] name = facter description = Uses
-facter to return facts command = facter -y result\_format = yaml
-command\_alias = get\_facts
+Sample Plugin File:
 
-Another One: [rpm] name = rpm description = Grabs packages
-installed on a system using rpm command = rpm -qa result\_format =
-output command\_alias = get\_rpms
+::
 
-Currently, result\_formats are listed in *vogeler/db/couch.py*. I
+	[facter]
+	name = facter
+	description = Uses facter to return facts
+	command = facter -y 
+	result_format = yaml
+	command_alias = get_facts
+
+Another One:
+
+::
+
+	[rpm]
+	name = rpm
+	description = Grabs packages installed on a system using rpm
+	command = rpm -qa
+	result_format = output
+	command_alias = get_rpms
+
+Currently, result\_formats are listed in :mod:`vogeler.db.couch`. I
 plan on moving those out to a more global area that each
 persistence engine can import.
 
@@ -264,10 +277,6 @@ What's missing
 
 A whole heck of a lot.
 
-
--  Logging: I haven't implemented logging yet so everything is
-   stdout. I've got a good handle on Python logging already so that's
-   just laziness on my part.
 -  Support for anything OTHER than RabbitMQ and CouchDB: Those are
    the technologies we use internally and my first target. I want to
    abstract out but Stomp support under RabbitMQ is still third-class
@@ -277,8 +286,8 @@ A whole heck of a lot.
    are going to be. I would have to denormalize everything anyway so
    why use an RDBMS? Swapable persistence is already in place but only
    the couchdb backend has been defined.
--  Better exception handling: I've got a VogelerException class
-   that I want to wrap everything in. Right now VogelerException is
+-  Better exception handling: I've got a ``VogelerException`` class
+   that I want to wrap everything in. Right now ``VogelerException`` is
    really basic.
 -  A setup mode for the server invocation: Partial support is there
    now. Most options are simple stubs that do nothing.

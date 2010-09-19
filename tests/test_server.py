@@ -1,5 +1,6 @@
 import unittest
 import json
+import os
 
 from vogeler.server import VogelerServer
 from vogeler.exceptions import VogelerException
@@ -57,11 +58,11 @@ class ServerTestCase(unittest.TestCase):
         sample_text = 'this is a test'
         message_body = json.dumps(sample_text)
         test_message = message.SampleMessage(message_body)
-        c = VogelerServer(callback_function=None,
+        c = VogelerServer(callback_function=self.echo,
                         host='localhost',
                         username='guest',
                         password='guest')
-        m = c.callback(test_message)
+        m = c.ch.basic_consume(c.queue, callback=c.callback, no_ack=True)
         self.assertEquals(m.message, sample_text)
         c.close()
 

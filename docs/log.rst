@@ -1,10 +1,8 @@
-Vogeler Logging System
+:mod:`log`
 =======================
 
-This page contains the Vogeler Logging documentation.
-
-The :mod:`vogeler.log` Module
-------------------------------
+The :mod:`log` Module
+----------------------
 
 .. autofunction:: vogeler.log.get_logger
 
