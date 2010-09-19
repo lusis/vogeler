@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Client Documentation &mdash; Vogeler v0.8.7 documentation</title>
+    <title>VogelerClient &mdash; Vogeler v0.8.7 documentation</title>
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,8 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="Vogeler v0.8.7 documentation" href="index.html" />
-    <link rel="up" title="Project Documentation" href="modules.html" />
-    <link rel="next" title="Encryption Documentation" href="encryption.html" />
-    <link rel="prev" title="Project Documentation" href="modules.html" /> 
+    <link rel="next" title="VogelerServer" href="server.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="vogeler-runner.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +37,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="encryption.html" title="Encryption Documentation"
+          <a href="server.html" title="VogelerServer"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="modules.html" title="Project Documentation"
+          <a href="vogeler-runner.html" title="&lt;no title&gt;"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
-          <li><a href="modules.html" accesskey="U">Project Documentation</a> &raquo;</li> 
+        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,9 +51,11 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="client-documentation">
-<h1>Client Documentation<a class="headerlink" href="#client-documentation" title="Permalink to this headline">¶</a></h1>
-<p>This page contains the Client Module documentation.</p>
+  <div class="section" id="vogelerclient">
+<h1><tt class="xref py py-class docutils literal"><span class="pre">VogelerClient</span></tt><a class="headerlink" href="#vogelerclient" title="Permalink to this headline">¶</a></h1>
+<p>This instantiates an instance of a <a class="reference internal" href="#vogeler.client.VogelerClient" title="vogeler.client.VogelerClient"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.client.VogelerClient</span></tt></a> for operating in the Client role.</p>
+<p>The job of the client role is to consume messages from a broadcast exchange from a runner, validate the request against a set of authorized plugins and run said plugin.</p>
+<p>Results are then posted onto a different exchange for consumption by the Server role.</p>
 <div class="section" id="module-vogeler.client">
 <span id="the-client-module"></span><h2>The <tt class="xref py py-mod docutils literal"><span class="pre">client</span></tt> Module<a class="headerlink" href="#module-vogeler.client" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -146,6 +146,14 @@ The message body is JSON decoded and passed up to <a class="reference internal" 
 <dd><p>instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.basic_message.Message</span></tt> wrapped in JSON</p>
 </dd></dl>
 
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="exceptions.html#vogeler.exceptions.VogelerClientException" title="vogeler.exceptions.VogelerClientException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerClientException</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -175,18 +183,18 @@ The message body is JSON decoded and passed up to <a class="reference internal" 
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Client Documentation</a><ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">VogelerClient</span></tt></a><ul>
 <li><a class="reference internal" href="#module-vogeler.client">The <tt class="docutils literal"><span class="pre">client</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="modules.html"
-                        title="previous chapter">Project Documentation</a></p>
+  <p class="topless"><a href="vogeler-runner.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="encryption.html"
-                        title="next chapter">Encryption Documentation</a></p>
+  <p class="topless"><a href="server.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">VogelerServer</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="sources/client.txt"
@@ -219,18 +227,17 @@ The message body is JSON decoded and passed up to <a class="reference internal" 
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="encryption.html" title="Encryption Documentation"
+          <a href="server.html" title="VogelerServer"
              >next</a> |</li>
         <li class="right" >
-          <a href="modules.html" title="Project Documentation"
+          <a href="vogeler-runner.html" title="&lt;no title&gt;"
              >previous</a> |</li>
-        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li>
-          <li><a href="modules.html" >Project Documentation</a> &raquo;</li> 
+        <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 18, 2010.
+      Last updated on Sep 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

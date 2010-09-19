@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Runner Documentation &mdash; Vogeler v0.8.7 documentation</title>
+    <title>VogelerRunner &mdash; Vogeler v0.8.7 documentation</title>
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="Vogeler v0.8.7 documentation" href="index.html" />
-    <link rel="next" title="Server Documentation" href="server.html" />
+    <link rel="next" title="VogelerServer" href="server.html" />
     <link rel="prev" title="Plugins Documentation" href="plugins.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="server.html" title="Server Documentation"
+          <a href="server.html" title="VogelerServer"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="plugins.html" title="Plugins Documentation"
@@ -51,24 +51,78 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="runner-documentation">
-<h1>Runner Documentation<a class="headerlink" href="#runner-documentation" title="Permalink to this headline">¶</a></h1>
-<p>This page contains the Runner Module documentation.</p>
+  <div class="section" id="vogelerrunner">
+<h1><tt class="xref py py-class docutils literal"><span class="pre">VogelerRunner</span></tt><a class="headerlink" href="#vogelerrunner" title="Permalink to this headline">¶</a></h1>
+<p>This instantiates an instance of a <a class="reference internal" href="#vogeler.runner.VogelerRunner" title="vogeler.runner.VogelerRunner"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.runner.VogelerRunner</span></tt></a> for operating in the Runner role.</p>
+<p>The job of the runner role is to place messages on the broadcast exchange for consumption by the client role.</p>
+<p>Those messages are tagged with a <tt class="xref py py-attr docutils literal"><span class="pre">vogeler.runner.VogelerRunner.destination</span></tt> which is used by clients to determine if messages should be acted on.</p>
 <div class="section" id="module-vogeler.runner">
 <span id="the-runner-module"></span><h2>The <tt class="xref py py-mod docutils literal"><span class="pre">runner</span></tt> Module<a class="headerlink" href="#module-vogeler.runner" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vogeler.runner.VogelerRunner">
 <em class="property">class </em><tt class="descclassname">vogeler.runner.</tt><tt class="descname">VogelerRunner</tt><big>(</big><em>destination</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="modules/vogeler/runner.html#VogelerRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.runner.VogelerRunner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for operating as a Vogeler runner instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>destination</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; routing_key to be used by the binding</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="vogeler.runner.VogelerRunner.ch">
+<tt class="descname">ch</tt><a class="headerlink" href="#vogeler.runner.VogelerRunner.ch" title="Permalink to this definition">¶</a></dt>
+<dd><p>an instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.channel.Channel</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vogeler.runner.VogelerRunner.queue">
+<tt class="descname">queue</tt><a class="headerlink" href="#vogeler.runner.VogelerRunner.queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>an instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.channel.Queue</span></tt></p>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="exceptions.html#vogeler.exceptions.VogelerClientException" title="vogeler.exceptions.VogelerClientException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerClientException</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="vogeler.runner.VogelerRunner.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="modules/vogeler/runner.html#VogelerRunner.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.runner.VogelerRunner.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Close the channel with the broker</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.runner.VogelerRunner.message">
 <tt class="descname">message</tt><big>(</big><em>message</em>, <em>durable=True</em><big>)</big><a class="reference internal" href="modules/vogeler/runner.html#VogelerRunner.message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.runner.VogelerRunner.message" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for sending a message via the messaging system</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>message</strong> &#8211; The message to send.</li>
+<li><strong>durable</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Sets the durable flag on the message causing it to persists</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="vogeler.runner.VogelerRunner.msg">
+<tt class="descname">msg</tt><a class="headerlink" href="#vogeler.runner.VogelerRunner.msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>instance of <tt class="xref py py-class docutils literal"><span class="pre">amqplib.client_0_8.basic_message.Message</span></tt> wrapped in JSON</p>
+</dd></dl>
+
+</dd></dl>
 
 </dd></dl>
 
@@ -83,7 +137,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Runner Documentation</a><ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">VogelerRunner</span></tt></a><ul>
 <li><a class="reference internal" href="#module-vogeler.runner">The <tt class="docutils literal"><span class="pre">runner</span></tt> Module</a></li>
 </ul>
 </li>
@@ -94,7 +148,7 @@
                         title="previous chapter">Plugins Documentation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="server.html"
-                        title="next chapter">Server Documentation</a></p>
+                        title="next chapter"><tt class="docutils literal"><span class="pre">VogelerServer</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="sources/runner.txt"
@@ -127,7 +181,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="server.html" title="Server Documentation"
+          <a href="server.html" title="VogelerServer"
              >next</a> |</li>
         <li class="right" >
           <a href="plugins.html" title="Plugins Documentation"

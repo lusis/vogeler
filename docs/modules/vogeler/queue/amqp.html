@@ -53,12 +53,14 @@
 
 <span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerException</span>
 
+<span class="c">#.. attribute::`vogeler.queue.amqp.vhost`</span>
 <span class="n">vhost</span> <span class="o">=</span> <span class="s">&quot;/vogeler&quot;</span>
 <span class="n">master_exchange</span> <span class="o">=</span> <span class="s">&quot;vogeler.master.in&quot;</span>
 <span class="n">broadcast_exchange</span> <span class="o">=</span> <span class="s">&quot;vogeler.broadcast.in&quot;</span>
 <span class="n">client_id</span> <span class="o">=</span> <span class="n">node</span><span class="p">()</span>
 
 <div class="viewcode-block" id="setup_client"><a class="viewcode-back" href="../../../messaging/amqp.html#vogeler.queue.amqp.setup_client">[docs]</a><span class="k">def</span> <span class="nf">setup_client</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setup a client AMQP binding&quot;&quot;&quot;</span>
     <span class="n">node_name</span> <span class="o">=</span> <span class="n">client_id</span>
     <span class="n">client_queue</span> <span class="o">=</span> <span class="n">node_name</span>
     <span class="k">try</span><span class="p">:</span>
@@ -76,6 +78,7 @@
     <span class="k">return</span> <span class="n">ch</span><span class="p">,</span> <span class="n">client_queue</span>
 </div>
 <div class="viewcode-block" id="setup_server"><a class="viewcode-back" href="../../../messaging/amqp.html#vogeler.queue.amqp.setup_server">[docs]</a><span class="k">def</span> <span class="nf">setup_server</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setup a server AMQP binding&quot;&quot;&quot;</span>
     <span class="n">server_queue</span> <span class="o">=</span> <span class="s">&#39;master.in&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c"># Get a channel</span>
@@ -94,6 +97,7 @@
     <span class="k">return</span> <span class="n">ch</span><span class="p">,</span> <span class="n">server_queue</span>
 </div>
 <div class="viewcode-block" id="setup_amqp"><a class="viewcode-back" href="../../../messaging/amqp.html#vogeler.queue.amqp.setup_amqp">[docs]</a><span class="k">def</span> <span class="nf">setup_amqp</span><span class="p">(</span><span class="n">phost</span><span class="p">,</span> <span class="n">puserid</span><span class="p">,</span> <span class="n">ppassword</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic AMQP channel creation&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">conn</span> <span class="o">=</span> <span class="n">amqp</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">phost</span><span class="p">,</span>
             <span class="n">userid</span><span class="o">=</span><span class="n">puserid</span><span class="p">,</span>
@@ -148,7 +152,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 18, 2010.
+      Last updated on Sep 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

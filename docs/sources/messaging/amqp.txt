@@ -1,5 +1,5 @@
-Amqp Messaging Backend
-=======================
+:mod:`vogeler.queue.amqp`
+=========================
 
 This page contains the Amqp Module documentation.
 

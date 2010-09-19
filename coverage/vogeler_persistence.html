@@ -64,23 +64,33 @@
 <p id='n26' class='pln'><a href='#n26'>26</a></p>
 <p id='n27' class='pln'><a href='#n27'>27</a></p>
 <p id='n28' class='stm run hide_run'><a href='#n28'>28</a></p>
-<p id='n29' class='stm run hide_run'><a href='#n29'>29</a></p>
-<p id='n30' class='stm run hide_run'><a href='#n30'>30</a></p>
-<p id='n31' class='stm run hide_run'><a href='#n31'>31</a></p>
-<p id='n32' class='stm run hide_run'><a href='#n32'>32</a></p>
-<p id='n33' class='stm run hide_run'><a href='#n33'>33</a></p>
-<p id='n34' class='stm mis'><a href='#n34'>34</a></p>
-<p id='n35' class='stm mis'><a href='#n35'>35</a></p>
+<p id='n29' class='pln'><a href='#n29'>29</a></p>
+<p id='n30' class='pln'><a href='#n30'>30</a></p>
+<p id='n31' class='pln'><a href='#n31'>31</a></p>
+<p id='n32' class='pln'><a href='#n32'>32</a></p>
+<p id='n33' class='pln'><a href='#n33'>33</a></p>
+<p id='n34' class='pln'><a href='#n34'>34</a></p>
+<p id='n35' class='pln'><a href='#n35'>35</a></p>
 <p id='n36' class='pln'><a href='#n36'>36</a></p>
-<p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
-<p id='n38' class='stm run hide_run'><a href='#n38'>38</a></p>
+<p id='n37' class='pln'><a href='#n37'>37</a></p>
+<p id='n38' class='pln'><a href='#n38'>38</a></p>
 <p id='n39' class='stm run hide_run'><a href='#n39'>39</a></p>
 <p id='n40' class='stm run hide_run'><a href='#n40'>40</a></p>
 <p id='n41' class='stm run hide_run'><a href='#n41'>41</a></p>
 <p id='n42' class='stm run hide_run'><a href='#n42'>42</a></p>
 <p id='n43' class='stm run hide_run'><a href='#n43'>43</a></p>
-<p id='n44' class='pln'><a href='#n44'>44</a></p>
-<p id='n45' class='pln'><a href='#n45'>45</a></p>
+<p id='n44' class='stm mis'><a href='#n44'>44</a></p>
+<p id='n45' class='stm mis'><a href='#n45'>45</a></p>
+<p id='n46' class='pln'><a href='#n46'>46</a></p>
+<p id='n47' class='stm run hide_run'><a href='#n47'>47</a></p>
+<p id='n48' class='stm run hide_run'><a href='#n48'>48</a></p>
+<p id='n49' class='stm run hide_run'><a href='#n49'>49</a></p>
+<p id='n50' class='stm run hide_run'><a href='#n50'>50</a></p>
+<p id='n51' class='stm run hide_run'><a href='#n51'>51</a></p>
+<p id='n52' class='stm run hide_run'><a href='#n52'>52</a></p>
+<p id='n53' class='stm run hide_run'><a href='#n53'>53</a></p>
+<p id='n54' class='pln'><a href='#n54'>54</a></p>
+<p id='n55' class='pln'><a href='#n55'>55</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -111,24 +121,34 @@
 <p id='t25' class='pln'><span class='str'>c.update(&#39;nodename&#39;, &#39;my_raw_data&#39;, myxml, &#39;raw&#39;)</span><span class='strut'>&nbsp;</span></p>
 <p id='t26' class='pln'><span class='str'>c.drop_db()</span><span class='strut'>&nbsp;</span></p>
 <p id='t27' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t28' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>create_engine</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>,</span> <span class='op'>**</span><span class='nam'>credentials</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t29' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t30' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>scheme</span><span class='op'>,</span> <span class='nam'>params</span> <span class='op'>=</span> <span class='nam'>_parse_url</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t31' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>connect_string</span> <span class='op'>=</span> <span class='str'>&quot;%s.VogelerStore(%s)&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>scheme</span><span class='op'>,</span> <span class='nam'>params</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t32' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>engine</span> <span class='op'>=</span> <span class='nam'>eval</span><span class='op'>(</span><span class='nam'>connect_string</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t33' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>engine</span><span class='strut'>&nbsp;</span></p>
-<p id='t34' class='stm mis'>&nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t35' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerPersistenceException</span><span class='op'>(</span><span class='str'>&quot;Unable to connect to backend database: %s&quot;</span> <span class='op'>%</span> <span class='nam'>connect_string</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t36' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t37' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_parse_url</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t38' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>parsed</span> <span class='op'>=</span> <span class='nam'>urlparse</span><span class='op'>.</span><span class='nam'>urlparse</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>s</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>scheme</span><span class='strut'>&nbsp;</span></p>
-<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>netloc</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&#39;:&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t41' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>d</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&quot;/&quot;</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>]</span><span class='strut'>&nbsp;</span></p>
-<p id='t42' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>params</span> <span class='op'>=</span> <span class='str'>&quot;host=&#39;%s&#39;, port=&#39;%s&#39;, db=&#39;%s&#39;&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span><span class='op'>,</span> <span class='nam'>d</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t43' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='op'>(</span><span class='nam'>s</span><span class='op'>,</span> <span class='nam'>params</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t44' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t45' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
+<p id='t28' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>create_engine</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t29' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t30' class='pln'><span class='str'>&nbsp; &nbsp; Create a connection to a persistence backend.</span><span class='strut'>&nbsp;</span></p>
+<p id='t31' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t32' class='pln'><span class='str'>&nbsp; &nbsp; :param string dsn: A :class:`urlparse` parseable url defining a persistence backend</span><span class='strut'>&nbsp;</span></p>
+<p id='t33' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t34' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; e.g. `couch://127.0.0.1:5984/system_records`</span><span class='strut'>&nbsp;</span></p>
+<p id='t35' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='pln'><span class='str'>&nbsp; &nbsp; :returns: engine. instance of :class:`VogelerPersistence`</span><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t38' class='pln'><span class='str'>&nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>scheme</span><span class='op'>,</span> <span class='nam'>params</span> <span class='op'>=</span> <span class='nam'>_parse_url</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>connect_string</span> <span class='op'>=</span> <span class='str'>&quot;%s.VogelerStore(%s)&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>scheme</span><span class='op'>,</span> <span class='nam'>params</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t42' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>engine</span> <span class='op'>=</span> <span class='nam'>eval</span><span class='op'>(</span><span class='nam'>connect_string</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t43' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>engine</span><span class='strut'>&nbsp;</span></p>
+<p id='t44' class='stm mis'>&nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t45' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerPersistenceException</span><span class='op'>(</span><span class='str'>&quot;Unable to connect to backend database: %s&quot;</span> <span class='op'>%</span> <span class='nam'>connect_string</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t46' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t47' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_parse_url</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t48' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>parsed</span> <span class='op'>=</span> <span class='nam'>urlparse</span><span class='op'>.</span><span class='nam'>urlparse</span><span class='op'>(</span><span class='nam'>url</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t49' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>s</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>scheme</span><span class='strut'>&nbsp;</span></p>
+<p id='t50' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>netloc</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&#39;:&#39;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t51' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>d</span> <span class='op'>=</span> <span class='nam'>parsed</span><span class='op'>.</span><span class='nam'>path</span><span class='op'>.</span><span class='nam'>split</span><span class='op'>(</span><span class='str'>&quot;/&quot;</span><span class='op'>)</span><span class='op'>[</span><span class='num'>1</span><span class='op'>]</span><span class='strut'>&nbsp;</span></p>
+<p id='t52' class='stm run hide_run'>&nbsp; &nbsp; <span class='nam'>params</span> <span class='op'>=</span> <span class='str'>&quot;host=&#39;%s&#39;, port=&#39;%s&#39;, db=&#39;%s&#39;&quot;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>h</span><span class='op'>,</span> <span class='nam'>p</span><span class='op'>,</span> <span class='nam'>d</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t53' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>return</span> <span class='op'>(</span><span class='nam'>s</span><span class='op'>,</span> <span class='nam'>params</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t54' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t55' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>
