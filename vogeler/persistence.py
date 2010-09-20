@@ -7,12 +7,9 @@ from vogeler.exceptions import VogelerPersistenceException
 vogeler.persisistence is used like so:
 
 >>> import vogeler.persistence as engine
->>> # Create or find and then use the system_records db
 >>> c = engine.create_engine('couch://127.0.0.1:5984/system_records')
 >>> c.create_db()
->>> # create or find the nodename node
 >>> c.create('nodename')
->>> # update the nodename node with the given attributes
 >>> package_list = some_shell_command_output
 >>> c.update('nodename', 'packages', 'package_list', 'output')
 >>> mylist = ['foo','bar','baz']

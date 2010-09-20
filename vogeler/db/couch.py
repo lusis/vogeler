@@ -24,7 +24,7 @@ class VogelerStore(object):
 
     The object instance should directly allow all persistence operations directly against it.
 
-        :see:`vogeler.persistence`
+        .. see:`vogeler.persistence`
 
     .. attribute:: server
 
