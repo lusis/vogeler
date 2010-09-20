@@ -53,8 +53,8 @@
 <span class="kn">from</span> <span class="nn">platform</span> <span class="kn">import</span> <span class="n">node</span>
 <span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">iglob</span>
 
+<span class="kn">import</span> <span class="nn">vogeler.exceptions</span> <span class="kn">as</span> <span class="nn">exceptions</span>
 <span class="kn">import</span> <span class="nn">vogeler.log</span> <span class="kn">as</span> <span class="nn">logger</span>
-<span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerPluginException</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">setup_logger</span><span class="p">(</span><span class="n">logLevel</span><span class="o">=</span><span class="s">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="n">logFile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;vogeler-plugins&#39;</span><span class="p">)</span>
 
@@ -76,9 +76,11 @@
                 <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">stdout</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_response</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plugin_format</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Unable to execute plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">command</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Unable to execute plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">command</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginExecutionException</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Plugin </span><span class="si">%s</span><span class="s"> not authorized for this host. Ignoring&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginAuthorizationException</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="VogelerPlugin.format_response"><a class="viewcode-back" href="../../plugins.html#vogeler.plugins.VogelerPlugin.format_response">[docs]</a>    <span class="k">def</span> <span class="nf">format_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">plugin_format</span><span class="p">):</span>
         <span class="n">message</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;syskey&#39;</span> <span class="p">:</span> <span class="n">node</span><span class="p">(),</span> <span class="n">plugin</span> <span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;format&#39;</span> <span class="p">:</span> <span class="n">plugin_format</span> <span class="p">}</span>
@@ -95,7 +97,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_plugin_file</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;Unable to compile plugin file&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to compile plugin files&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginCompilationException</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_plugin_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">configobj</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">SafeConfigParser</span><span class="p">()</span>
@@ -103,7 +105,8 @@
             <span class="n">configobj</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compiled_plugin_file</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parse_plugin_file</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">configobj</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to parse compiled plugin file&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;Unable to parse compiled plugin file&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginCompiledParsingException</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_parse_plugin_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="n">plugins</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span>
@@ -114,7 +117,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_register_plugin</span><span class="p">(</span><span class="n">plugin_details</span><span class="p">)</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Registering plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin_details</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to parse plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Unable to parse plugin file: </span><span class="si">%s</span><span class="s">. Ignoring&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginParsingException</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_authorize_plugins</span><span class="p">()</span>
 
@@ -123,14 +127,16 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">authorized_plugins</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">VogelerPluginException</span><span class="p">(</span><span class="s">&quot;Unable to authorize plugins: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Unable to authorize plugins: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginAuthorizationException</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_register_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_details</span><span class="p">):</span>
         <span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin_details</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plugin_registry</span><span class="p">[</span><span class="n">plugin</span><span class="p">]</span> <span class="o">=</span> <span class="n">plugin_details</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Unable to register plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Unable to register plugin: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">plugin</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPluginRegistrationException</span><span class="p">()</span>
 
 <span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div>
 </pre></div>
@@ -173,7 +179,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 19, 2010.
+      Last updated on Sep 20, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

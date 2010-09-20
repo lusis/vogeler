@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
     <link rel="top" title="Vogeler v0.8.7 documentation" href="../index.html" />
-    <link rel="next" title="Plugins Documentation" href="../plugins.html" />
+    <link rel="next" title="plugins" href="../plugins.html" />
     <link rel="prev" title="persistence" href="../persistence.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../plugins.html" title="Plugins Documentation"
+          <a href="../plugins.html" title="plugins"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../persistence.html" title="persistence"
@@ -60,6 +60,7 @@
 <dt id="vogeler.db.couch.SystemRecord">
 <em class="property">class </em><tt class="descclassname">vogeler.db.couch.</tt><tt class="descname">SystemRecord</tt><big>(</big><em>_d=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#SystemRecord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.SystemRecord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">couchdbkit.schema.base.Document</span></tt></p>
+<p>A couchdbkit document for storing our base information</p>
 <dl class="attribute">
 <dt id="vogeler.db.couch.SystemRecord.created_at">
 <tt class="descname">created_at</tt><a class="headerlink" href="#vogeler.db.couch.SystemRecord.created_at" title="Permalink to this definition">¶</a></dt>
@@ -87,29 +88,66 @@ object.</p>
 
 </dd></dl>
 
+<dl class="exception">
+<dt id="vogeler.db.couch.VogelerCouchPersistenceException">
+<em class="property">exception </em><tt class="descclassname">vogeler.db.couch.</tt><tt class="descname">VogelerCouchPersistenceException</tt><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerCouchPersistenceException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerCouchPersistenceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../exceptions.html#vogeler.exceptions.VogelerPersistenceException" title="vogeler.exceptions.VogelerPersistenceException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerPersistenceException</span></tt></a></p>
+</dd></dl>
+
 <dl class="class">
 <dt id="vogeler.db.couch.VogelerStore">
 <em class="property">class </em><tt class="descclassname">vogeler.db.couch.</tt><tt class="descname">VogelerStore</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for interacting with a given persistence engine</p>
+<p>Any VogelerStore object should understand how to parse a vogeler engine uri.</p>
+<p>The object instance should directly allow all persistence operations directly against it.</p>
+<blockquote>
+</blockquote>
+<dl class="attribute">
+<dt id="vogeler.db.couch.VogelerStore.server">
+<tt class="descname">server</tt><a class="headerlink" href="#vogeler.db.couch.VogelerStore.server" title="Permalink to this definition">¶</a></dt>
+<dd><p>typically an instance of the driver connection method.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vogeler.db.couch.VogelerStore.dbname">
+<tt class="descname">dbname</tt><a class="headerlink" href="#vogeler.db.couch.VogelerStore.dbname" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the database to operate against</p>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><a class="reference internal" href="../exceptions.html#vogeler.exceptions.VogelerPersistenceException" title="vogeler.exceptions.VogelerPersistenceException"><tt class="xref py py-class docutils literal"><span class="pre">vogeler.exceptions.VogelerPersistenceException</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.create">
 <tt class="descname">create</tt><big>(</big><em>node_name</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.create" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>native method for creating a node record
+should gracefully handle existing node</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.create_db">
-<tt class="descname">create_db</tt><big>(</big><em>dbname=''</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.create_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.create_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">create_db</tt><big>(</big><em>dbname=None</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.create_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.create_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>native method for creating a database
+should allow gracefully handle existing databases</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.drop_db">
-<tt class="descname">drop_db</tt><big>(</big><em>dbname=''</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.drop_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.drop_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">drop_db</tt><big>(</big><em>dbname=None</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.drop_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.drop_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>native method for dropping a database</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.get">
 <tt class="descname">get</tt><big>(</big><em>node_name</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>native method for getting a node</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.load_views">
@@ -119,17 +157,20 @@ object.</p>
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.touch">
 <tt class="descname">touch</tt><big>(</big><em>node_name</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.touch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.touch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>convenience method for updating the timestamp on a node</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.update">
 <tt class="descname">update</tt><big>(</big><em>node_name</em>, <em>key</em>, <em>value</em>, <em>datatype</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Update a node record with a given key/value/datatype</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="vogeler.db.couch.VogelerStore.use_db">
-<tt class="descname">use_db</tt><big>(</big><em>dbname=''</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.use_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.use_db" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">use_db</tt><big>(</big><em>dbname=None</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore.use_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore.use_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>native method for using a database</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -152,10 +193,10 @@ object.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../persistence.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">persistence</span></tt></a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">persistence</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../plugins.html"
-                        title="next chapter">Plugins Documentation</a></p>
+                        title="next chapter"><tt class="docutils literal"><span class="pre">plugins</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../sources/persistence/couch.txt"
@@ -188,7 +229,7 @@ object.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../plugins.html" title="Plugins Documentation"
+          <a href="../plugins.html" title="plugins"
              >next</a> |</li>
         <li class="right" >
           <a href="../persistence.html" title="persistence"
@@ -198,7 +239,7 @@ object.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 18, 2010.
+      Last updated on Sep 20, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

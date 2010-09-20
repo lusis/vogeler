@@ -52,29 +52,42 @@
 
 <span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerPersistenceException</span>
 
-<span class="sd">&quot;&quot;&quot;vogeler.persisistence is used like so:</span>
-
-<span class="sd">import vogeler.persistence as engine</span>
-<span class="sd"># Create or find and then use the system_records db</span>
-<span class="sd">c = engine.create_engine(&#39;couch://127.0.0.1:5984/system_records&#39;)</span>
-<span class="sd">c.create_db()</span>
-<span class="sd"># create or find the nodename node</span>
-<span class="sd">c.create(&#39;nodename&#39;)</span>
-<span class="sd"># update the nodename node with the given attributes</span>
-<span class="sd">package_list = some_shell_command_output</span>
-<span class="sd">c.update(&#39;nodename&#39;, &#39;packages&#39;, package_list&#39;, &#39;output&#39;)</span>
-<span class="sd">mylist = [&#39;foo&#39;,&#39;bar&#39;,&#39;baz&#39;]</span>
-<span class="sd">c.update(&#39;nodename&#39;, &#39;my_python_list&#39;, mylist, &#39;pylist&#39;)</span>
-<span class="sd">mydict = {&#39;foo&#39; : 1, &#39;bar&#39; : 2, &#39;baz&#39; : &#39;shoe&#39;}</span>
-<span class="sd">c.update(&#39;nodename&#39;, &#39;my_python_dict&#39;, mydict, &#39;pydict&#39;)</span>
-<span class="sd">myyaml = some_yaml_data</span>
-<span class="sd">c.update(&#39;nodename&#39;, &#39;my_yaml_data&#39;, myyaml, &#39;yaml&#39;)</span>
-<span class="sd">c.update(&#39;nodename&#39;, &#39;my_string&#39;, &#39;some sting data&#39;, &#39;string&#39;)</span>
-<span class="sd">myxml = some_xml_data</span>
-<span class="sd">c.update(&#39;nodename&#39;, &#39;my_raw_data&#39;, myxml, &#39;raw&#39;)</span>
-<span class="sd">c.drop_db()</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="create_engine"><a class="viewcode-back" href="../../persistence.html#vogeler.persistence.create_engine">[docs]</a><span class="k">def</span> <span class="nf">create_engine</span><span class="p">(</span><span class="n">dsn</span><span class="p">,</span> <span class="o">**</span><span class="n">credentials</span><span class="p">):</span>
+<span class="sd">vogeler.persisistence is used like so:</span>
+
+<span class="sd">&gt;&gt;&gt; import vogeler.persistence as engine</span>
+<span class="sd">&gt;&gt;&gt; # Create or find and then use the system_records db</span>
+<span class="sd">&gt;&gt;&gt; c = engine.create_engine(&#39;couch://127.0.0.1:5984/system_records&#39;)</span>
+<span class="sd">&gt;&gt;&gt; c.create_db()</span>
+<span class="sd">&gt;&gt;&gt; # create or find the nodename node</span>
+<span class="sd">&gt;&gt;&gt; c.create(&#39;nodename&#39;)</span>
+<span class="sd">&gt;&gt;&gt; # update the nodename node with the given attributes</span>
+<span class="sd">&gt;&gt;&gt; package_list = some_shell_command_output</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;packages&#39;, &#39;package_list&#39;, &#39;output&#39;)</span>
+<span class="sd">&gt;&gt;&gt; mylist = [&#39;foo&#39;,&#39;bar&#39;,&#39;baz&#39;]</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_python_list&#39;, mylist, &#39;pylist&#39;)</span>
+<span class="sd">&gt;&gt;&gt; mydict = {&#39;foo&#39; : 1, &#39;bar&#39; : 2, &#39;baz&#39; : &#39;shoe&#39;}</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_python_dict&#39;, mydict, &#39;pydict&#39;)</span>
+<span class="sd">&gt;&gt;&gt; myyaml = some_yaml_data</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_yaml_data&#39;, myyaml, &#39;yaml&#39;)</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_string&#39;, &#39;some sting data&#39;, &#39;string&#39;)</span>
+<span class="sd">&gt;&gt;&gt; myxml = some_xml_data</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_raw_data&#39;, myxml, &#39;raw&#39;)</span>
+<span class="sd">&gt;&gt;&gt; myjson = some_json_data</span>
+<span class="sd">&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_json_data&#39;, myjson, &#39;json&#39;)</span>
+<span class="sd">&gt;&gt;&gt; c.drop_db()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="create_engine"><a class="viewcode-back" href="../../persistence.html#vogeler.persistence.create_engine">[docs]</a><span class="k">def</span> <span class="nf">create_engine</span><span class="p">(</span><span class="n">dsn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a connection to a persistence backend.</span>
+
+<span class="sd">    :param string dsn: A :class:`urlparse` parseable url defining a persistence backend</span>
+
+<span class="sd">        e.g. `couch://127.0.0.1:5984/system_records`</span>
+
+<span class="sd">    :returns: engine. instance of :class:`VogelerPersistence`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">scheme</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">_parse_url</span><span class="p">(</span><span class="n">dsn</span><span class="p">)</span>
         <span class="n">connect_string</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.VogelerStore(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
@@ -132,7 +145,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 19, 2010.
+      Last updated on Sep 20, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

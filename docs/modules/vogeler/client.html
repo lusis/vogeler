@@ -50,7 +50,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 
 <span class="kn">import</span> <span class="nn">vogeler.log</span> <span class="kn">as</span> <span class="nn">logger</span>
-<span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerClientException</span>
+<span class="kn">import</span> <span class="nn">vogeler.exceptions</span> <span class="kn">as</span> <span class="nn">exceptions</span>
 <span class="kn">from</span> <span class="nn">vogeler.messaging</span> <span class="kn">import</span> <span class="n">amqp</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">setup_logger</span><span class="p">(</span><span class="n">logLevel</span><span class="o">=</span><span class="s">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="n">logFile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;vogeler-client&#39;</span><span class="p">)</span>
@@ -81,8 +81,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">amqp</span><span class="o">.</span><span class="n">setup_client</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;password&#39;</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">callback_function</span> <span class="o">=</span> <span class="n">callback_function</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">VogelerClientException</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\</span>
-<span class="s">                    Error connecting to </span><span class="si">%s</span><span class="s"> as </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">]))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;Error connecting to </span><span class="si">%s</span><span class="s"> as </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">]))</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerClientConnectionException</span><span class="p">()</span>
 
 <div class="viewcode-block" id="VogelerClient.callback"><a class="viewcode-back" href="../../client.html#vogeler.client.VogelerClient.callback">[docs]</a>    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -95,7 +95,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Message not in JSON format&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Message not in JSON format&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerClientPluginException</span><span class="p">()</span>
 
         <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callback_function</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">callback_function</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -111,7 +112,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">basic_consume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span> <span class="n">no_ack</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;Error Consuming queue&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">VogelerClientException</span><span class="p">(</span><span class="s">&quot;Error consuming queue&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerClientConnectionException</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
@@ -128,6 +129,8 @@
 
 <span class="sd">            instance of :class:`amqplib.client_0_8.basic_message.Message` wrapped in JSON</span>
 
+<span class="sd">        :raises: :class:`vogeler.exceptions.VogelerClientException`</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Vogeler(Client) is sending a message&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -137,10 +140,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">basic_publish</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="n">amqp</span><span class="o">.</span><span class="n">master_exchange</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;Error publishing message to the queue&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">VogelerClientException</span><span class="p">(</span><span class="s">&quot;Error publishing message to queue&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerClientConnectionException</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="VogelerClient.close"><a class="viewcode-back" href="../../client.html#vogeler.client.VogelerClient.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the channel with the broker&quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Closing channel&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ch</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div></div>
@@ -184,7 +188,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 19, 2010.
+      Last updated on Sep 20, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

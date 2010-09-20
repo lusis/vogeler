@@ -47,19 +47,46 @@
           <div class="body">
             
   <h1>Source code for vogeler.db.couch</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">yaml</span><span class="o">,</span> <span class="nn">json</span>
 
 <span class="kn">import</span> <span class="nn">couchdbkit</span> <span class="kn">as</span> <span class="nn">couch</span>
 <span class="kn">from</span> <span class="nn">couchdbkit.loaders</span> <span class="kn">import</span> <span class="n">FileSystemDocsLoader</span>
 
-<span class="kn">from</span> <span class="nn">vogeler.exceptions</span> <span class="kn">import</span> <span class="n">VogelerPersistenceException</span>
+<span class="kn">import</span> <span class="nn">vogeler.exceptions</span> <span class="kn">as</span> <span class="nn">exceptions</span>
+<span class="kn">import</span> <span class="nn">vogeler.log</span> <span class="kn">as</span> <span class="nn">logger</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">setup_logger</span><span class="p">(</span><span class="n">logLevel</span><span class="o">=</span><span class="s">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="n">logFile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;vogeler-client&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SystemRecord"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.SystemRecord">[docs]</a><span class="k">class</span> <span class="nc">SystemRecord</span><span class="p">(</span><span class="n">couch</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A couchdbkit document for storing our base information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">system_name</span> <span class="o">=</span> <span class="n">couch</span><span class="o">.</span><span class="n">StringProperty</span><span class="p">()</span>
     <span class="n">created_at</span> <span class="o">=</span> <span class="n">couch</span><span class="o">.</span><span class="n">DateTimeProperty</span><span class="p">()</span>
     <span class="n">updated_at</span> <span class="o">=</span> <span class="n">couch</span><span class="o">.</span><span class="n">DateTimeProperty</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="VogelerStore"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore">[docs]</a><span class="k">class</span> <span class="nc">VogelerStore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for interacting with a given persistence engine</span>
+
+<span class="sd">    Any VogelerStore object should understand how to parse a vogeler engine uri.</span>
+
+<span class="sd">    The object instance should directly allow all persistence operations directly against it.</span>
+
+<span class="sd">        :see:`vogeler.persistence`</span>
+
+<span class="sd">    .. attribute:: server</span>
+
+<span class="sd">        typically an instance of the driver connection method.</span>
+
+<span class="sd">    .. attribute:: dbname</span>
+
+<span class="sd">        name of the database to operate against</span>
+
+
+<span class="sd">    :raises: :class:`vogeler.exceptions.VogelerPersistenceException`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -69,11 +96,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">couch</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">connection_string</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbname</span> <span class="o">=</span> <span class="n">db</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPersistenceException</span><span class="p">()</span>
 
-<div class="viewcode-block" id="VogelerStore.create_db"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.create_db">[docs]</a>    <span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="VogelerStore.create_db"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.create_db">[docs]</a>    <span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        native method for creating a database</span>
+<span class="sd">        should allow gracefully handle existing databases</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dbname</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dbname</span><span class="p">:</span>
                 <span class="n">dbname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbname</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">get_or_create_db</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
@@ -81,18 +112,20 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span>
 </div>
-<div class="viewcode-block" id="VogelerStore.drop_db"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.drop_db">[docs]</a>    <span class="k">def</span> <span class="nf">drop_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="VogelerStore.drop_db"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.drop_db">[docs]</a>    <span class="k">def</span> <span class="nf">drop_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; native method for dropping a database &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dbname</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dbname</span><span class="p">:</span>
                 <span class="n">dbname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbname</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">delete_db</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span>
 </div>
-<div class="viewcode-block" id="VogelerStore.use_db"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.use_db">[docs]</a>    <span class="k">def</span> <span class="nf">use_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="VogelerStore.use_db"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.use_db">[docs]</a>    <span class="k">def</span> <span class="nf">use_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; native method for using a database &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">dbname</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dbname</span><span class="p">:</span>
                 <span class="n">dbname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbname</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">get_or_create_db</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
@@ -101,6 +134,10 @@
             <span class="k">raise</span>
 </div>
 <div class="viewcode-block" id="VogelerStore.create"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        native method for creating a node record</span>
+<span class="sd">        should gracefully handle existing node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">SystemRecord</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
             <span class="n">node</span><span class="o">.</span><span class="n">system_name</span> <span class="o">=</span> <span class="n">node_name</span>
@@ -110,6 +147,7 @@
             <span class="k">raise</span>
 </div>
 <div class="viewcode-block" id="VogelerStore.get"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; native method for getting a node &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">SystemRecord</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
@@ -118,6 +156,7 @@
             <span class="k">raise</span>
 </div>
 <div class="viewcode-block" id="VogelerStore.touch"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.touch">[docs]</a>    <span class="k">def</span> <span class="nf">touch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; convenience method for updating the timestamp on a node &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">SystemRecord</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
             <span class="n">node</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
@@ -126,26 +165,16 @@
             <span class="k">raise</span>
 </div>
 <div class="viewcode-block" id="VogelerStore.update"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerStore.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update a node record with a given key/value/datatype&quot;&quot;&quot;</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">SystemRecord</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s">&#39;output&#39;</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)]</span>
-            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s">&#39;pylist&#39;</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s">&#39;pydict&#39;</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s">&#39;yaml&#39;</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s">&#39;string&#39;</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s">&#39;raw&#39;</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">datatype_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_update_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">datatype</span><span class="p">)</span>
+            <span class="n">node</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">datatype_method</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Don&#39;t know how to handle datatype: &#39;</span><span class="si">%r</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="n">datatype</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPersistenceDataTypeException</span><span class="p">()</span>
+
         <span class="n">node</span><span class="o">.</span><span class="n">updated_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
         <span class="n">node</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </div>
@@ -158,9 +187,41 @@
             <span class="k">print</span> <span class="s">&quot;Design docs loaded&quot;</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">VogelerPersistenceException</span><span class="p">(</span><span class="s">&quot;Document load path not found: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">lp</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;Document load path not found: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">lp</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPersistenceException</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">_update_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; process output handler. split at newlines &quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">v</span>
 
-<span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div></div>
+    <span class="k">def</span> <span class="nf">_update_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; json handler. load json and persist &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_pylist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; python list datatype handler &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_update_pydict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; python dictionary datatype handler &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_update_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; yaml datatype handler. load yaml and persist &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; raw datatype handler &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_update_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; simple value handler &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="VogelerCouchPersistenceException"><a class="viewcode-back" href="../../../persistence/couch.html#vogeler.db.couch.VogelerCouchPersistenceException">[docs]</a><span class="k">class</span> <span class="nc">VogelerCouchPersistenceException</span><span class="p">(</span><span class="n">exceptions</span><span class="o">.</span><span class="n">VogelerPersistenceException</span><span class="p">):</span>
+    <span class="k">pass</span>
+<span class="c"># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span></div>
 </pre></div>
 
           </div>
@@ -201,7 +262,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 19, 2010.
+      Last updated on Sep 20, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

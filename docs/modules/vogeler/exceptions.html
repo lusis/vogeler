@@ -52,12 +52,25 @@
 </div>
 <div class="viewcode-block" id="VogelerPersistenceException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPersistenceException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPersistenceException</span><span class="p">(</span><span class="n">VogelerException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for an error in the persistence engine&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPersistenceDataTypeException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPersistenceDataTypeException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPersistenceDataTypeException</span><span class="p">(</span><span class="n">VogelerPersistenceException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for a datatype error in persistence&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="VogelerServerException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerServerException">[docs]</a><span class="k">class</span> <span class="nc">VogelerServerException</span><span class="p">(</span><span class="n">VogelerException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for an error in the server component&quot;&quot;&quot;</span>
 </div>
 <div class="viewcode-block" id="VogelerClientException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerClientException">[docs]</a><span class="k">class</span> <span class="nc">VogelerClientException</span><span class="p">(</span><span class="n">VogelerException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for an error in the client component&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerClientConnectionException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerClientConnectionException">[docs]</a><span class="k">class</span> <span class="nc">VogelerClientConnectionException</span><span class="p">(</span><span class="n">VogelerClientException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for an error attempting to connect to the message queue&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="VogelerClientPluginException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerClientPluginException">[docs]</a><span class="k">class</span> <span class="nc">VogelerClientPluginException</span><span class="p">(</span><span class="n">VogelerClientException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for an error in the client component&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="VogelerRunnerException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerRunnerException">[docs]</a><span class="k">class</span> <span class="nc">VogelerRunnerException</span><span class="p">(</span><span class="n">VogelerException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for an error in the runner component&quot;&quot;&quot;</span>
@@ -67,6 +80,30 @@
 </div>
 <div class="viewcode-block" id="VogelerPluginException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginException</span><span class="p">(</span><span class="n">VogelerException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for an error in the plugin component&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPluginExecutionException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginExecutionException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginExecutionException</span><span class="p">(</span><span class="n">VogelerPluginException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for an error executing a plugin&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPluginAuthorizationException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginAuthorizationException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginAuthorizationException</span><span class="p">(</span><span class="n">VogelerPluginException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for an unauthorized plugin&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPluginRegistrationException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginRegistrationException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginRegistrationException</span><span class="p">(</span><span class="n">VogelerPluginException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for failed plugin registration&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPluginParsingException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginParsingException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginParsingException</span><span class="p">(</span><span class="n">VogelerPluginException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for plugin parsing.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPluginCompiledParsingException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginCompiledParsingException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginCompiledParsingException</span><span class="p">(</span><span class="n">VogelerPluginException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for compiled plugin parsing. Fatal error&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="VogelerPluginCompilationException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerPluginCompilationException">[docs]</a><span class="k">class</span> <span class="nc">VogelerPluginCompilationException</span><span class="p">(</span><span class="n">VogelerPluginException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception for plugin compilation. Fatal error&quot;&quot;&quot;</span>
 </div>
 <div class="viewcode-block" id="VogelerEncryptionException"><a class="viewcode-back" href="../../exceptions.html#vogeler.exceptions.VogelerEncryptionException">[docs]</a><span class="k">class</span> <span class="nc">VogelerEncryptionException</span><span class="p">(</span><span class="n">VogelerException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for an error in the encryption component&quot;&quot;&quot;</span>
@@ -112,7 +149,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 19, 2010.
+      Last updated on Sep 20, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>
