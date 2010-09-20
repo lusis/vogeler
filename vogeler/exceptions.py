@@ -3,6 +3,11 @@ class VogelerException(Exception):
 
 class VogelerPersistenceException(VogelerException):
     """Exception for an error in the persistence engine"""
+    pass
+
+class VogelerPersistenceDataTypeException(VogelerPersistenceException):
+    """Exception for a datatype error in persistence"""
+    pass
 
 class VogelerServerException(VogelerException):
     """Exception for an error in the server component"""

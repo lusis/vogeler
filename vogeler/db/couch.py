@@ -1,9 +1,12 @@
-import datetime, yaml
+import datetime, yaml, json
 
 import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
 
-from vogeler.exceptions import VogelerPersistenceException
+import vogeler.exceptions as exceptions
+import vogeler.log as logger
+
+log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-client')
 
 class SystemRecord(couch.Document):
     system_name = couch.StringProperty()
@@ -22,9 +25,9 @@ class VogelerStore(object):
         except:
             raise
 
-    def create_db(self, dbname=''):
+    def create_db(self, dbname=None):
         try:
-            if dbname == '':
+            if not dbname:
                 dbname = self.dbname
 
             self.db = self.server.get_or_create_db(dbname)
@@ -32,18 +35,18 @@ class VogelerStore(object):
         except:
             raise
 
-    def drop_db(self, dbname=''):
+    def drop_db(self, dbname=None):
         try:
-            if dbname == '':
+            if not dbname:
                 dbname = self.dbname
 
             self.server.delete_db(dbname)
         except:
             raise
 
-    def use_db(self, dbname=''):
+    def use_db(self, dbname=None):
         try:
-            if dbname == '':
+            if not dbname:
                 dbname = self.dbname
 
             self.db = self.server.get_or_create_db(dbname)
@@ -77,26 +80,16 @@ class VogelerStore(object):
             raise
 
     def update(self, node_name, key, value, datatype):
+        """Update a node record with a given key/value/datatype"""
         node = SystemRecord.get_or_create(node_name)
 
-        if datatype == 'output':
-            v = [z.strip() for z in value.split("\n")]
-            node[key] = v
-        if datatype == 'pylist':
-            v = value
-            node[key] = v
-        if datatype == 'pydict':
-            v = value
-            node[key] = v
-        if datatype == 'yaml':
-            v = yaml.load(value)
-            node[key] = v
-        if datatype == 'string':
-            v = value
-            node[key] = v
-        if datatype == 'raw':
-            v = value
-            node[key] = v
+        try:
+            datatype_method = getattr(self, '_update_%s' % datatype)
+            node[key] = datatype_method(node, key, value)
+        except AttributeError:
+            log.warn("Don't know how to handle datatype: '%r'" % datatype)
+            raise exceptions.VogelerPersistenceDataTypeException()
+
         node.updated_at = datetime.datetime.utcnow()
         node.save()
 
@@ -109,6 +102,28 @@ class VogelerStore(object):
             print "Design docs loaded"
             return 0
         except:
-            raise VogelerPersistenceException("Document load path not found: %s" % lp)
+            log.fatal("Document load path not found: %s" % lp)
+            raise exceptions.VogelerPersistenceException()
 
+    def _update_output(self, node, key, value):
+        v = [z.strip() for z in value.split("\n")]
+        return v
+
+    def _update_json(self, node, key, value):
+        return json.loads(value)
+
+    def _update_pylist(self, node, key, value):
+        return value
+
+    def _update_pydict(self, node, key, value):
+        return value
+
+    def _update_yaml(self, node, key, value):
+        return yaml.load(value)
+
+    def _update_raw(self, node, key, value):
+        return value
+
+    def _update_string(self, node, key, value):
+        return value
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

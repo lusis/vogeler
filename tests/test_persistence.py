@@ -75,6 +75,24 @@ class CouchPersistenceTestCase(unittest.TestCase):
         n = self.conn.get(nodename)
         self.assertDictEqual(n[key], value)
 
+    def test_update_node_yaml(self):
+        """Test updating a node with yaml datatype works"""
+        f = open(os.path.dirname(__file__)+'/fixtures/sample_complex.yaml')
+        value = f.read()
+        nodename = 'node_'+str(uuid4())
+        self.conn.update(nodename, 'complex_yaml', value, 'yaml')
+        n = self.conn.get(nodename)
+        f.close()
+
+    def test_update_node_json(self):
+        """Test updating a node with json datatype works"""
+        f = open(os.path.dirname(__file__)+'/fixtures/sample_complex.json')
+        value = f.read()
+        nodename = 'node_'+str(uuid4())
+        self.conn.update(nodename, 'complex_json', value, 'json')
+        n = self.conn.get(nodename)
+        f.close()
+
     def test_update_node_string(self):
         """Test updating a node with string datatype works"""
         nodename = 'node_'+str(uuid4())
