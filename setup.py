@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.8.10'
+version = '0.8.11'
 
 # Anyone know a better way to do python version conditionals in install_requires?
 modules = ['amqplib', 'couchdbkit', 'pyyaml']
@@ -18,8 +18,8 @@ if __name__ == "__main__":
 
     setup(name='vogeler',
           version=version,
-          description="Python-based CMDB",
-          long_description=open('README.rst', 'r').read(),
+          description="Python-based CMDB Framework",
+          long_description="Vogeler is a framework for building a configuration management system. It uses a modern communication framework built around message queues to get information from systems on demand.",
           classifiers=[
               'Development Status :: 4 - Beta',
               'Environment :: Console',
