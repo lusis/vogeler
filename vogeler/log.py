@@ -10,11 +10,11 @@ def get_logger(logLevel=None, name=None):
     Get an instance of :class:`logging.Logger`
 
     :param logLevel: Log level to use
-    :param name: Name to display in logging for this instance
+    :param name: Name of this logger
 
     :returns: isntance of :class:`logging.Logger`
     """
-    logger = logging.getLogger(name or "vogeler.default")
+    logger = logging.getLogger(name or "vogeler")
     if logLevel is not None:
         logger.setLevel(logLevel)
     return logger
@@ -27,7 +27,7 @@ def setup_logger(logLevel=DEFAULT_LOG_LEVEL, logFile=None,
     :param logLevel: Log level to use.
     :param logFile: Log file to write.
     :param logFormat: Format of log messages
-    :param name: Name to display in logging this instance
+    :param name: Name of this logger
 
     :returns: instance of :class:`logging.Logger`
     """
