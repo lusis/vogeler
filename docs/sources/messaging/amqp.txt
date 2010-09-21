@@ -1,7 +1,5 @@
-:mod:`vogeler.queue.amqp`
-=========================
-
-This page contains the Amqp Module documentation.
+AMQP Messaging Engine
+======================
 
 The :mod:`vogeler.queue.amqp` Module
 -------------------------------------
