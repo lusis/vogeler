@@ -7,6 +7,8 @@ import argparse
 import sys
 
 import vogeler.persistence as engine
+import vogeler.conf as conf
+import vogeler.log as logger
 from vogeler.server import VogelerServer
 from vogeler.exceptions import VogelerServerException
 
@@ -39,9 +41,6 @@ def process_message(message):
 def startup(pargs):
     global s, db
 
-    if pargs.config:
-        config = pargs.config
-
     if pargs.setup:
         setup(pargs)
 
@@ -52,7 +51,7 @@ def startup(pargs):
         explicit_load = False
         loadpath = 'etc/vogeler/_design'
 
-    db = engine.create_engine(pargs.dbhost)
+    db = engine.create_engine(persistence)
     db.create_db()
 
     if explicit_load == True:
@@ -62,10 +61,7 @@ def startup(pargs):
     else:
         print "Skipping design document load"
 
-    s = VogelerServer(callback_function=process_message,
-                    host=pargs.qhost,
-                    username=pargs.quser,
-                    password=pargs.qpass)
+    s = VogelerServer(callback_function=process_message, dsn=mq)
     s.monitor()
 
 def shutdown():
@@ -76,24 +72,16 @@ def shutdown():
 if __name__ == "__main__":
     appdesc = 'Vogeler server daemon'
     parser = argparse.ArgumentParser(description=appdesc)
-    parser.add_argument('--config', help='Configuration file', default='/etc/vogeler', required=False)
+    parser.add_argument('--config', '-c',
+            help='Configuration file',
+            required=False)
 
     runtime = parser.add_argument_group('startup options')
     runtime.add_argument('--dbhost',
             help='Persistence uri (i.e. couch://localhost:5984/system_records or couch://user:pass@localhost:5984/system_records)',
-            default='couch://127.0.0.1:5984/system_records',
             required=False)
     runtime.add_argument('--qhost',
-            help='RabbitMQ server address',
-            default='localhost',
-            required=False)
-    runtime.add_argument('--quser',
-            help='RabbitMQ user',
-            default='guest',
-            required=False)
-    runtime.add_argument('--qpass',
-            help='RabbitMQ password',
-            default='guest',
+            help='RabbitMQ server uri (i.e. amqp://guest:guest@localhost:5672/vogeler)',
             required=False)
 
     configuration = parser.add_argument_group('setup options')
@@ -101,6 +89,26 @@ if __name__ == "__main__":
     configuration.add_argument('--load', '-l', help='Load design docs in CouchDB. Provide full path to desgin docs')
 
     args = parser.parse_args()
+
+    if args.config:
+        try:
+            local_config = conf.configure(cfg=args.config)
+            if local_config.has_option('global', 'log_level'):
+                log_level = local_config.get('global', 'log_level') or 'DEBUG'
+                log = logger.setup_logger(logLevel=log_level)
+        except:
+            raise
+
+    global mq, persistence
+    try:
+        mq = args.qhost or local_config.get('amqp', 'dsn')
+    except:
+        mq = None
+
+    try:
+        persistence = args.dbhost or local_config.get('couch', 'dsn')
+    except:
+        persistence = None
 
     try:
         startup(args)

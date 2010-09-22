@@ -5,12 +5,18 @@
 """
 import argparse
 
+import vogeler.log as logger
+import vogeler.conf as conf
+
 from vogeler.runner import VogelerRunner
 
 if __name__ == '__main__':
     appdesc = 'Vogeler command runner'
     parser = argparse.ArgumentParser(description=appdesc)
-    parser.add_argument('--command', '-c',
+    parser.add_argument('--config', '-c',
+                help='Path to configuration file',
+                required=False)
+    parser.add_argument('--command', '-x',
                 help='Command to issue to clients',
                 required=True)
     parser.add_argument('--node', '-n',
@@ -18,30 +24,34 @@ if __name__ == '__main__':
                 required=True)
     parser.add_argument('--qhost',
                 help='Vogeler Queue Server',
-                default='127.0.0.1',
-                required=False)
-    parser.add_argument('--quser',
-                help='Vogeler Queue Server Username',
-                default='guest',
-                required=False)
-    parser.add_argument('--qpass',
-                help='Vogeler Queue Server Password',
-                default='guest',
                 required=False)
 
     args = parser.parse_args()
 
+    if args.config:
+        try:
+            local_config = conf.configure(cfg=args.config)
+            if local_config.has_option('global', 'log_level'):
+                log_level = local_config.get('global', 'log_level') or 'DEBUG'
+                log = logger.setup_logger(logLevel=log_level)
+        except:
+            raise
+
+    global mq
+    try:
+        mq = args.qhost or local_config.get('amqp', 'dsn')
+    except:
+        mq = None
+
 def run(pargs):
+    print mq
     command = pargs.command
     if pargs.node == 'all':
         routing_key = 'broadcasts.*'
     else:
         routing_key = pargs.node
 
-    p = VogelerRunner(routing_key,
-            host=pargs.qhost,
-            username=pargs.quser,
-            password=pargs.qpass)
+    p = VogelerRunner(routing_key, dsn=mq)
 
     try:
         p.message(command)

@@ -1,6 +1,7 @@
 import json
 
 import vogeler.log as logger
+import vogeler.conf as conf
 from vogeler.exceptions import VogelerServerException
 from vogeler.messaging import amqp
 
@@ -29,10 +30,21 @@ class VogelerServer(object):
     """
     def __init__(self, callback_function=None, **kwargs):
         try:
-            self.ch, self.queue = amqp.setup_server(kwargs['host'], kwargs['username'], kwargs['password'])
+            self._configure(kwargs["config"])
+            if self._config.has_option('amqp', 'dsn'):
+                _dsn = self._config.get('amqp', 'dsn')
+        except KeyError, e:
+            _dsn = kwargs["dsn"]
+
+        try:
+            self.ch, self.queue = amqp.setup_server(_dsn)
             self.callback_function = callback_function
-        except:
-            raise VogelerServerException("Unable to connect to messaging system on %s as %s" % (kwargs['host'], kwargs['username']))
+        except Exception, e:
+            raise VogelerServerException(e)
+
+    def _configure(self, config_file=None):
+        if config_file is not None:
+            self._config = conf.configure(cfg=config_file)
 
     def callback(self, msg):
         """

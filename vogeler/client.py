@@ -2,6 +2,7 @@ import json
 
 import vogeler.log as logger
 import vogeler.exceptions as exceptions
+import vogeler.conf as conf
 from vogeler.messaging import amqp
 
 log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-client')
@@ -24,16 +25,27 @@ class VogelerClient(object):
 
         an instance of :class:`amqplib.client_0_8.channel.Queue`
 
-    :raises: :class:`vogeler.exceptions.VogelerClientException`
+    :raises: :class:`vogeler.exceptions.VogelerClientConnectionException`
 
     """
     def __init__(self, callback_function=None, **kwargs):
         try:
-            self.ch, self.queue = amqp.setup_client(kwargs['host'], kwargs['username'], kwargs['password'])
+            self._configure(kwargs["config"])
+            if self._config.has_option('amqp', 'dsn'):
+                _dsn = self._config.get('amqp', 'dsn')
+        except KeyError, e:
+            _dsn = kwargs["dsn"]
+
+        try:
+            self.ch, self.queue = amqp.setup_client(_dsn)
             self.callback_function = callback_function
-        except:
-            log.fatal("Error connecting to %s as %s" % (kwargs['host'], kwargs['username']))
-            raise exceptions.VogelerClientConnectionException()
+        except Exception, e:
+            log.fatal("Error connecting to %s" % _dsn)
+            raise exceptions.VogelerClientConnectionException(e)
+
+    def _configure(self, config_file=None):
+        if config_file is not None:
+            self._config = conf.configure(cfg=config_file)
 
     def callback(self, msg):
         """
@@ -61,9 +73,9 @@ class VogelerClient(object):
         try:
             log.info("Vogeler(Client) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
-        except:
+        except Exception, e:
             log.fatal("Error Consuming queue")
-            raise exceptions.VogelerClientConnectionException()
+            raise exceptions.VogelerClientConnectionException(e)
 
         while self.ch.callbacks:
             self.ch.wait()
@@ -89,9 +101,9 @@ class VogelerClient(object):
             if durable == True:
                 msg.properties['delivery_mode'] = 2
             self.ch.basic_publish(msg, exchange=amqp.master_exchange)
-        except:
+        except Exception, e:
             log.fatal("Error publishing message to the queue")
-            raise exceptions.VogelerClientConnectionException()
+            raise exceptions.VogelerClientConnectionException(e)
 
     def close(self):
         """Close the channel with the broker"""

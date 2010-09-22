@@ -47,13 +47,15 @@ if __name__ == "__main__":
             "scripts/vogeler-server",
           ],
           data_files=[
+            ('/tmp/vogeler/vogeler.conf',
+                ['etc/vogeler/vogeler.conf'] ),
             ('/tmp/vogeler/plugins',
-                ['etc/plugins/facter.cfg', 'etc/plugins/rpms.cfg', 'etc/plugins/ps.cfg'] ),
+                ['etc/vogeler/plugins/facter.cfg', 'etc/vogeler/plugins/rpms.cfg', 'etc/vogeler/plugins/ps.cfg', 'etc/vogeler/plugins/ohai.cfg'] ),
             ("/tmp/vogeler/_design/system_records/views/all",
-                ['etc/_design/system_records/views/all/map.js'] ),
+                ['etc/vogeler/_design/system_records/views/all/map.js'] ),
             ("/tmp/vogeler/_design/system_records/views/by_name",
-                ['etc/_design/system_records/views/by_name/map.js'] ),
+                ['etc/vogeler/_design/system_records/views/by_name/map.js'] ),
             ("/tmp/vogeler/_design/system_records/views/packages_by_host",
-                ['etc/_design/system_records/views/packages_by_host/map.js'] )
+                ['etc/vogeler/_design/system_records/views/packages_by_host/map.js'] )
             ],
           )

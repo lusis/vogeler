@@ -1,21 +1,30 @@
+import urlparse
 from amqplib import client_0_8 as amqp
 from platform import node
 
+import vogeler.log as logger
 from vogeler.exceptions import VogelerException
 
+log = logger.setup_logger(logLevel='DEBUG', logFile=None)
+
 #.. attribute::`vogeler.queue.amqp.vhost`
-vhost = "/vogeler"
+default_dsn = "amqp://guest:guest@127.0.0.1:5762/vogeler"
 master_exchange = "vogeler.master.in"
 broadcast_exchange = "vogeler.broadcast.in"
 client_id = node()
 
-def setup_client(host='', username='', password=''):
+def setup_client(dsn=None, **kwargs):
     """Setup a client AMQP binding"""
     node_name = client_id
     client_queue = node_name
+    if dsn is not None:
+        _dsn = dsn
+    else:
+        _dsn = default_dsn
+
     try:
         # Get a channel
-        ch = setup_amqp(host, username, password)
+        ch = setup_amqp(_dsn, **kwargs)
         # define our incoming and outgoing queues
         ch.queue_declare(node_name, durable=True, auto_delete=False)
         # bind our queues to the channel
@@ -27,12 +36,12 @@ def setup_client(host='', username='', password=''):
         raise
     return ch, client_queue
 
-def setup_server(host='', username='', password=''):
+def setup_server(dsn=None, **kwargs):
     """Setup a server AMQP binding"""
     server_queue = 'master.in'
     try:
         # Get a channel
-        ch = setup_amqp(host, username, password)
+        ch = setup_amqp(dsn, **kwargs)
         # Setup our exchanges
         ## broadcast exchange for clients to recieve messages
         ch.exchange_declare(broadcast_exchange, 'topic', durable=True, auto_delete=False)
@@ -46,18 +55,28 @@ def setup_server(host='', username='', password=''):
         raise
     return ch, server_queue
 
-def setup_amqp(phost, puserid, ppassword):
+def setup_amqp(dsn=None, **kwargs):
     """Generic AMQP channel creation"""
+    if dsn is not None:
+        _dsn = dsn
+    else:
+        _dsn = default_dsn
+
+    _parsed = urlparse.urlparse(_dsn)
+    u, p, h, pt, vh = ( _parsed.username, _parsed.password, _parsed.hostname, _parsed.port, _parsed.path )
+
     try:
-        conn = amqp.Connection(host=phost,
-            userid=puserid,
-            password=ppassword,
-            virtual_host=vhost,
+        conn = amqp.Connection(host=h,
+            port=pt,
+            userid=u,
+            password=p,
+            virtual_host=vh,
             insist=False)
         ch = conn.channel()
-        ch.access_request(vhost, active=True, read=True, write=True)
-    except:
-        raise
+        ch.access_request(vh, active=True, read=True, write=True)
+    except Exception, e:
+        log.fatal("Unable to connect to setup amqp channels")
+        raise VogelerException(e)
     return ch
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

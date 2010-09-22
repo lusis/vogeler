@@ -1,10 +1,11 @@
 import json
 
 import vogeler.log as logger
+import vogeler.conf as conf
 from vogeler.exceptions import VogelerRunnerException
 from vogeler.messaging import amqp
 
-log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-runner')
+log = logger.setup_logger(logLevel='DEBUG', logFile=None)
 
 class VogelerRunner(object):
     """
@@ -25,12 +26,24 @@ class VogelerRunner(object):
     """
     def __init__(self, destination, **kwargs):
         try:
+            self._configure(kwargs["config"])
+            if self._config.has_option('amqp', 'dsn'):
+                _dsn = self._config.get('amqp', 'dsn')
+        except KeyError, e:
+            _dsn = kwargs["dsn"]
+
+        try:
             self.routing_key = destination
-            self.ch = amqp.setup_amqp(kwargs['host'], kwargs['username'], kwargs['password'])
+            self.ch = amqp.setup_amqp(_dsn)
             log.info("Vogeler(Runner) is starting up")
-        except:
-            log.fatal("Unable to connect to broker")
-            raise VogelerRunnerException("Unable to connect to %s as %s" % (kwargs['host'], kwargs['username']) )
+        except Exception, e:
+            msg = "Unable to connect to broker %s" % _dsn
+            log.fatal(msg)
+            raise VogelerRunnerException(e)
+
+    def _configure(self, config_file=None):
+        if config_file is not None:
+            self._config = conf.configure(cfg=config_file)
 
     def message(self, message, durable=True):
         """

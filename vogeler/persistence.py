@@ -1,5 +1,4 @@
 import urlparse
-import vogeler.db.couch as couch
 
 from vogeler.exceptions import VogelerPersistenceException
 
@@ -43,6 +42,15 @@ def create_engine(dsn):
         return engine
     except:
         raise VogelerPersistenceException("Unable to connect to backend database: %s" % connect_string)
+
+def _connect_couch(*args, **kwargs):
+    pass
+
+def _connect_riak(*args, **kwargs):
+    pass
+
+def _connect_mongo(*args, **kwargs):
+    pass
 
 def _parse_url(url):
     parsed = urlparse.urlparse(url)
