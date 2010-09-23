@@ -20,12 +20,13 @@ def process_request(request):
     try:
         results = plugins.execute_plugin(request)
         c.message(results)
-        if args.oneshot == True:
-            print "Oneshot requested. Running command %s and exiting" % request
-            shutdown()
-    except Exception, e:
+    except OSError, e:
         log.error("Unable to process request: %s" % request)
-        raise VogelerClientException(e)
+        raise
+
+    if args.oneshot == True:
+        print "Oneshot requested. Running command %s and exiting" % request
+        shutdown()
 
 def startup():
     c.monitor()
@@ -37,7 +38,7 @@ def shutdown():
     exit
 
 def execute_run(*args, **kwargs):
-    global plugdir, mq, c
+    global plugdir, mq, c, plugins
     try:
 #        plugdir = pargs.plugdir or local_config.get('global', 'plugin_path') or None
         plugins = VogelerPlugin(plugin_dir=plugdir)

@@ -55,11 +55,13 @@ class VogelerClient(object):
         :param msg: Instance of :class:`amqplib.client_0_8.basic_message.Message`
 
         """
+        log.info("Message recieved")
         try:
             message = json.loads(msg.body)
-        except:
+            log.info("Message decoded")
+        except Exception, e:
             log.warn("Message not in JSON format")
-            raise exceptions.VogelerClientPluginException()
+            raise exceptions.VogelerClientPluginException(e)
 
         if(self.callback_function):
             self.callback_function(message)
@@ -73,6 +75,7 @@ class VogelerClient(object):
         try:
             log.info("Vogeler(Client) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
+            log.info("Vogeler(Client) has started")
         except Exception, e:
             log.fatal("Error Consuming queue")
             raise exceptions.VogelerClientConnectionException(e)
@@ -95,12 +98,13 @@ class VogelerClient(object):
         :raises: :class:`vogeler.exceptions.VogelerClientException`
 
         """
-        log.info("Vogeler(Client) is sending a message")
         try:
+            log.debug("Vogeler(Client) is sending a message")
             msg = amqp.amqp.Message(json.dumps(message))
             if durable == True:
                 msg.properties['delivery_mode'] = 2
             self.ch.basic_publish(msg, exchange=amqp.master_exchange)
+            log.debug("Vogeler(Client) finished sending message")
         except Exception, e:
             log.fatal("Error publishing message to the queue")
             raise exceptions.VogelerClientConnectionException(e)

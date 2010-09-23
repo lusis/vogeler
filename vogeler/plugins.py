@@ -26,9 +26,10 @@ class VogelerPlugin(object):
                 plugin_format = self.plugin_registry[plugin]['result_format']
                 result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
                 return self.format_response(plugin, result, plugin_format)
-            except:
+            except Exception, e:
                 log.warn("Unable to execute plugin: %s" % command)
-                raise exceptions.VogelerPluginExecutionException()
+                log.debug("Plugin execution log: %s" % e)
+                raise
         else:
             log.warn("Plugin %s not authorized for this host. Ignoring" % plugin)
             raise exceptions.VogelerPluginAuthorizationException()
