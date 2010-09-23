@@ -1,4 +1,4 @@
-import datetime, yaml, json
+import datetime, yaml, json, urlparse
 
 import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
@@ -26,6 +26,10 @@ class VogelerStore(object):
 
         .. see:`vogeler.persistence`
 
+    :param string dsn: A valid Vogeler DSN, optionally containing credentials
+        
+        i.e. "couch://127.0.0.1:5984/system_records"
+
     .. attribute:: server
 
         typically an instance of the driver connection method.
@@ -39,11 +43,23 @@ class VogelerStore(object):
 
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, dsn, **kwargs):
         try:
-            host, port = kwargs['host'], kwargs['port']
-            db = kwargs['db']
-            connection_string = "http://%s:%s" % (host, port)
+            _parsed = urlparse.urlparse(dsn)
+            username, password = _parsed.username, _parsed.password
+            host, port = _parsed.hostname, _parsed.port
+            db = _parsed.path.split("/")[1]
+            if host is None or port is None:
+                log.error("Invalid DSN provided: %s" % dsn)
+                raise
+            if db is None:
+                log.error("Invalid DSN provided: %s" % dsn)
+                raise
+            if username is None or password is None:
+                connection_string = "http://%s:%s" % (host, port)
+            else:
+                connection_string = "http://%s:%s@%s:%s" % (username, password, host, port)
+
             self.server = couch.Server(uri=connection_string)
             self.dbname = db
         except:

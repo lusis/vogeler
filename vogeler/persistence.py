@@ -1,4 +1,5 @@
 import urlparse
+import vogeler.db.couch as couch
 
 from vogeler.exceptions import VogelerPersistenceException
 
@@ -36,28 +37,11 @@ def create_engine(dsn):
 
     """
     try:
-        scheme, params = _parse_url(dsn)
-        connect_string = "%s.VogelerStore(%s)" % (scheme, params)
-        engine = eval(connect_string)
+        scheme = urlparse.urlparse(dsn).scheme
+#        _engine = generic.GenericPersistence(scheme , dsn)
+        engine = eval('%s.VogelerStore("%s")' % (scheme, dsn))
         return engine
     except:
-        raise VogelerPersistenceException("Unable to connect to backend database: %s" % connect_string)
-
-def _connect_couch(*args, **kwargs):
-    pass
-
-def _connect_riak(*args, **kwargs):
-    pass
-
-def _connect_mongo(*args, **kwargs):
-    pass
-
-def _parse_url(url):
-    parsed = urlparse.urlparse(url)
-    s = parsed.scheme
-    h, p = parsed.netloc.split(':')
-    d = parsed.path.split("/")[1]
-    params = "host='%s', port='%s', db='%s'" % (h, p, d)
-    return (s, params)
+        raise
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

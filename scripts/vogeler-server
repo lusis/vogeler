@@ -74,14 +74,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=appdesc)
     parser.add_argument('--config', '-c',
             help='Configuration file',
+            default = None,
             required=False)
 
     runtime = parser.add_argument_group('startup options')
     runtime.add_argument('--dbhost',
             help='Persistence uri (i.e. couch://localhost:5984/system_records or couch://user:pass@localhost:5984/system_records)',
+            default = None,
             required=False)
     runtime.add_argument('--qhost',
             help='RabbitMQ server uri (i.e. amqp://guest:guest@localhost:5672/vogeler)',
+            default = None,
             required=False)
 
     configuration = parser.add_argument_group('setup options')
@@ -90,7 +93,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.config:
+    if args.config is not None:
         try:
             local_config = conf.configure(cfg=args.config)
             if local_config.has_option('global', 'log_level'):
@@ -98,16 +101,28 @@ if __name__ == "__main__":
                 log = logger.setup_logger(logLevel=log_level)
         except:
             raise
+    else:
+            log = logger.setup_logger(logLevel='DEBUG')
 
     global mq, persistence
-    try:
-        mq = args.qhost or local_config.get('amqp', 'dsn')
-    except:
+    if args.qhost is not None:
+        log.info("Using qhost from command-line options")
+        mq = args.qhost
+    elif args.config is not None and local_config.has_option('amqp' , 'dsn'):
+        log.info("Using qhost from configuration file")
+        mq = local_config.get('amqp', 'dsn')
+    else:
+        log.warn("No qhost specified. Using default")
         mq = None
 
-    try:
-        persistence = args.dbhost or local_config.get('couch', 'dsn')
-    except:
+    if args.dbhost is not None:
+        log.info("Using dbhost from command-line options")
+        persistence = args.dbhost
+    elif args.config is not None and local_config.has_option('couch', 'dsn'):
+        log.info("Using dbhost from configuration file")
+        persistence = local_config.get('couch', 'dsn')
+    else:
+        log.warn("No dbhost specified. Using default")
         persistence = None
 
     try:
