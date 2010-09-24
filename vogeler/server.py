@@ -5,7 +5,6 @@ import vogeler.conf as conf
 from vogeler.exceptions import VogelerServerException
 from vogeler.messaging import amqp
 
-log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler')
 
 class VogelerServer(object):
     """
@@ -29,22 +28,38 @@ class VogelerServer(object):
 
     """
     def __init__(self, callback_function=None, **kwargs):
-        try:
+        self._configured = False
+
+        if kwargs.has_key("config"):
             self._configure(kwargs["config"])
-            if self._config.has_option('amqp', 'dsn'):
-                _dsn = self._config.get('amqp', 'dsn')
-        except KeyError, e:
+            self._configured = True
+
+        if kwargs.has_key("log_level"):
+            log_level = kwargs["loglevel"]
+        elif self._configured is True and self._config.has_option('global', 'log_level'):
+            log_level = self._config.get('global', 'log_level')
+        else:
+            log_level = 'WARN'
+
+        self.log = logger.get_logger(logLevel=log_level)
+
+        if kwargs.has_key("dsn"):
             _dsn = kwargs["dsn"]
+        elif self._configured is True and self._config.has_option('amqp', 'dsn'):
+            _dsn = self._config.get('amqp', 'dsn')
+        else:
+            self.log.fatal("No dsn provided. Cannot continue")
 
         try:
             self.ch, self.queue = amqp.setup_server(_dsn)
             self.callback_function = callback_function
         except Exception, e:
-            raise VogelerServerException(e)
+            raise e
 
     def _configure(self, config_file=None):
         if config_file is not None:
             self._config = conf.configure(cfg=config_file)
+            self._configured = True
 
     def callback(self, msg):
         """
@@ -57,7 +72,7 @@ class VogelerServer(object):
         try:
             message = json.loads(msg.body)
         except Exception, e:
-            log.error("Message not in JSON format")
+            self.log.error("Message not in JSON format: %s" % e)
 
         if(self.callback_function):
             self.callback_function(message)
@@ -69,14 +84,15 @@ class VogelerServer(object):
         :raises: :class:`vogeler.exceptions.VogelerClientException`
         """
         try:
-            log.info("Vogeler(Server) is starting up")
+            self.log.info("Vogeler(Server) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
-            log.info("Vogler(Server) has started")
+            self.log.info("Vogler(Server) has started")
         except Exception, e:
-            log.fatal("Error Consuming queue")
+            self.log.fatal("Error Consuming queue")
             raise VogelerServerException(e)
 
         while self.ch.callbacks:
+            self.log.info("Waiting for more messages")
             self.ch.wait()
 
     def message(self, message, durable=True):
@@ -92,14 +108,14 @@ class VogelerServer(object):
             instance of :class:`amqplib.client_0_8.basic_message.Message` wrapped in JSON
 
         """
-        log.info("Vogeler(Server) is sending a message")
+        self.log.info("Vogeler(Server) is sending a message")
         try:
             msg = amqp.amqp.Message(json.dumps(message))
             if durable == True:
                 msg.properties['delivery_mode'] = 2
             self.ch.basic_publish(msg, exchange=amqp.broadcast_exchange)
         except Exception, e:
-            log.fatal("Error publishing message to the queue")
+            self.log.fatal("Error publishing message to the queue")
             raise VogelerServerException(e)
 
     def close(self):

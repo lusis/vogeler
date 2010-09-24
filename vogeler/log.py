@@ -14,7 +14,7 @@ def get_logger(logLevel=None, name=None):
 
     :returns: isntance of :class:`logging.Logger`
     """
-    logger = logging.getLogger(name or "vogeler")
+    logger = logging.getLogger(name or 'vogeler')
     if logLevel is not None:
         logger.setLevel(logLevel)
     return logger
@@ -31,7 +31,8 @@ def setup_logger(logLevel=DEFAULT_LOG_LEVEL, logFile=None,
 
     :returns: instance of :class:`logging.Logger`
     """
-    logger = get_logger(logLevel, name)
+    logger = logging.getLogger(name)
+    logger.setLevel(logLevel)
 
     if logFile is not None:
         ch = logging.FileHandler(logFile)
