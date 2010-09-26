@@ -48,12 +48,14 @@ class VogelerPlugin(object):
                 self._set_last_error("Error in plugin '%s': %s" % (plugin, str(e)))
                 self.log.warn("Unable to execute plugin: %s" % command)
                 self.log.debug("Plugin execution log: %s" % e)
-                raise
+                raise exceptions.VogelerPluginExecutionException()
         else:
+            self._set_last_error("Error in plugin '%s': Unauthorized" % plugin)
             self.log.warn("Plugin %s not authorized for this host. Ignoring" % plugin)
             raise exceptions.VogelerPluginAuthorizationException()
 
     def format_response(self, plugin, output, plugin_format):
+        """Format plugin execution for delivery"""
         message = { 'syskey' : node(), plugin : output[0], 'format' : plugin_format }
         self.log.debug("Message: %s" % message)
         return message
@@ -62,6 +64,7 @@ class VogelerPlugin(object):
         self._last_error = error
 
     def get_last_error(self):
+        """Return last error registered"""
         error = self._last_error
         return self._format_error(error)
 
@@ -82,6 +85,7 @@ class VogelerPlugin(object):
             cpf.close()
             self._read_plugin_file()
         except Exception, e:
+            self._set_last_error("Error compiling plugin file: %s" % str(e))
             self.log.fatal("Unable to compile plugin file: %s" % e)
             raise exceptions.VogelerPluginCompilationException()
 
@@ -91,6 +95,7 @@ class VogelerPlugin(object):
             configobj.read(self.compiled_plugin_file)
             self._parse_plugin_file(config=configobj)
         except Exception, e:
+            self._set_last_error("Compiled plugin parsing error: %s" % str(e)) 
             self.log.fatal("Unable to parse compiled plugin file: %s" % e)
             raise exceptions.VogelerPluginCompiledParsingException()
 
@@ -103,7 +108,8 @@ class VogelerPlugin(object):
                 self._register_plugin(plugin_details)
                 self.log.info("Registering plugin: %s" % plugin_details)
             except Exception, e:
-                self.log.warn("Unable to parse plugin file: %s. Ignoring. %s" % (plugin, e))
+                self._set_last_error("Unable to parse plugin '%s': %s" % (plugin, str(e)))
+                self.log.warn("Unable to parse plugin file: %s. Ignoring. %s" % (plugin, str(e)))
                 raise exceptions.VogelerPluginParsingException()
 
         self._authorize_plugins()
@@ -113,8 +119,9 @@ class VogelerPlugin(object):
         try:
             self.authorized_plugins = tuple(self.plugin_registry.keys())
         except Exception, e:
+            self._set_last_error("Plugin authorization failed: %s" % str(e))
             self.log.warn("Unable to authorize plugins: %s" % self.plugin_registry.keys())
-            self.log.debug("Exception: %s" % e)
+            self.log.debug("Exception: %s" % str(e))
             raise exceptions.VogelerPluginAuthorizationException()
 
     def _register_plugin(self, plugin_details):
@@ -122,6 +129,7 @@ class VogelerPlugin(object):
         try:
             self.plugin_registry[plugin] = plugin_details
         except Exception, e:
+            self._set_last_error("Plugin registration failed for '%s': %s" % (plugin, str(e)))
             self.log.warn("Unable to register plugin: %s" % plugin)
             self.log.debug("Exception: %s" % e)
             raise exceptions.VogelerPluginRegistrationException()

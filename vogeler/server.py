@@ -2,7 +2,8 @@ import json
 
 import vogeler.logger as logger
 import vogeler.conf as conf
-from vogeler.exceptions import VogelerServerException
+import vogeler.exceptions as exceptions
+
 from vogeler.messaging import amqp
 
 
@@ -48,7 +49,9 @@ class VogelerServer(object):
         elif self._configured is True and self._config.has_option('amqp', 'dsn'):
             _dsn = self._config.get('amqp', 'dsn')
         else:
-            self.log.fatal("No dsn provided. Cannot continue")
+            error = "No dsn provided. Cannot continue"
+            self.log.fatal(error)
+            raise exceptions.VogelerMessagingException(error)
 
         try:
             self.ch, self.queue = amqp.setup_server(_dsn)
@@ -72,7 +75,8 @@ class VogelerServer(object):
         try:
             message = json.loads(msg.body)
         except Exception, e:
-            self.log.error("Message not in JSON format: %s" % e)
+            self.log.error("Message not in JSON format: %s" % message)
+            raise exceptions.VogelerMessagingJSONException(e)
 
         if(self.callback_function):
             self.callback_function(message)
@@ -89,7 +93,7 @@ class VogelerServer(object):
             self.log.info("Vogler(Server) has started")
         except Exception, e:
             self.log.fatal("Error Consuming queue")
-            raise VogelerServerException(e)
+            raise exceptions.VogelerMessagingException(e)
 
         while self.ch.callbacks:
             self.log.info("Waiting for more messages")
@@ -116,7 +120,7 @@ class VogelerServer(object):
             self.ch.basic_publish(msg, exchange=amqp.broadcast_exchange)
         except Exception, e:
             self.log.fatal("Error publishing message to the queue")
-            raise VogelerServerException(e)
+            raise exceptions.VogelerMessagingException(e)
 
     def close(self):
         """Close the channel with the broker"""

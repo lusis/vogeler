@@ -29,6 +29,10 @@ class VogelerRunnerException(VogelerException):
 class VogelerMessagingException(VogelerException):
     """Exception for an error in the messaging component"""
 
+class VogelerMessagingJSONException(VogelerMessagingException):
+    """Exception for messages not in JSON format"""
+    pass
+
 class VogelerPluginException(VogelerException):
     """Exception for an error in the plugin component"""
     pass
