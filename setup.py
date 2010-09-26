@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.9'
+version = '0.9.1'
 
 # Anyone know a better way to do python version conditionals in install_requires?
 modules = ['amqplib', 'couchdbkit', 'pyyaml']
@@ -48,7 +48,7 @@ if __name__ == "__main__":
           ],
           data_files=[
             ('/tmp/vogeler/vogeler.conf',
-                ['etc/vogeler/vogeler.conf'] ),
+                ['etc/vogeler/'] ),
             ('/tmp/vogeler/plugins',
                 ['etc/vogeler/plugins/facter.cfg', 'etc/vogeler/plugins/rpms.cfg', 'etc/vogeler/plugins/ps.cfg', 'etc/vogeler/plugins/ohai.cfg'] ),
             ("/tmp/vogeler/_design/system_records/views/all",
