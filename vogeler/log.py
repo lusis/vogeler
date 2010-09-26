@@ -31,8 +31,7 @@ def setup_logger(logLevel=DEFAULT_LOG_LEVEL, logFile=None,
 
     :returns: instance of :class:`logging.Logger`
     """
-    logger = logging.getLogger(name)
-    logger.setLevel(logLevel)
+    _logger = get_logger(logLevel, name)
 
     if logFile is not None:
         ch = logging.FileHandler(logFile)
@@ -40,7 +39,7 @@ def setup_logger(logLevel=DEFAULT_LOG_LEVEL, logFile=None,
         ch = logging.StreamHandler()
 
     ch.setFormatter(logging.Formatter(logFormat))
-    logger.addHandler(ch)
-    return logger
+    _logger.addHandler(ch)
+    return _logger
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

@@ -1,11 +1,10 @@
 import json
 
-import vogeler.log as logger
+import vogeler.logger as logger
 import vogeler.exceptions as exceptions
 import vogeler.conf as conf
 from vogeler.messaging import amqp
 
-log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-client')
 
 class VogelerClient(object):
     """
@@ -29,18 +28,34 @@ class VogelerClient(object):
 
     """
     def __init__(self, callback_function=None, **kwargs):
-        try:
+
+        self._configured = False
+
+        if kwargs.has_key("config"):
             self._configure(kwargs["config"])
-            if self._config.has_option('amqp', 'dsn'):
-                _dsn = self._config.get('amqp', 'dsn')
-        except KeyError, e:
+            self._configured = True
+
+        if kwargs.has_key("loglevel"):
+            log_level = kwargs["loglevel"]
+        elif self._configured is True and self._config.has_option('global', 'log_level'):
+            log_level = self._config.get('global', 'log_level')
+        else:
+            log_level = 'WARN'
+
+        self.log = logger.LogWrapper(name='vogeler-client', level=log_level).logger()
+
+        if kwargs.has_key("dsn"):
             _dsn = kwargs["dsn"]
+        elif self._configured is True and self._config.has_option('amqp', 'dsn'):
+            _dsn = self._config.get('amqp', 'dsn')
+        else:
+            self.log.fatal("No dsn provided. Cannot continue")
 
         try:
             self.ch, self.queue = amqp.setup_client(_dsn)
             self.callback_function = callback_function
         except Exception, e:
-            log.fatal("Error connecting to %s" % _dsn)
+            self.log.fatal("Error connecting to %s" % _dsn)
             raise exceptions.VogelerClientConnectionException(e)
 
     def _configure(self, config_file=None):
@@ -55,12 +70,12 @@ class VogelerClient(object):
         :param msg: Instance of :class:`amqplib.client_0_8.basic_message.Message`
 
         """
-        log.info("Message recieved")
+        self.log.info("Message recieved")
         try:
             message = json.loads(msg.body)
-            log.info("Message decoded")
+            self.log.info("Message decoded")
         except Exception, e:
-            log.warn("Message not in JSON format")
+            self.log.warn("Message not in JSON format")
             raise exceptions.VogelerClientPluginException(e)
 
         if(self.callback_function):
@@ -73,11 +88,11 @@ class VogelerClient(object):
         :raises: :class:`vogeler.exceptions.VogelerClientException`
         """
         try:
-            log.info("Vogeler(Client) is starting up")
+            self.log.info("Vogeler(Client) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
-            log.info("Vogeler(Client) has started")
+            self.log.info("Vogeler(Client) has started")
         except Exception, e:
-            log.fatal("Error Consuming queue")
+            self.log.fatal("Error Consuming queue")
             raise exceptions.VogelerClientConnectionException(e)
 
         while self.ch.callbacks:
@@ -99,19 +114,19 @@ class VogelerClient(object):
 
         """
         try:
-            log.debug("Vogeler(Client) is sending a message")
+            self.log.debug("Vogeler(Client) is sending a message")
             msg = amqp.amqp.Message(json.dumps(message))
             if durable == True:
                 msg.properties['delivery_mode'] = 2
             self.ch.basic_publish(msg, exchange=amqp.master_exchange)
-            log.debug("Vogeler(Client) finished sending message")
+            self.log.debug("Vogeler(Client) finished sending message")
         except Exception, e:
-            log.fatal("Error publishing message to the queue")
+            self.log.fatal("Error publishing message to the queue")
             raise exceptions.VogelerClientConnectionException(e)
 
     def close(self):
         """Close the channel with the broker"""
-        log.info("Closing channel")
+        self.log.info("Closing channel")
         self.ch.close()
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

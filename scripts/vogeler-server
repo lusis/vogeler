@@ -8,7 +8,7 @@ import sys
 
 import vogeler.persistence as engine
 import vogeler.conf as conf
-import vogeler.log as logger
+import vogeler.logger as logger
 from vogeler.server import VogelerServer
 from vogeler.exceptions import VogelerServerException
 
@@ -26,7 +26,7 @@ def process_message(message):
 
         for k, v in response.iteritems():
 
-            print "Got response for: %s" % k
+            log.info("Got response for: %s" % k)
             try:
                 db.update(syskey, k, v, message_format)
             except Exception, e:
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     if args.loglevel is not None:
         log_level = args.loglevel
 
-    log = logger.setup_logger(logLevel=log_level, name='vogeler')
+    log = logger.LogWrapper(name='vogeler-server', level=log_level).logger()
 
     if args.qhost is not None:
         log.info("Using qhost from command-line options")

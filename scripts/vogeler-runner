@@ -4,17 +4,20 @@
 	Email:	lusis.org+github.com@gmail.com
 """
 import argparse
+import sys
 
-import vogeler.log as logger
+import vogeler.logger as logger
 import vogeler.conf as conf
 
 from vogeler.runner import VogelerRunner
 
 if __name__ == '__main__':
+
     appdesc = 'Vogeler command runner'
     parser = argparse.ArgumentParser(description=appdesc)
     parser.add_argument('--config', '-c',
                 help='Path to configuration file',
+                default=None,
                 required=False)
     parser.add_argument('--command', '-x',
                 help='Command to issue to clients',
@@ -24,40 +27,57 @@ if __name__ == '__main__':
                 required=True)
     parser.add_argument('--qhost',
                 help='Vogeler Queue Server',
+                default=None,
                 required=False)
+    parser.add_argument('--debug',
+            help='Debug output',
+            default = None,
+            required=False)
+    parser.add_argument('--verbose', '-v',
+            help='Verbose output',
+            default = None,
+            required=False)
+    parser.add_argument('--loglevel',
+            help='Override log level',
+            default = None,
+            required=False)
 
     args = parser.parse_args()
 
-    if args.config:
+    if args.config is not None:
         try:
             local_config = conf.configure(cfg=args.config)
             if local_config.has_option('global', 'log_level'):
-                log_level = local_config.get('global', 'log_level') or 'DEBUG'
-                log = logger.setup_logger(logLevel=log_level)
+                log_level = local_config.get('global', 'log_level')
         except:
             raise
-
-    global mq
-    try:
-        mq = args.qhost or local_config.get('amqp', 'dsn')
-    except:
-        mq = None
-
-def run(pargs):
-    print mq
-    command = pargs.command
-    if pargs.node == 'all':
-        routing_key = 'broadcasts.*'
     else:
-        routing_key = pargs.node
+        log_level = 'WARN'
 
-    p = VogelerRunner(routing_key, dsn=mq)
+    if args.loglevel is not None:
+        log_level = args.loglevel
+
+    log = logger.LogWrapper(name='vogeler-runner', level=log_level).logger()
+
+    if args.qhost is not None:
+        log.info("Using qhost from command-line options")
+        mq = args.qhost
+    elif args.config is not None and local_config.has_option('amqp' , 'dsn'):
+        log.info("Using qhost from configuration file")
+        mq = local_config.get('amqp', 'dsn')
+    else:
+        log.fatal("No qhost specified or no configuration file provided")
+        sys.exit(0)
 
     try:
-        p.message(command)
-        print "Sending %s to %s" % (pargs.command, pargs.node)
-    except:
+        if args.node == 'all':
+            routing_key = 'broadcasts.*'
+        else:
+            routing_key = args.node
+        p = VogelerRunner(routing_key, dsn=mq, loglevel=log_level)
+        p.message(args.command)
+        log.info("Sending %s to %s" % (args.command, args.node))
+    except Exception, e:
         raise
 
-run(args)
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

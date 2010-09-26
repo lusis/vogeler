@@ -1,11 +1,9 @@
 import json
 
-import vogeler.log as logger
+import vogeler.logger as logger
 import vogeler.conf as conf
 from vogeler.exceptions import VogelerRunnerException
 from vogeler.messaging import amqp
-
-log = logger.setup_logger(logLevel='DEBUG', logFile=None)
 
 class VogelerRunner(object):
     """
@@ -25,20 +23,35 @@ class VogelerRunner(object):
 
     """
     def __init__(self, destination, **kwargs):
-        try:
+        self._configured = False
+
+        if kwargs.has_key("config"):
             self._configure(kwargs["config"])
-            if self._config.has_option('amqp', 'dsn'):
-                _dsn = self._config.get('amqp', 'dsn')
-        except KeyError, e:
+            self._configured = True
+
+        if kwargs.has_key("loglevel"):
+            log_level = kwargs["loglevel"]
+        elif self._configured is True and self._config.has_option('global', 'log_level'):
+            log_level = self._config.get('global', 'log_level')
+        else:
+            log_level = 'WARN'
+
+        self.log = logger.LogWrapper(name='vogeler-runner', level=log_level).logger()
+
+        if kwargs.has_key("dsn"):
             _dsn = kwargs["dsn"]
+        elif self._configured is True and self._config.has_option('amqp', 'dsn'):
+            _dsn = self._config.get('amqp', 'dsn')
+        else:
+            self.log.fatal("No dsn provided. Cannot continue")
 
         try:
             self.routing_key = destination
             self.ch = amqp.setup_amqp(_dsn)
-            log.info("Vogeler(Runner) is starting up")
+            self.log.info("Vogeler(Runner) is starting up")
         except Exception, e:
             msg = "Unable to connect to broker %s" % _dsn
-            log.fatal(msg)
+            self.log.fatal(msg)
             raise VogelerRunnerException(e)
 
     def _configure(self, config_file=None):
@@ -58,19 +71,19 @@ class VogelerRunner(object):
             instance of :class:`amqplib.client_0_8.basic_message.Message` wrapped in JSON
 
         """
-        log.info("Vogeler(Runner) is sending a message")
+        self.log.info("Vogeler(Runner) is sending a message")
         try:
             msg = amqp.amqp.Message(json.dumps(message))
             if durable == True:
                 msg.properties['deliver_mode'] = 2
             self.ch.basic_publish(msg, exchange=amqp.broadcast_exchange, routing_key=self.routing_key)
         except:
-            log.fatal("Error publishing message to the queue")
+            self.log.fatal("Error publishing message to the queue")
             raise VogelerRunnerException("Unable to publish message: %s" % message)
 
     def close(self):
         """Close the channel with the broker"""
-        log.info("Closing channel")
+        self.log.info("Closing channel")
         self.ch.close()
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

@@ -5,19 +5,37 @@ from platform import node
 from glob import iglob
 
 import vogeler.exceptions as exceptions
-import vogeler.log as logger
-
-log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-plugins')
+import vogeler.logger as logger
+import vogeler.conf as conf
 
 class VogelerPlugin(object):
     compiled_plugin_file = '/tmp/vogeler-plugins.cfg'
     authorized_plugins = ()
     plugin_registry = {}
-    def __init__(self, plugin_dir='/etc/vogeler/plugins'):
-        log.info("Vogeler is parsing plugins")
+    def __init__(self, plugin_dir='/etc/vogeler/plugins', **kwargs):
+        self._configured = False
+
+        if kwargs.has_key("config"):
+            self._configure(kwargs["config"])
+            self._configured = True
+
+        if kwargs.has_key("loglevel"):
+            log_level = kwargs["loglevel"]
+        elif self._configured is True and self._config.has_option('global', 'log_level'):
+            log_level = self._config.get('global', 'log_level')
+        else:
+            log_level = 'WARN'
+
+        self.log = logger.LogWrapper(name='vogeler-plugins', level=log_level).logger()
+
+        self.log.info("Vogeler is parsing plugins")
         self.registered_plugins = {}
         self.plugin_dir = plugin_dir
         self._compile_plugins()
+
+    def _configure(self, config_file=None):
+        if config_file is not None:
+            self._config = conf.configure(cfg=config_file)
 
     def execute_plugin(self, plugin):
         if plugin in self.authorized_plugins:
@@ -27,15 +45,16 @@ class VogelerPlugin(object):
                 result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
                 return self.format_response(plugin, result, plugin_format)
             except Exception, e:
-                log.warn("Unable to execute plugin: %s" % command)
-                log.debug("Plugin execution log: %s" % e)
+                self.log.warn("Unable to execute plugin: %s" % command)
+                self.log.debug("Plugin execution log: %s" % e)
                 raise
         else:
-            log.warn("Plugin %s not authorized for this host. Ignoring" % plugin)
+            self.log.warn("Plugin %s not authorized for this host. Ignoring" % plugin)
             raise exceptions.VogelerPluginAuthorizationException()
 
     def format_response(self, plugin, output, plugin_format):
         message = { 'syskey' : node(), plugin : output[0], 'format' : plugin_format }
+        self.log.debug("Message: %s" % message)
         return message
 
     def _compile_plugins(self):
@@ -47,8 +66,8 @@ class VogelerPlugin(object):
                 shutil.copyfileobj(open(filename, 'r'), cpf)
             cpf.close()
             self._read_plugin_file()
-        except:
-            log.fatal("Unable to compile plugin file")
+        except Exception, e:
+            self.log.fatal("Unable to compile plugin file: %s" % e)
             raise exceptions.VogelerPluginCompilationException()
 
     def _read_plugin_file(self):
@@ -56,38 +75,40 @@ class VogelerPlugin(object):
         try:
             configobj.read(self.compiled_plugin_file)
             self._parse_plugin_file(config=configobj)
-        except:
-            log.fatal("Unable to parse compiled plugin file")
+        except Exception, e:
+            self.log.fatal("Unable to parse compiled plugin file: %s" % e)
             raise exceptions.VogelerPluginCompiledParsingException()
 
     def _parse_plugin_file(self, config):
         plugins = config.sections()
-        log.info("Found plugins: %s" % plugins)
+        self.log.info("Found plugins: %s" % plugins)
         for plugin in plugins:
             plugin_details = dict(config.items(plugin))
             try:
                 self._register_plugin(plugin_details)
-                log.info("Registering plugin: %s" % plugin_details)
-            except:
-                log.warn("Unable to parse plugin file: %s. Ignoring" % plugin)
+                self.log.info("Registering plugin: %s" % plugin_details)
+            except Exception, e:
+                self.log.warn("Unable to parse plugin file: %s. Ignoring. %s" % (plugin, e))
                 raise exceptions.VogelerPluginParsingException()
 
         self._authorize_plugins()
 
     def _authorize_plugins(self):
-        log.info("Authorizing registered plugins")
+        self.log.info("Authorizing registered plugins")
         try:
             self.authorized_plugins = tuple(self.plugin_registry.keys())
-        except:
-            log.warn("Unable to authorize plugins: %s" % self.plugin_registry.keys())
+        except Exception, e:
+            self.log.warn("Unable to authorize plugins: %s" % self.plugin_registry.keys())
+            self.log.debug("Exception: %s" % e)
             raise exceptions.VogelerPluginAuthorizationException()
 
     def _register_plugin(self, plugin_details):
         plugin = plugin_details.pop("name")
         try:
             self.plugin_registry[plugin] = plugin_details
-        except:
-            log.warn("Unable to register plugin: %s" % plugin)
+        except Exception, e:
+            self.log.warn("Unable to register plugin: %s" % plugin)
+            self.log.debug("Exception: %s" % e)
             raise exceptions.VogelerPluginRegistrationException()
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

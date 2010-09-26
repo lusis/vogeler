@@ -6,12 +6,13 @@
 
 import argparse
 import pprint
+import sys
 
 from vogeler.client import VogelerClient
 from vogeler.exceptions import VogelerClientException
 from vogeler.plugins import VogelerPlugin
 
-import vogeler.log as logger
+import vogeler.logger as logger
 import vogeler.conf as conf
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -22,45 +23,39 @@ def process_request(request):
         c.message(results)
     except OSError, e:
         log.error("Unable to process request: %s" % request)
+    except Exception, e:
         raise
 
     if args.oneshot == True:
-        print "Oneshot requested. Running command %s and exiting" % request
+        log.warn("Oneshot requested. Running command %s and exiting" % request)
         shutdown()
 
 def startup():
     c.monitor()
 
 def shutdown():
-    print "Shutting down"
+    log.warn("Shutting down")
     c.close()
     return 0
     exit
 
 def execute_run(*args, **kwargs):
-    global plugdir, mq, c, plugins
     try:
-#        plugdir = pargs.plugdir or local_config.get('global', 'plugin_path') or None
-        plugins = VogelerPlugin(plugin_dir=plugdir)
-        c = VogelerClient(callback_function=process_request, dsn=mq)
         startup()
     except KeyboardInterrupt:
         shutdown()
-    except:
-        raise #VogelerClientException("Unable to start up")
+    except Exception, e:
+        raise 
 
 def list_plugins(*args, **kwargs):
-    global plugdir
-#    plugdir = pargs.plugindir or local_config.get('global', 'plugin_path') or None
     try:
-        plugins = VogelerPlugin(plugin_dir=plugdir)
         if len(plugins.authorized_plugins) == 0:
             log.warn("No plugins are registered with the system")
         else:
             pp.pprint(plugins.plugin_registry)
     except Exception, e:
-        log.error("Unable to list plugins")
-        raise VogelerClientException(e)
+        log.fatal("Unable to list plugins")
+        raise 
 
 if __name__ == "__main__":
     appdesc = 'Vogeler client daemon'
@@ -68,9 +63,27 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers(help='commands')
     parser.add_argument('--plugin_dir', '-p',
                     help='Specifiy location of trusted plugins',
+                    default=None,
                     required=False)
     parser.add_argument('--config', '-c',
                     help="Location of configuration file",
+                    default=None,
+                    required=False)
+    parser.add_argument('--debug',
+            help='Debug output',
+            default = None,
+            required=False)
+    parser.add_argument('--verbose', '-v',
+            help='Verbose output',
+            default = None,
+            required=False)
+    parser.add_argument('--loglevel',
+            help='Override log level',
+            default = None,
+            required=False)
+    parser.add_argument('--qhost',
+                    help='RabbitMQ server dsn',
+                    default=None,
                     required=False)
     # runtime options
     runtime_parser = subparsers.add_parser('run', help='Runtime commands')
@@ -82,9 +95,6 @@ if __name__ == "__main__":
                     action="store_true",
                     default=False,
                     help='WARNING: This options accepts any command that the client recieves. Use with caution!')
-    runtime_parser.add_argument('--qhost',
-                    help='RabbitMQ server dsn',
-                    required=False)
     runtime_parser.set_defaults(func=execute_run)
 
     # Noop options
@@ -93,25 +103,44 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.config:
+    if args.config is not None:
         try:
             local_config = conf.configure(cfg=args.config)
             if local_config.has_option('global', 'log_level'):
-                log_level = local_config.get('global', 'log_level') or 'DEBUG'
-                log = logger.setup_logger(logLevel=log_level) 
+                log_level = local_config.get('global', 'log_level')
         except:
-            pass
-    global plugdir, mq
+            raise
+    else:
+        log_level = 'WARN'
+
+    if args.loglevel is not None:
+        log_level = args.loglevel
+
+    log = logger.LogWrapper(name='vogeler-client', level=log_level).logger()
+
+    if args.qhost is not None:
+        log.info("Using qhost from command-line options")
+        mq = args.qhost
+    elif args.config is not None and local_config.has_option('amqp' , 'dsn'):
+        log.info("Using qhost from configuration file")
+        mq = local_config.get('amqp', 'dsn')
+    else:
+        log.fatal("No qhost specified or no configuration file provided")
+        sys.exit(0)
+
+    if args.plugin_dir is not None:
+        plugdir = args.plugin_dir
+    elif args.config is not None and local_config.has_option('global', 'plugin_path'):
+        plugdir = local_config.get('global', 'plugin_path')
+    else:
+        log.fatal("No plugin path provided")
+        sys.exit(1)
 
     try:
-        plugdir = args.plugin_dir or local_config.get('global', 'plugin_path')
+        plugins = VogelerPlugin(plugin_dir=plugdir, loglevel=log_level)
+        c = VogelerClient(callback_function=process_request, dsn=mq, loglevel=log_level)
     except Exception, e:
-        plugdir = None
-
-    try:
-        mq = args.qhost or local_config.get('amqp', 'dsn')
-    except Exception, e:
-        mq = None
+        raise
 
     args.func(args)
 

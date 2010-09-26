@@ -1,6 +1,6 @@
 import json
 
-import vogeler.log as logger
+import vogeler.logger as logger
 import vogeler.conf as conf
 from vogeler.exceptions import VogelerServerException
 from vogeler.messaging import amqp
@@ -34,14 +34,14 @@ class VogelerServer(object):
             self._configure(kwargs["config"])
             self._configured = True
 
-        if kwargs.has_key("log_level"):
+        if kwargs.has_key("loglevel"):
             log_level = kwargs["loglevel"]
         elif self._configured is True and self._config.has_option('global', 'log_level'):
             log_level = self._config.get('global', 'log_level')
         else:
             log_level = 'WARN'
 
-        self.log = logger.get_logger(logLevel=log_level)
+        self.log = logger.LogWrapper(name='vogeler-server', level=log_level).logger()
 
         if kwargs.has_key("dsn"):
             _dsn = kwargs["dsn"]
@@ -84,7 +84,7 @@ class VogelerServer(object):
         :raises: :class:`vogeler.exceptions.VogelerClientException`
         """
         try:
-            self.log.info("Vogeler(Server) is starting up")
+            self.log.debug("Vogeler(Server) is starting up")
             self.ch.basic_consume(self.queue, callback=self.callback, no_ack=True)
             self.log.info("Vogler(Server) has started")
         except Exception, e:
