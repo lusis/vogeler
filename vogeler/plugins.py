@@ -1,5 +1,5 @@
 import ConfigParser
-import os, shutil, subprocess, shlex
+import os, shutil, subprocess, shlex, datetime
 
 from platform import node
 from glob import iglob
@@ -45,6 +45,7 @@ class VogelerPlugin(object):
                 result = subprocess.Popen(shlex.split(command), stdout = subprocess.PIPE).communicate()
                 return self.format_response(plugin, result, plugin_format)
             except Exception, e:
+                self._set_last_error("Error in plugin '%s': %s" % (plugin, str(e)))
                 self.log.warn("Unable to execute plugin: %s" % command)
                 self.log.debug("Plugin execution log: %s" % e)
                 raise
@@ -55,6 +56,20 @@ class VogelerPlugin(object):
     def format_response(self, plugin, output, plugin_format):
         message = { 'syskey' : node(), plugin : output[0], 'format' : plugin_format }
         self.log.debug("Message: %s" % message)
+        return message
+
+    def _set_last_error(self, error):
+        self._last_error = error
+
+    def get_last_error(self):
+        error = self._last_error
+        return self._format_error(error)
+
+    def _format_error(self, error):
+        stamp = str(datetime.datetime.utcnow())
+        _error = {'timestamp' : stamp, 'message' : error}
+        message = { 'syskey' : node(), 'last_error': _error, 'format' : 'pydict' }
+        self.log.debug("Sending error message: %s" % message)
         return message
 
     def _compile_plugins(self):
