@@ -11,10 +11,10 @@ Getting started
 ---------------
 Here's what you'll need:
 
-	- RabbitMQ (2.0 is what I'm using)
-	- CouchDB (1.0.1 is what I'm using)
-	- Python 2.6/2.7 (2.6 tested on Ubuntu 10.04/2.7 tested on CentOS 5.5 with ActivePython 2.7 and Python 2.7)
-	- Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)
+	+ RabbitMQ (2.0 is what I'm using)
+	+ CouchDB (1.0.1 is what I'm using)
+	+ Python 2.6/2.7 (2.6 tested on Ubuntu 10.04/2.7 tested on CentOS 5.5 with ActivePython 2.7 and Python 2.7)
+	+ Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)
 
 The rest of the modules appear to be standard in 2.7 (json and such). In cases where 2.6 doesn't natively support a module, I've required it in setup (anyjson, pyyaml)
 
@@ -70,11 +70,11 @@ By default, vogeler-server will attempt to use the couchdb persistence backend (
 
 Some key options:
 
-* *-c*: the path to the global config file
-* *--dbhost*: the persistence uri to use (i.e. ``couch://localhost:5984/system_records``)
-* *--qhost*: - the messaging uri to use (i.e. ``amqp://guest:guest@127.0.0.1:5672/vogeler``)
-* *--loglevel*: One of **DEBUG, INFO, WARN, ERROR, CRITICAL**
-* *-l*: Load design docs. Requires a path to the design docs root. This is a one-shot operation. The process exits afterwards.
+	+ *-c*: the path to the global config file
+	+ *--dbhost*: the persistence uri to use (i.e. ``couch://localhost:5984/system_records``)
+	+ *--qhost*: - the messaging uri to use (i.e. ``amqp://guest:guest@127.0.0.1:5672/vogeler``)
+	+ *--loglevel*: One of **DEBUG, INFO, WARN, ERROR, CRITICAL**
+	+ *-l*: Load design docs. Requires a path to the design docs root. This is a one-shot operation. The process exits afterwards.
 
 
 Should you choose to load design docs, the output is similar to this:
