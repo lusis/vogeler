@@ -48,11 +48,12 @@ class VogelerPlugin(object):
                 self._set_last_error("Error in plugin '%s': %s" % (plugin, str(e)))
                 self.log.warn("Unable to execute plugin: %s" % command)
                 self.log.debug("Plugin execution log: %s" % e)
-                raise exceptions.VogelerPluginExecutionException()
+                raise
         else:
-            self._set_last_error("Error in plugin '%s': Unauthorized" % plugin)
-            self.log.warn("Plugin %s not authorized for this host. Ignoring" % plugin)
-            raise exceptions.VogelerPluginAuthorizationException()
+            _message = "Plugin %s is not authorized for this host. Ignoring" % plugin
+            self._set_last_error(_message)
+            self.log.warn(_message)
+            raise exceptions.VogelerPluginException(_message)
 
     def format_response(self, plugin, output, plugin_format):
         """Format plugin execution for delivery"""
@@ -87,7 +88,7 @@ class VogelerPlugin(object):
         except Exception, e:
             self._set_last_error("Error compiling plugin file: %s" % str(e))
             self.log.fatal("Unable to compile plugin file: %s" % e)
-            raise exceptions.VogelerPluginCompilationException()
+            raise Exception(e)
 
     def _read_plugin_file(self):
         configobj = ConfigParser.SafeConfigParser()
@@ -97,7 +98,7 @@ class VogelerPlugin(object):
         except Exception, e:
             self._set_last_error("Compiled plugin parsing error: %s" % str(e)) 
             self.log.fatal("Unable to parse compiled plugin file: %s" % e)
-            raise exceptions.VogelerPluginCompiledParsingException()
+            raise Exception(e)
 
     def _parse_plugin_file(self, config):
         plugins = config.sections()
@@ -110,7 +111,7 @@ class VogelerPlugin(object):
             except Exception, e:
                 self._set_last_error("Unable to parse plugin '%s': %s" % (plugin, str(e)))
                 self.log.warn("Unable to parse plugin file: %s. Ignoring. %s" % (plugin, str(e)))
-                raise exceptions.VogelerPluginParsingException()
+                raise Exception(e)
 
         self._authorize_plugins()
 
@@ -122,7 +123,7 @@ class VogelerPlugin(object):
             self._set_last_error("Plugin authorization failed: %s" % str(e))
             self.log.warn("Unable to authorize plugins: %s" % self.plugin_registry.keys())
             self.log.debug("Exception: %s" % str(e))
-            raise exceptions.VogelerPluginAuthorizationException()
+            raise e
 
     def _register_plugin(self, plugin_details):
         plugin = plugin_details.pop("name")
@@ -132,6 +133,6 @@ class VogelerPlugin(object):
             self._set_last_error("Plugin registration failed for '%s': %s" % (plugin, str(e)))
             self.log.warn("Unable to register plugin: %s" % plugin)
             self.log.debug("Exception: %s" % e)
-            raise exceptions.VogelerPluginRegistrationException()
+            raise Exception(e)
 
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :

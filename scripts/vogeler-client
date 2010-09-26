@@ -9,7 +9,7 @@ import pprint
 import sys
 
 from vogeler.client import VogelerClient
-from vogeler.exceptions import VogelerClientException
+from vogeler.exceptions import VogelerClientException, VogelerPluginException
 from vogeler.plugins import VogelerPlugin
 
 import vogeler.logger as logger
@@ -22,6 +22,9 @@ def process_request(request):
         results = plugins.execute_plugin(request)
         c.message(results)
     except OSError, e:
+        log.error("Unable to process request: %s" % request)
+        c.message(plugins.get_last_error())
+    except VogelerPluginException, e:
         log.error("Unable to process request: %s" % request)
         c.message(plugins.get_last_error())
     except Exception, e:
