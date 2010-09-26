@@ -9,6 +9,9 @@ import fixtures.message as message
 
 class ServerTestCase(unittest.TestCase):
 
+    good_amqp_dsn = "amqp://guest:guest@127.0.0.1:5792/vogeler"
+    bad_amqp_dsn = "amqp://guest:guest@10.10.10.10:5792/vogeler"
+
     def assertType(self, obj, typ):
         self.assert_(type(obj)) is typ
 
@@ -17,38 +20,26 @@ class ServerTestCase(unittest.TestCase):
 
     def test_vogeler_server_init(self):
         """Test that creating a Server object works"""
-        c = VogelerServer(callback_function=self.echo,
-                        host='localhost',
-                        username='guest',
-                        password='guest')
+        c = VogelerServer(callback_function=self.echo, dsn=self.good_amqp_dsn)
         self.assertType(c, 'vogeler.vogeler.VogelerServer')
         c.close()
 
     def test_vogeler_server_failure(self):
         """Test that Server object fails properly"""
-        with self.assertRaises(VogelerException):
-            VogelerServer(callback_function=self.echo,
-                        host='10.10.10.2',
-                        username='foobar',
-                        password='baz')
+        with self.assertRaises(Exception):
+            VogelerServer(callback_function=self.echo, dsn=self.bad_amqp_dsn)
 
     def test_server_message_durable(self):
         """Test that server can send durable messages"""
         test_message = 'this is a test'
-        c = VogelerServer(callback_function=self.echo,
-                        host='localhost',
-                        username='guest',
-                        password='guest')
+        c = VogelerServer(callback_function=self.echo, dsn=self.good_amqp_dsn)
         self.assertIsNone(c.message(test_message))
         c.close()
 
     def test_server_message_nondurable(self):
         """Test that server can send non-durable messages"""
         test_message = 'this is a test'
-        c = VogelerServer(callback_function=self.echo,
-                        host='localhost',
-                        username='guest',
-                        password='guest')
+        c = VogelerServer(callback_function=self.echo, dsn=self.good_amqp_dsn)
         self.assertIsNone(c.message(test_message, durable=False))
         c.close()
 
