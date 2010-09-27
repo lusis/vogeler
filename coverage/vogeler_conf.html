@@ -1,0 +1,113 @@
+<!doctype html PUBLIC "-//W3C//DTD html 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    
+    
+    <meta http-equiv='X-UA-Compatible' content='IE=emulateIE7' />
+    <title>Coverage for vogeler.conf: 36%</title>
+    <link rel='stylesheet' href='style.css' type='text/css'>
+    <script type='text/javascript' src='jquery-1.3.2.min.js'></script>
+    <script type='text/javascript' src='coverage_html.js'></script>
+    <script type='text/javascript' charset='utf-8'>
+        jQuery(document).ready(pyfile_ready);
+    </script>
+</head>
+<body id='pyfile'>
+
+<div id='header'>
+    <div class='content'>
+        <h1>Coverage for <b>vogeler.conf</b> :
+            <span class='pc_cov'>36%</span>
+        </h1>
+        <h2 class='stats'>
+            20 statements
+            <span class='run hide_run' onclick='toggle_lines(this, "run")'>8 run</span>
+            <span class='mis' onclick='toggle_lines(this, "mis")'>12 missing</span>
+            <span class='exc' onclick='toggle_lines(this, "exc")'>0 excluded</span>
+            
+                <span class='par run hide_run' onclick='toggle_lines(this, "par")'>0 partial</span>
+            
+        </h2>
+    </div>
+</div>
+
+<div id='source'>
+    <table cellspacing='0' cellpadding='0'>
+        <tr>
+            <td class='linenos' valign='top'>
+<p id='n1' class='stm run hide_run'><a href='#n1'>1</a></p>
+<p id='n2' class='pln'><a href='#n2'>2</a></p>
+<p id='n3' class='stm run hide_run'><a href='#n3'>3</a></p>
+<p id='n4' class='stm run hide_run'><a href='#n4'>4</a></p>
+<p id='n5' class='pln'><a href='#n5'>5</a></p>
+<p id='n6' class='stm run hide_run'><a href='#n6'>6</a></p>
+<p id='n7' class='stm run hide_run'><a href='#n7'>7</a></p>
+<p id='n8' class='pln'><a href='#n8'>8</a></p>
+<p id='n9' class='stm run hide_run'><a href='#n9'>9</a></p>
+<p id='n10' class='stm mis'><a href='#n10'>10</a></p>
+<p id='n11' class='pln'><a href='#n11'>11</a></p>
+<p id='n12' class='stm mis'><a href='#n12'>12</a></p>
+<p id='n13' class='stm mis'><a href='#n13'>13</a></p>
+<p id='n14' class='stm mis'><a href='#n14'>14</a></p>
+<p id='n15' class='stm mis'><a href='#n15'>15</a></p>
+<p id='n16' class='stm mis'><a href='#n16'>16</a></p>
+<p id='n17' class='stm mis'><a href='#n17'>17</a></p>
+<p id='n18' class='pln'><a href='#n18'>18</a></p>
+<p id='n19' class='stm run hide_run'><a href='#n19'>19</a></p>
+<p id='n20' class='stm mis'><a href='#n20'>20</a></p>
+<p id='n21' class='stm mis'><a href='#n21'>21</a></p>
+<p id='n22' class='pln'><a href='#n22'>22</a></p>
+<p id='n23' class='stm mis'><a href='#n23'>23</a></p>
+<p id='n24' class='stm mis'><a href='#n24'>24</a></p>
+<p id='n25' class='stm mis'><a href='#n25'>25</a></p>
+<p id='n26' class='pln'><a href='#n26'>26</a></p>
+<p id='n27' class='stm run hide_run'><a href='#n27'>27</a></p>
+<p id='n28' class='pln'><a href='#n28'>28</a></p>
+                
+            </td>
+            <td class='text' valign='top'>
+<p id='t1' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>ConfigParser</span><span class='strut'>&nbsp;</span></p>
+<p id='t2' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t3' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>exceptions</span> <span class='key'>as</span> <span class='nam'>exceptions</span><span class='strut'>&nbsp;</span></p>
+<p id='t4' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>logger</span> <span class='key'>as</span> <span class='nam'>logger</span><span class='strut'>&nbsp;</span></p>
+<p id='t5' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t6' class='stm run hide_run'><span class='nam'>DEFAULT_CONFIG_FILE</span> <span class='op'>=</span> <span class='str'>&#39;/etc/vogeler/vogeler.conf&#39;</span><span class='strut'>&nbsp;</span></p>
+<p id='t7' class='stm run hide_run'><span class='nam'>log</span> <span class='op'>=</span> <span class='nam'>logger</span><span class='op'>.</span><span class='nam'>LogWrapper</span><span class='op'>(</span><span class='nam'>name</span><span class='op'>=</span><span class='str'>&#39;vogeler&#39;</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>logger</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t8' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t9' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>_read_global_config</span><span class='op'>(</span><span class='nam'>cfg</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t10' class='stm mis'>&nbsp; &nbsp; <span class='nam'>configparser</span> <span class='op'>=</span> <span class='nam'>ConfigParser</span><span class='op'>.</span><span class='nam'>RawConfigParser</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t11' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t12' class='stm mis'>&nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t13' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>configparser</span><span class='op'>.</span><span class='nam'>readfp</span><span class='op'>(</span><span class='nam'>open</span><span class='op'>(</span><span class='nam'>cfg</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t14' class='stm mis'>&nbsp; &nbsp; <span class='key'>except</span> <span class='nam'>IOError</span><span class='op'>,</span> <span class='nam'>e</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t15' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>log</span><span class='op'>.</span><span class='nam'>fatal</span><span class='op'>(</span><span class='str'>&quot;Unable to read global config&quot;</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t16' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>VogelerConfigurationException</span><span class='op'>(</span><span class='nam'>e</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t17' class='stm mis'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>configparser</span><span class='strut'>&nbsp;</span></p>
+<p id='t18' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t19' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>configure</span><span class='op'>(</span><span class='nam'>cfg</span><span class='op'>=</span><span class='nam'>None</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t20' class='stm mis'>&nbsp; &nbsp; <span class='key'>if</span> <span class='nam'>cfg</span> <span class='key'>is</span> <span class='key'>not</span> <span class='nam'>None</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t21' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>config_file</span> <span class='op'>=</span> <span class='nam'>cfg</span><span class='strut'>&nbsp;</span></p>
+<p id='t22' class='pln'>&nbsp; &nbsp; <span class='key'>else</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t23' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>config_file</span> <span class='op'>=</span> <span class='nam'>DEFAULT_CONFIG_FILE</span><span class='strut'>&nbsp;</span></p>
+<p id='t24' class='stm mis'>&nbsp; &nbsp; <span class='nam'>config</span> <span class='op'>=</span> <span class='nam'>_read_global_config</span><span class='op'>(</span><span class='nam'>config_file</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t25' class='stm mis'>&nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>config</span><span class='strut'>&nbsp;</span></p>
+<p id='t26' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t27' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerConfigurationException</span><span class='op'>(</span><span class='nam'>exceptions</span><span class='op'>.</span><span class='nam'>VogelerException</span><span class='op'>)</span><span class='op'>:</span> <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
+<p id='t28' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
+                
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id='footer'>
+    <div class='content'>
+        <p>
+            <a class='nav' href='index.html'>&#xab; index</a> &nbsp; &nbsp; <a class='nav' href='http://nedbatchelder.com/code/coverage/3.4b2'>coverage.py v3.4b2</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
