@@ -5,7 +5,7 @@ from platform import node
 import vogeler.logger as logger
 import vogeler.exceptions as exceptions
 
-log = logger.LogWrapper(name='vogeler', level='WARN').logger()
+log = logger.LogWrapper(name='vogeler').logger()
 
 #.. attribute::`vogeler.queue.amqp.vhost`
 default_dsn = "amqp://guest:guest@127.0.0.1:5762/vogeler"
@@ -32,8 +32,9 @@ def setup_client(dsn=None, **kwargs):
         ch.queue_bind(client_queue, broadcast_exchange, routing_key='broadcasts.*')
         ## this is for messages intended for us over the same topic exchange
         ch.queue_bind(client_queue, broadcast_exchange, routing_key=node_name)
-    except Exception, e:
-        raise Exception(e)
+    except:
+        log.fatal("Error occured in client queue setup")
+        raise
     return ch, client_queue
 
 def setup_server(dsn=None, **kwargs):
@@ -51,8 +52,9 @@ def setup_server(dsn=None, **kwargs):
         ch.queue_declare(server_queue, durable=True, auto_delete=False)
         # And then we bind to our channel
         ch.queue_bind(server_queue, master_exchange)
-    except Exception, e:
-        raise Exception(e)
+    except:
+        log.fatal("Error occured in server queue setup")
+        raise
     return ch, server_queue
 
 def setup_amqp(dsn=None, **kwargs):
@@ -74,9 +76,9 @@ def setup_amqp(dsn=None, **kwargs):
             insist=False)
         ch = conn.channel()
         ch.access_request(vh, active=True, read=True, write=True)
-    except Exception, e:
+    except:
         log.fatal("Unable to connect to setup amqp channels")
-        raise Exception(e)
+        raise
     return ch
 
 class VogelerAMQPException(exceptions.VogelerMessagingException): pass

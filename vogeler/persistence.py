@@ -1,8 +1,6 @@
 import urlparse
 import vogeler.db.couch as couch
 
-from vogeler.exceptions import VogelerPersistenceException
-
 """
 vogeler.persisistence is used like so:
 

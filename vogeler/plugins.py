@@ -26,7 +26,7 @@ class VogelerPlugin(object):
         else:
             log_level = 'WARN'
 
-        self.log = logger.LogWrapper(name='vogeler-plugins', level=log_level).logger()
+        self.log = logger.LogWrapper(name='vogeler').logger()
 
         self.log.info("Vogeler is parsing plugins")
         self.registered_plugins = {}

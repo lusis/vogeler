@@ -1,10 +1,10 @@
 import ConfigParser
 
 import vogeler.exceptions as exceptions
-import vogeler.log as logger
+import vogeler.logger as logger
 
 DEFAULT_CONFIG_FILE = '/etc/vogeler/vogeler.conf'
-log = logger.setup_logger(logLevel='DEBUG', logFile=None)
+log = logger.LogWrapper(name='vogeler').logger()
 
 def _read_global_config(cfg):
     configparser = ConfigParser.RawConfigParser()

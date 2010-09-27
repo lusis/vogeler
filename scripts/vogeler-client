@@ -19,8 +19,10 @@ pp = pprint.PrettyPrinter(indent=4)
 
 def process_request(request):
     try:
+        log.info("Recieved request for: %s" % request)
         results = plugins.execute_plugin(request)
         c.message(results)
+        log.debug("Results: %s" % results)
     except OSError, e:
         log.error("Unable to process request: %s" % request)
         c.message(plugins.get_last_error())

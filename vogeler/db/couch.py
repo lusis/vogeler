@@ -4,9 +4,9 @@ import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
 
 import vogeler.exceptions as exceptions
-import vogeler.log as logger
+import vogeler.logger as logger
 
-log = logger.setup_logger(logLevel='DEBUG', logFile=None, name='vogeler-client')
+log = logger.LogWrapper(name='vogeler').logger()
 
 class SystemRecord(couch.Document):
     """
@@ -63,7 +63,7 @@ class VogelerStore(object):
             self.server = couch.Server(uri=connection_string)
             self.dbname = db
         except:
-            raise exceptions.VogelerPersistenceException()
+            raise
 
     def create_db(self, dbname=None):
         """

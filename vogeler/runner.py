@@ -36,7 +36,7 @@ class VogelerRunner(object):
         else:
             log_level = 'WARN'
 
-        self.log = logger.LogWrapper(name='vogeler-runner', level=log_level).logger()
+        self.log = logger.LogWrapper(name='vogeler').logger()
 
         if kwargs.has_key("dsn"):
             _dsn = kwargs["dsn"]

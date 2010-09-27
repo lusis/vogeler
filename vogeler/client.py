@@ -42,7 +42,7 @@ class VogelerClient(object):
         else:
             log_level = 'WARN'
 
-        self.log = logger.LogWrapper(name='vogeler-client', level=log_level).logger()
+        self.log = logger.LogWrapper(name='vogeler').logger()
 
         if kwargs.has_key("dsn"):
             _dsn = kwargs["dsn"]
