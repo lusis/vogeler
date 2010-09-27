@@ -95,13 +95,26 @@ object.</p>
 
 <dl class="class">
 <dt id="vogeler.db.couch.VogelerStore">
-<em class="property">class </em><tt class="descclassname">vogeler.db.couch.</tt><tt class="descname">VogelerStore</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">vogeler.db.couch.</tt><tt class="descname">VogelerStore</tt><big>(</big><em>dsn</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/db/couch.html#VogelerStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.db.couch.VogelerStore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Base class for interacting with a given persistence engine</p>
 <p>Any VogelerStore object should understand how to parse a vogeler engine uri.</p>
 <p>The object instance should directly allow all persistence operations directly against it.</p>
 <blockquote>
 </blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dsn</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <p>A valid Vogeler DSN, optionally containing credentials</p>
+<p>i.e. &#8220;couch://127.0.0.1:5984/system_records&#8221;</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="vogeler.db.couch.VogelerStore.server">
 <tt class="descname">server</tt><a class="headerlink" href="#vogeler.db.couch.VogelerStore.server" title="Permalink to this definition">¶</a></dt>
@@ -192,7 +205,7 @@ should allow gracefully handle existing databases</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../persistence.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">persistence</span></tt></a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">persistence</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../plugins.html"
                         title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">plugins</span></tt></a></p>
@@ -238,7 +251,7 @@ should allow gracefully handle existing databases</p>
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 21, 2010.
+      Last updated on Sep 27, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

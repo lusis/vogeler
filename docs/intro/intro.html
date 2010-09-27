@@ -53,176 +53,149 @@
             
   <div class="section" id="vogeler">
 <h1>Vogeler<a class="headerlink" href="#vogeler" title="Permalink to this headline">¶</a></h1>
-<p>This somewhat pisspoor codebase in front of you is the beginings of
-something I&#8217;ve come to call Vogeler. It is essentially a
-python-based CMDB framework insipired by
-<a class="reference external" href="http://github.com/mcollective/marionette-collective">mcollective&#8217;s</a>
-architecture (message queue-based communication) as well as similar
-professional implementations I&#8217;ve done.</p>
-<p>It&#8217;s very basic right now. Python is NOT my first language. I&#8217;m a
-Rubyist at heart but the company I work for uses Python for all the
-system-side stuff so I&#8217;ve had to learn it. Vogeler is part of that
-process.</p>
+<p>This somewhat pisspoor codebase in front of you is the beginings of something I&#8217;ve come to call Vogeler.
+It is essentially a python-based CMDB framework insipired by <a class="reference external" href="http://github.com/mcollective/marionette-collective">mcollective&#8217;s</a> architecture (message queue-based communication) as well as similar professional implementations I&#8217;ve done.</p>
+<p>It&#8217;s very basic right now. Python is NOT my first language. I&#8217;m a Rubyist at heart but the company I work for uses Python for all the system-side stuff so I&#8217;ve had to learn it. Vogeler is part of that process.</p>
 <div class="section" id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<p>So Vogeler has a real working setup.py now. Got some advice from a
-trusted Python guy. I&#8217;ve also uploaded it to PyPi so you can
-install from there if you like.</p>
 <p>Here&#8217;s what you&#8217;ll need:</p>
+<blockquote>
 <ul class="simple">
 <li>RabbitMQ (2.0 is what I&#8217;m using)</li>
 <li>CouchDB (1.0.1 is what I&#8217;m using)</li>
-<li>Python 2.6/2.7 (2.6 tested on Ubuntu 10.04/2.7 tested on CentOS
-5.5 with ActivePython 2.7 and Python 2.7)</li>
-<li>Modules: couchdbkit, amqplib, ConfigParser (this should be
-defined properly in setup.py)</li>
+<li>Python 2.6/2.7 (2.6 tested on Ubuntu 10.04/2.7 tested on CentOS 5.5 with ActivePython 2.7 and Python 2.7)</li>
+<li>Modules: couchdbkit, amqplib, ConfigParser (this should be defined properly in setup.py)</li>
 </ul>
-<p>The rest of the modules appear to be standard in 2.7 (json and
-such). In cases where 2.6 doesn&#8217;t natively support a module, I&#8217;ve
-required it in setup (anyjson, pyyaml)</p>
+</blockquote>
+<p>The rest of the modules appear to be standard in 2.7 (json and such). In cases where 2.6 doesn&#8217;t natively support a module, I&#8217;ve required it in setup (anyjson, pyyaml)</p>
 <p>Now just do a:</p>
 <div class="highlight-python"><pre>pip install vogeler</pre>
 </div>
 <p>And you should have it installed.</p>
-<p>The design docs and plugins will be installed to <tt class="file docutils literal"><span class="pre">/tmp/vogeler/</span></tt>.
-Move those to a permanent location somewhere you feel comfortable.</p>
+<p>The design docs, plugins and master configuration file will be installed to <tt class="docutils literal"><span class="pre">/tmp/vogeler/</span></tt>. Move those to a permanent location somewhere you feel comfortable.</p>
 </div>
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
-<p>So I don&#8217;t have a full setup script yet. There are some things
-you&#8217;ll need to do for rabbitmq:</p>
+<p>So I don&#8217;t have a full setup script yet. There are some things you&#8217;ll need to do for rabbitmq:</p>
 <div class="highlight-python"><pre>rabbitmqctl add_vhost /vogeler
 rabbitmqctl set_permissions -p /vogeler guest ".*" ".*" ".*"</pre>
 </div>
-<p>Now you&#8217;ll need to fire up the server first. He creates all the
-main configuration with the broker and optionally loads some basic
-views in CouchDB:</p>
-<div class="highlight-python"><pre>vogeler-server
-Vogeler(Server) is starting up</pre>
-</div>
-<p>If you want to load the design docs:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">vogeler</span><span class="o">-</span><span class="n">server</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">design</span><span class="o">/</span><span class="n">docs</span>
-<span class="n">vogeler</span><span class="o">-</span><span class="n">server</span>
+<p>### Starting the server</p>
+<p>Now you&#8217;ll need to fire up the server first. He creates all the main configuration with the broker:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vogeler</span><span class="o">-</span><span class="n">server</span> <span class="o">-</span><span class="n">c</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">vogeler</span><span class="o">/</span><span class="n">vogeler</span><span class="o">.</span><span class="n">conf</span>
 </pre></div>
 </div>
-<p>By default, vogeler-server will attempt to use the couchdb
-persistence backend (<tt class="docutils literal"><span class="pre">couch://localhost:5984</span></tt>). You can change that
-with &#8211;dbhost. Current, only couch persistence is supported so all
-you&#8217;re buying yourself is being able to run couchdb on another
-server.</p>
-<p>Some key options:</p>
-<ul class="simple">
-<li><em>&#8211;dbhost</em>: the persistence uri to use (i.e.
-<tt class="docutils literal"><span class="pre">couch://localhost:5984/system_records</span></tt>)</li>
-<li><em>-l</em>: Load design docs. Requires a path to the design docs root.
-This is a one-shot operation. The process exits afterwards.</li>
-<li><em>&#8211;qhost</em> - The hostname/ip address of the rabbitmq instance</li>
-<li><em>&#8211;quser</em> - Username for rabbitmq</li>
-<li><em>&#8211;qpass</em> - Password for rabbitmq</li>
-</ul>
-<p>By default, loading of design docs does not happen. This will
-probably kept this way but for now I&#8217;m trying to determine the best
-way to handle install of design docs/plugins during setup.py (if
-root - use /etc/vogeler, otherwise install in another location
-possibly relative to virtualenv?)</p>
-<p>Should you choose to load design docs, the output is similar to
-this:</p>
-<div class="highlight-python"><pre>vogeler-server -l /tmp/vogeler/_design --dbhost couch://localhost:5984/sysrecs3
+<p><em>The default configuration file is set to output only warnings</em></p>
+<p>or to bypass configuration file settings:</p>
+<div class="highlight-python"><pre>vogeler-server --dbhost couch://127.0.0.1:5984/system_records --qhost amqp://guest:guest@127.0.0.1:5672/vogeler --loglevel INFO
 
-Loading design docs from /home/jvincent/.python-envs/vogeler-dev/etc/vogeler/_design
+[2010-09-26 02:16:29,609: INFO] vogeler-server (vogeler-server) - Using qhost from command-line options
+[2010-09-26 02:16:29,609: INFO] vogeler-server (vogeler-server) - Using dbhost from command-line options
+[2010-09-26 02:16:29,648: INFO] vogeler-server (vogeler-server) - Skipping design document load
+[2010-09-26 02:16:29,648: INFO] vogeler-server (vogeler-server) - Skipping design document load
+[2010-09-26 02:16:29,648: INFO] vogeler-server (server) - Vogler(Server) has started
+[2010-09-26 02:16:29,648: INFO] vogeler-server (server) - Vogler(Server) has started
+[2010-09-26 02:16:29,649: INFO] vogeler-server (server) - Waiting for more messages
+[2010-09-26 02:16:29,649: INFO] vogeler-server (server) - Waiting for more messages</pre>
+</div>
+<p>By default, vogeler-server will attempt to use the couchdb persistence backend (couch://localhost:5984). You can change that with &#8211;dbhost. Current, only couch persistence is supported so all you&#8217;re buying yourself is being able to run couchdb on another server.</p>
+<p><em>If no config file option is passed, then dbhost and qhost must be provided on the command line. Optionally you can change the logging level</em></p>
+<p>Some key options:</p>
+<blockquote>
+<ul class="simple">
+<li><em>-c</em>: the path to the global config file</li>
+<li><em>&#8211;dbhost</em>: the persistence uri to use (i.e. <tt class="docutils literal"><span class="pre">couch://localhost:5984/system_records</span></tt>)</li>
+<li><em>&#8211;qhost</em>: - the messaging uri to use (i.e. <tt class="docutils literal"><span class="pre">amqp://guest:guest&#64;127.0.0.1:5672/vogeler</span></tt>)</li>
+<li><em>&#8211;loglevel</em>: One of <strong>DEBUG, INFO, WARN, ERROR, CRITICAL</strong></li>
+<li><em>-l</em>: Load design docs. Requires a path to the design docs root. This is a one-shot operation. The process exits afterwards.</li>
+</ul>
+</blockquote>
+<p>Should you choose to load design docs, the output is similar to this:</p>
+<div class="highlight-python"><pre>vogeler-server -l /tmp/vogeler/_design --dbhost couch://localhost:5984/sysrecs3 --qhost amqp://guest:guest@127.0.0.1:5672/vogeler
+
+Loading design docs from /tmp/vogeler/_design
 Design docs loaded</pre>
 </div>
-<p>You should see the design docs in the database &#8216;sysrecs3&#8217; under
-Futon.</p>
+<p>You should see the design docs in the database &#8216;sysrecs3&#8217; under Futon.</p>
+<p>### Starting the client</p>
 <p>Now you can start the client:</p>
-<div class="highlight-python"><pre>vogeler-client -p /tmp/vogeler/plugins/ run
+<div class="highlight-python"><pre>vogeler-client -c /tmp/vogeler/vogeler.conf run</pre>
+</div>
+<p><em>As with server, only warnings or higher are output</em></p>
+<p>or to bypass configuration file settings:</p>
+<div class="highlight-python"><pre>vogeler-client -p etc/vogeler/plugins/ --qhost amqp://guest:guest@localhost:5672/vogeler --loglevel INFO run
 
-Vogeler is parsing plugins
-Found plugins: ['facter', 'rpm']
-Registering plugin: {'command_alias': 'get_facts', 'command': 'facter -y', 'result_format': 'yaml', 'description': 'Uses facter to return facts'}
-Registering plugin: {'command_alias': 'get_rpms', 'command': 'rpm -qa', 'result_format': 'list', 'description': 'Grabs packages installed on a system using rpm'}
-Authorizing registered plugins
-Vogeler(Client) is starting up</pre>
+[2010-09-26 02:26:09,780: INFO] vogeler-client (vogeler-client) - Using qhost from command-line options
+[2010-09-26 02:26:09,780: INFO] vogeler-plugins (plugins) - Vogeler is parsing plugins
+[2010-09-26 02:26:09,781: INFO] vogeler-plugins (plugins) - Found plugins: ['facter', 'ps', 'ohai', 'rpm']
+[2010-09-26 02:26:09,781: INFO] vogeler-plugins (plugins) - Registering plugin: {'command_alias': 'get_facts', 'command': 'facter -y', 'result_format': 'yaml', 'description': 'Uses facter to return facts'}
+[2010-09-26 02:26:09,781: INFO] vogeler-plugins (plugins) - Registering plugin: {'command_alias': 'get_procs', 'command': 'ps -ef', 'result_format': 'output', 'description': 'Grabs currently running processes'}
+[2010-09-26 02:26:09,781: INFO] vogeler-plugins (plugins) - Registering plugin: {'command_alias': 'ohai', 'command': 'ohai', 'result_format': 'json', 'description': 'Uses ohai to return system information'}
+[2010-09-26 02:26:09,782: INFO] vogeler-plugins (plugins) - Registering plugin: {'command_alias': 'get_rpms', 'command': 'rpm -qa', 'result_format': 'output', 'description': 'Grabs packages installed on a system using rpm'}
+[2010-09-26 02:26:09,782: INFO] vogeler-plugins (plugins) - Authorizing registered plugins
+[2010-09-26 02:26:09,826: INFO] vogeler-client (client) - Vogeler(Client) is starting up
+[2010-09-26 02:26:09,826: INFO] vogeler-client (client) - Vogeler(Client) is starting up
+[2010-09-26 02:26:09,827: INFO] vogeler-client (client) - Vogeler(Client) has started
+[2010-09-26 02:26:09,827: INFO] vogeler-client (client) - Vogeler(Client) has started</pre>
 </div>
-<p>For now you&#8217;ll have to pass the location to plugins, otherwise they
-won&#8217;t work. I&#8217;m working in a virtualenv for all testing so plugins
-are install in &#8220;$VIRTUAL_ENV/etc/vogeler&#8221;. Same goes for design
-docs, by the way.</p>
-<p>If this node is a remote node (i.e. not the same place rabbitmq is
-running), you can pass <em>&#8211;qhost &lt;rabbitmq host/ipaddr&gt;</em> to the
-script like so:</p>
-<div class="highlight-python"><pre>vogeler-client -p /tmp/vogeler/plugins/ run --qhost 10.10.10.2</pre>
+<p><em>see &#8216;vogeler-client -h&#8217; for a full list of options</em></p>
 </div>
-<p>So you now have Vogeler running. Right now, all interaction with
-Vogeler is done through a runner script:</p>
-<div class="highlight-python"><pre>vogeler-runner -c facter -n all
+<div class="section" id="issuing-commands">
+<h2>Issuing commands<a class="headerlink" href="#issuing-commands" title="Permalink to this headline">¶</a></h2>
+<p>So you now have Vogeler running. Right now, all interaction with Vogeler is done through a runner script:</p>
+<div class="highlight-python"><pre>vogeler-runner -c etc/vogeler/vogeler.conf -n all -x facter --loglevel INFO
 
-Vogeler(Runner) is sending a message
-Sending facter to all</pre>
+[2010-09-26 14:19:58,325: INFO] vogeler-runner (vogeler-runner) - Using qhost from configuration file
+[2010-09-26 14:19:58,367: INFO] vogeler-runner (runner) - Vogeler(Runner) is starting up
+[2010-09-26 14:19:58,367: INFO] vogeler-runner (runner) - Vogeler(Runner) is starting up
+[2010-09-26 14:19:58,367: INFO] vogeler-runner (runner) - Vogeler(Runner) is sending a message
+[2010-09-26 14:19:58,367: INFO] vogeler-runner (runner) - Vogeler(Runner) is sending a message
+[2010-09-26 14:19:58,367: INFO] vogeler-runner (vogeler-runner) - Sending facter to all
+[2010-09-26 14:19:58,367: INFO] vogeler-runner (vogeler-runner) - Sending facter to all</pre>
 </div>
-<p>As with server and client, runner also takes an argument to specify
-the rabbitmq properties:</p>
-<div class="highlight-python"><pre>vogeler-runner -c facter -n all --qhost 10.10.10.2</pre>
-</div>
-<p>To target a specific node:</p>
-<div class="highlight-python"><pre>vogeler-runner -c facter -n &lt;node fqdn&gt; [--qhost 10.10.10.2]</pre>
+<p><em>as with server and client, only warning and higher messages are displayed</em></p>
+<ul class="simple">
+<li>To target a specific node:</li>
+</ul>
+<div class="highlight-python"><pre>vogeler-runner -c etc/vogeler/vogeler.conf -x facter -n &lt;node name&gt; [--qhost 10.10.10.2]</pre>
 </div>
 <p><em>See the running vogeler-client window for the named host vice the other running nodes</em></p>
-<p>In the client window:</p>
-<div class="highlight-python"><pre>Vogeler(Client) is sending a message</pre>
+<ul class="simple">
+<li>In the client window:</li>
+</ul>
+<div class="highlight-python"><pre>[2010-09-26 14:19:58,380: INFO] vogeler-client (client) - Message recieved
+[2010-09-26 14:19:58,380: INFO] vogeler-client (client) - Message recieved
+[2010-09-26 14:19:58,380: INFO] vogeler-client (client) - Message decoded
+[2010-09-26 14:19:58,380: INFO] vogeler-client (client) - Message decoded</pre>
 </div>
-<p>In the server window:</p>
-<div class="highlight-python"><pre>Incoming message from: &lt;hostname&gt;
-Got response for: facter</pre>
+<ul class="simple">
+<li>In the server window:</li>
+</ul>
+<div class="highlight-python"><pre>[2010-09-26 14:19:59,078: INFO] vogeler-server (vogeler-server) - Incoming message from: jvx64
+[2010-09-26 14:19:59,078: INFO] vogeler-server (vogeler-server) - Incoming message from: jvx64
+[2010-09-26 14:19:59,082: INFO] vogeler-server (vogeler-server) - Got response for: facter
+[2010-09-26 14:19:59,082: INFO] vogeler-server (vogeler-server) - Got response for: facter
+[2010-09-26 14:19:59,110: INFO] vogeler-server (server) - Waiting for more messages
+[2010-09-26 14:19:59,110: INFO] vogeler-server (server) - Waiting for more messages</pre>
 </div>
-<p>Now check couchdb and you should have, under the system_records
-(or dbname if specified) database a new document under your
-hostname. In that document is a record for the output of &#8216;facter
--y&#8217;.</p>
+<p>Now check couchdb and you should have, under the system_records (or dbname if specified) database a new document under your hostname. In that document is a record for the output of <tt class="docutils literal"><span class="pre">facter</span> <span class="pre">-y</span></tt>.</p>
 </div>
 <div class="section" id="how-it-works">
 <h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
-<p>As I said, this is inspired by mcollective. Interestingly enough,
-at a previous company I used the same queue server design to move
-information between network partitions. In that case, it was a
-combination of ActiveMQ,Camel, and Sinatra (a ruby project) so the
-concept is nothing new to me.</p>
-<p>Essentially the broker has 2 exchanges - a topic exchange and a
-direct exchange.</p>
+<p>As I said, this is somewhat inspired by the mcollective architecture. Interestingly enough, at a previous company I used the same queue server design to move information between network partitions. In that case, it was a combination of ActiveMQ, Camel and Sinatra (a ruby project) so the concept is nothing new to me.</p>
+<p>Essentially the broker has 2 exchanges - a topic exchange and a direct exchange.</p>
 <ul class="simple">
-<li>The clients bind queues under two routing keys &#8220;broadcast.*&#8221;
-and one under thier hostname.</li>
+<li>The clients bind queues under two routing keys <cite>broadcast.*</cite> and one under thier hostname.</li>
 <li>The server binds to the direct exchange under its own queue.</li>
 </ul>
-<p>Messages are dropped onto the topic exchange with a routing key by
-the <em>vogeler-runner</em> script. Clients read the queue and respond to
-anything routed with &#8216;broadcast.*&#8217; or with thier hostname. This is
-a single channel to the RabbitMQ server with multiple bindings. By
-simply changing the routing key (specifying a node name when
-calling vogeler-runner), you can hit everyone or one box.</p>
-<p>Clients drop responses back on the direct exchange that the server
-has bound. From there, the server updates CouchDB. Pretty basic
-right now.</p>
+<p>Messages are dropped onto the topic exchange with a routing key by the <em>vogeler-runner</em> script. Clients read the queue and respond to anything routed with &#8216;broadcast.*&#8217; or with thier hostname. This is a single channel to the RabbitMQ server with multiple bindings. By simply changing the routing key (specifying a node name when calling vogeler-runner), you can hit everyone or one box.</p>
+<p>Clients drop responses back on the direct exchange that the server has bound. From there, the server updates CouchDB. Pretty basic right now.</p>
 </div>
 <div class="section" id="plugins-and-authorized-commands">
 <h2>Plugins and Authorized Commands<a class="headerlink" href="#plugins-and-authorized-commands" title="Permalink to this headline">¶</a></h2>
-<p>Pretty much from the begining I wanted this to be &#8220;simple&#8221;. By
-simple, I mean &#8220;I&#8217;m going to take whatever I get back from the
-client and dump it in the data store. It will be up to the end user
-to decide what to do with it&#8221; I didn&#8217;t want to do any
-metaprogramming (especially not in Python) and I sure as shit
-didn&#8217;t want to write another DSL. I didn&#8217;t want to decide for
-anyone what information they even needed. Yeah, there&#8217;s basic
-information - hostname, installed software, running processes but
-for the most part, I wanted people to write plugins in whatever
-language they were comfortable in. The only thing I wanted to know
-was what to run and what format it was coming back in. The main
-reason for even knowing the format is so I could try and use native
-CouchDB types. I <em>COULD</em> just convert everything I get back to JSON
-and dump it but I really wanted to make it easily viewable in
-Futon.</p>
-<p>To that end, plugins are nothing more that standard INI format
-files using ConfigParser to do the dirty work.</p>
+<p>Pretty much from the begining I wanted this to be &#8220;simple&#8221;. By simple, I mean &#8220;I&#8217;m going to take whatever I get back from the client and dump it in the data store. It will be up to the end user to decide what to do with it&#8221;
+I didn&#8217;t want to do any metaprogramming (especially not in Python) and I sure as shit didn&#8217;t want to write another DSL. I didn&#8217;t want to decide for anyone what information they even needed. Yeah, there&#8217;s basic information - hostname, installed software, running processes but for the most part, I wanted people to write plugins in whatever language they were comfortable in. The only thing I wanted to know was what to run and what format it was coming back in. The main reason for even knowing the format is so I could try and use native CouchDB types. I <em>COULD</em> just convert everything I get back to JSON and dump it but I really wanted to make it easily viewable in Futon.</p>
+<p>To that end, plugins are nothing more that standard INI format files using ConfigParser to do the dirty work.</p>
 <p>Sample Plugin File:</p>
 <div class="highlight-python"><pre>[facter]
 name = facter
@@ -239,74 +212,33 @@ command = rpm -qa
 result_format = output
 command_alias = get_rpms</pre>
 </div>
-<p>Currently, result_formats are listed in <a class="reference internal" href="../persistence/couch.html#module-vogeler.db.couch" title="vogeler.db.couch"><tt class="xref py py-mod docutils literal"><span class="pre">vogeler.db.couch</span></tt></a>. I
-plan on moving those out to a more global area that each
-persistence engine can import.</p>
-<p>When the client starts up, it checks the plugin directory and
-&#8220;compiles&#8221; all the .cfg files into one big file. This is similar to
-what Nagios started doing in v3. This way you can modify, create,
-delete plugins without affecting the running client instance.</p>
-<p>Any valid plugin configs found are then &#8220;registered&#8221; in a tuple.
-When the client gets a command, he validates that the command is
-allowed and runs it or ignores it. The output is put into a
-dictionary along with some other information, JSON encoded and
-dumped on the wire for the server to pick up. Based on some basic
-internal logic, the server creates or updates the document for that
-client and adds the command name as a key and the results
-(formatted based on format) as the value.</p>
-<p>That&#8217;s it. You could then go behind and write a CouchApp, a
-<a class="reference external" href="http://github.com/padrino/padrino-framework">Padrino app</a> (yah
-Padrino!) or even a Django app to put a front end on it for
-end-users. Use the information how you will.</p>
+<p>Currently, result_formats are listed in <em>vogeler/db/couch.py</em>. I plan on moving those out to a more global area that each persistence engine can import.</p>
+<p>When the client starts up, it checks the plugin directory and &#8220;compiles&#8221; all the .cfg files into one big file. This is similar to what Nagios started doing in v3. This way you can modify, create, delete plugins without affecting the running client instance.</p>
+<p>Any valid plugin configs found are then &#8220;registered&#8221; in a tuple. When the client gets a command, he validates that the command is allowed and runs it or ignores it. The output is put into a dictionary along with some other information, JSON encoded and dumped on the wire for the server to pick up. Based on some basic internal logic, the server creates or updates the document for that client and adds the command name as a key and the results (formatted based on format) as the value.</p>
+<p>That&#8217;s it. You could then go behind and write a CouchApp, a <a class="reference external" href="http://github.com/padrino/padrino-framework">Padrino app</a> (yah Padrino!) or even a Django app to put a front end on it for end-users. Use the information how you will.</p>
 </div>
 <div class="section" id="what-s-missing">
 <h2>What&#8217;s missing<a class="headerlink" href="#what-s-missing" title="Permalink to this headline">¶</a></h2>
 <p>A whole heck of a lot.</p>
 <ul class="simple">
-<li>Support for anything OTHER than RabbitMQ and CouchDB: Those are
-the technologies we use internally and my first target. I want to
-abstract out but Stomp support under RabbitMQ is still third-class
-citizen. Abstracting the datastore will probably come pretty quick.
-I&#8217;ll probably NOT use a traditional RDBMS for this because things
-are SO dynamic. I don&#8217;t even know what the names of your plugins
-are going to be. I would have to denormalize everything anyway so
-why use an RDBMS? Swapable persistence is already in place but only
-the couchdb backend has been defined.</li>
-<li>Better exception handling: I&#8217;ve got a <tt class="docutils literal"><span class="pre">VogelerException</span></tt> class
-that I want to wrap everything in. Right now <tt class="docutils literal"><span class="pre">VogelerException</span></tt> is
-really basic.</li>
-<li>A setup mode for the server invocation: Partial support is there
-now. Most options are simple stubs that do nothing.</li>
+<li>Support for anything OTHER than RabbitMQ and CouchDB: Those are the technologies we use internally and my first target. I want to abstract out but Stomp support under RabbitMQ is still third-class citizen. Abstracting the datastore will probably come pretty quick. I&#8217;ll probably NOT use a traditional RDBMS for this because things are SO dynamic. I don&#8217;t even know what the names of your plugins are going to be. I would have to denormalize everything anyway so why use an RDBMS? Swapable persistence is already in place but only the couchdb backend has been defined.</li>
+<li>Better exception handling: I&#8217;m still catching and raising almost all Exceptions in an attempt to determine what I should trap and pass versus halting execution</li>
+<li>A setup mode for the messaging backend.</li>
 <li>Some reporting capability</li>
 <li>Durability tuning for queues and messages</li>
 </ul>
 </div>
 <div class="section" id="is-it-usable">
 <h2>Is it usable?<a class="headerlink" href="#is-it-usable" title="Permalink to this headline">¶</a></h2>
-<p>Actually, yes. All hostnames, usernames and passwords are
-configurable options now. I haven&#8217;t tested it daemonized or
-anything but at this point, I&#8217;m ready to instantiate a few hundred
-EC2 instances myself and test it out. Global configuration file and
-plugin placement is still wonky though.</p>
-<p>One big security gotcha is that passwords are currently visible in
-the process list. Gotta figure out how to hide those in python.
-Also, you&#8217;ll need to ensure that any node you want to specifically
-target with <em>vogeler-runner</em> has been started at least once. Once
-registered, offline clients will get messages when they come back
-online but they need to be started at least once to create the
-durable queues.</p>
-<p>Likewise, even if <em>vogeler-server</em> is offline, any client messages
-will be parsed when it comes back online.</p>
+<p>Actually, yes. All hostnames, usernames and passwords are configurable options now. I haven&#8217;t tested it daemonized or anything but at this point, I&#8217;m ready to instantiate a few hundred EC2 instances myself and test it out. Global configuration file and plugin placement is still wonky though.</p>
+<p>One big security gotcha is that passwords are currently visible in the process list. Gotta figure out how to hide those in python.
+Also, you&#8217;ll need to ensure that any node you want to specifically target with <em>vogeler-runner</em> has been started at least once. Once registered, offline clients will get messages when they come back online but they need to be started at least once to create the durable queues.</p>
+<p>Likewise, even if <em>vogeler-server</em> is offline, any client messages will be parsed when it comes back online.</p>
 </div>
 <div class="section" id="how-you-can-help">
 <h2>How you can help<a class="headerlink" href="#how-you-can-help" title="Permalink to this headline">¶</a></h2>
-<p>I&#8217;d love for some Pythonistas to take a look and make harsh
-recommendations on where I&#8217;m doing stupid stuff in Python. I&#8217;ve
-tried to be very Pythonic (even to the point of realtime pylint in
-vim while I&#8217;m working). I&#8217;m not going to stress over &#8216;line too
-long&#8217; messages right now though. I&#8217;d also like to see what people
-think. Shoot me a message on twitter or github. Tell me I suck.
-Tell me I rock. Tell me that you&#8217;re thinking of me...</p>
+<p>I&#8217;d love for some Pythonistas to take a look and make harsh recommendations on where I&#8217;m doing stupid stuff in Python. I&#8217;ve tried to be very Pythonic (even to the point of realtime pylint in vim while I&#8217;m working). I&#8217;m not going to stress over &#8216;line too long&#8217; messages right now though.
+I&#8217;d also like to see what people think. Shoot me a message on twitter or github. Tell me I suck. Tell me I rock. Tell me that you&#8217;re thinking of me...</p>
 </div>
 </div>
 
@@ -321,6 +253,7 @@ Tell me I rock. Tell me that you&#8217;re thinking of me...</p>
 <li><a class="reference internal" href="#">Vogeler</a><ul>
 <li><a class="reference internal" href="#getting-started">Getting started</a></li>
 <li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#issuing-commands">Issuing commands</a></li>
 <li><a class="reference internal" href="#how-it-works">How it works</a></li>
 <li><a class="reference internal" href="#plugins-and-authorized-commands">Plugins and Authorized Commands</a></li>
 <li><a class="reference internal" href="#what-s-missing">What&#8217;s missing</a></li>
@@ -378,7 +311,7 @@ Tell me I rock. Tell me that you&#8217;re thinking of me...</p>
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 20, 2010.
+      Last updated on Sep 27, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

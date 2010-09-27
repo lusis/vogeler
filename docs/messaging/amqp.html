@@ -57,28 +57,20 @@
 <h2>The <tt class="xref py py-mod docutils literal"><span class="pre">vogeler.queue.amqp</span></tt> Module<a class="headerlink" href="#the-vogeler-queue-amqp-module" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="vogeler.queue.amqp.setup_client">
-<tt class="descclassname">vogeler.queue.amqp.</tt><tt class="descname">setup_client</tt><big>(</big><em>host=''</em>, <em>username=''</em>, <em>password=''</em><big>)</big><a class="reference internal" href="../modules/vogeler/queue/amqp.html#setup_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.queue.amqp.setup_client" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">vogeler.queue.amqp.</tt><tt class="descname">setup_client</tt><big>(</big><em>dsn=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/queue/amqp.html#setup_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.queue.amqp.setup_client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup a client AMQP binding</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="vogeler.queue.amqp.setup_server">
-<tt class="descclassname">vogeler.queue.amqp.</tt><tt class="descname">setup_server</tt><big>(</big><em>host=''</em>, <em>username=''</em>, <em>password=''</em><big>)</big><a class="reference internal" href="../modules/vogeler/queue/amqp.html#setup_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.queue.amqp.setup_server" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">vogeler.queue.amqp.</tt><tt class="descname">setup_server</tt><big>(</big><em>dsn=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/queue/amqp.html#setup_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.queue.amqp.setup_server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup a server AMQP binding</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="vogeler.queue.amqp.setup_amqp">
-<tt class="descclassname">vogeler.queue.amqp.</tt><tt class="descname">setup_amqp</tt><big>(</big><em>phost</em>, <em>puserid</em>, <em>ppassword</em><big>)</big><a class="reference internal" href="../modules/vogeler/queue/amqp.html#setup_amqp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.queue.amqp.setup_amqp" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">vogeler.queue.amqp.</tt><tt class="descname">setup_amqp</tt><big>(</big><em>dsn=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../modules/vogeler/queue/amqp.html#setup_amqp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.queue.amqp.setup_amqp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic AMQP channel creation</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="vogeler.queue.amqp.vhost">
-<tt class="descclassname">amqp.</tt><tt class="descname">vhost</tt><a class="headerlink" href="#vogeler.queue.amqp.vhost" title="Permalink to this definition">¶</a></dt>
-<dd><p>str(object) -&gt; string</p>
-<p>Return a nice string representation of the object.
-If the argument is a string, the return value is the same object.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -170,7 +162,7 @@ If the argument is a string, the return value is the same object.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 21, 2010.
+      Last updated on Sep 27, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

@@ -23,8 +23,8 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <link rel="top" title="Vogeler v0.8.7 documentation" href="index.html" />
-    <link rel="next" title="log" href="log.html" />
-    <link rel="prev" title="vogeler.db.couch" href="persistence/couch.html" /> 
+    <link rel="next" title="Exceptions Documentation" href="exceptions.html" />
+    <link rel="prev" title="CouchDB persistence engine" href="persistence/couch.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,10 +37,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="log"
+          <a href="exceptions.html" title="Exceptions Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="persistence/couch.html" title="vogeler.db.couch"
+          <a href="persistence/couch.html" title="CouchDB persistence engine"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li> 
       </ul>
@@ -58,7 +58,7 @@
 <span id="the-plugins-module"></span><h2>The <tt class="xref py py-mod docutils literal"><span class="pre">plugins</span></tt> Module<a class="headerlink" href="#module-vogeler.plugins" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vogeler.plugins.VogelerPlugin">
-<em class="property">class </em><tt class="descclassname">vogeler.plugins.</tt><tt class="descname">VogelerPlugin</tt><big>(</big><em>plugin_dir='/etc/vogeler/plugins'</em><big>)</big><a class="reference internal" href="modules/vogeler/plugins.html#VogelerPlugin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.plugins.VogelerPlugin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">vogeler.plugins.</tt><tt class="descname">VogelerPlugin</tt><big>(</big><em>plugin_dir='/etc/vogeler/plugins'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="modules/vogeler/plugins.html#VogelerPlugin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.plugins.VogelerPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <dl class="method">
 <dt id="vogeler.plugins.VogelerPlugin.execute_plugin">
@@ -68,7 +68,14 @@
 <dl class="method">
 <dt id="vogeler.plugins.VogelerPlugin.format_response">
 <tt class="descname">format_response</tt><big>(</big><em>plugin</em>, <em>output</em>, <em>plugin_format</em><big>)</big><a class="reference internal" href="modules/vogeler/plugins.html#VogelerPlugin.format_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vogeler.plugins.VogelerPlugin.format_response" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Format plugin execution for delivery</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vogeler.plugins.VogelerPlugin.get_last_error">
+<tt class="descname">get_last_error</tt><big>(</big><big>)</big><a class="headerlink" href="#vogeler.plugins.VogelerPlugin.get_last_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return last error registered</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -91,10 +98,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="persistence/couch.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">vogeler.db.couch</span></tt></a></p>
+                        title="previous chapter">CouchDB persistence engine</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="log.html"
-                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">log</span></tt></a></p>
+  <p class="topless"><a href="exceptions.html"
+                        title="next chapter">Exceptions Documentation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="sources/plugins.txt"
@@ -127,17 +134,17 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="log"
+          <a href="exceptions.html" title="Exceptions Documentation"
              >next</a> |</li>
         <li class="right" >
-          <a href="persistence/couch.html" title="vogeler.db.couch"
+          <a href="persistence/couch.html" title="CouchDB persistence engine"
              >previous</a> |</li>
         <li><a href="index.html">Vogeler v0.8.7 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2010, John E. Vincent.
-      Last updated on Sep 20, 2010.
+      Last updated on Sep 27, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

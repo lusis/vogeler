@@ -21,8 +21,8 @@
             <span class='pc_cov'>100%</span>
         </h1>
         <h2 class='stats'>
-            27 statements
-            <span class='run hide_run' onclick='toggle_lines(this, "run")'>27 run</span>
+            29 statements
+            <span class='run hide_run' onclick='toggle_lines(this, "run")'>29 run</span>
             <span class='mis' onclick='toggle_lines(this, "mis")'>0 missing</span>
             <span class='exc' onclick='toggle_lines(this, "exc")'>0 excluded</span>
             
@@ -93,11 +93,15 @@
 <p id='n55' class='pln'><a href='#n55'>55</a></p>
 <p id='n56' class='stm run hide_run'><a href='#n56'>56</a></p>
 <p id='n57' class='pln'><a href='#n57'>57</a></p>
-<p id='n58' class='pln'><a href='#n58'>58</a></p>
-<p id='n59' class='stm run hide_run'><a href='#n59'>59</a></p>
-<p id='n60' class='pln'><a href='#n60'>60</a></p>
+<p id='n58' class='stm run hide_run'><a href='#n58'>58</a></p>
+<p id='n59' class='pln'><a href='#n59'>59</a></p>
+<p id='n60' class='stm run hide_run'><a href='#n60'>60</a></p>
 <p id='n61' class='pln'><a href='#n61'>61</a></p>
 <p id='n62' class='pln'><a href='#n62'>62</a></p>
+<p id='n63' class='stm run hide_run'><a href='#n63'>63</a></p>
+<p id='n64' class='pln'><a href='#n64'>64</a></p>
+<p id='n65' class='pln'><a href='#n65'>65</a></p>
+<p id='n66' class='pln'><a href='#n66'>66</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -132,37 +136,41 @@
 <p id='t29' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerMessagingException</span><span class='op'>(</span><span class='nam'>VogelerException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t30' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error in the messaging component&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t31' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t32' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginException</span><span class='op'>(</span><span class='nam'>VogelerException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t33' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error in the plugin component&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t32' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerMessagingJSONException</span><span class='op'>(</span><span class='nam'>VogelerMessagingException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t33' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for messages not in JSON format&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t34' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
 <p id='t35' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t36' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginExecutionException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t37' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error executing a plugin&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginException</span><span class='op'>(</span><span class='nam'>VogelerException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error in the plugin component&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t38' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
 <p id='t39' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t40' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginAuthorizationException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t41' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an unauthorized plugin&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginExecutionException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error executing a plugin&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t42' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
 <p id='t43' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t44' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginRegistrationException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t45' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for failed plugin registration&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t44' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginAuthorizationException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t45' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an unauthorized plugin&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t46' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
 <p id='t47' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t48' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginParsingException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t49' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for plugin parsing.&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t48' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginRegistrationException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t49' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for failed plugin registration&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t50' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
 <p id='t51' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t52' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginCompiledParsingException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t53' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for compiled plugin parsing. Fatal error&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t52' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginParsingException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t53' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for plugin parsing.&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
 <p id='t54' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
 <p id='t55' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t56' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginCompilationException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t57' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for plugin compilation. Fatal error&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t58' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t59' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerEncryptionException</span><span class='op'>(</span><span class='nam'>VogelerException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t60' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error in the encryption component&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t61' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t62' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
+<p id='t56' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginCompiledParsingException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t57' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for compiled plugin parsing. Fatal error&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t58' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
+<p id='t59' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t60' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerPluginCompilationException</span><span class='op'>(</span><span class='nam'>VogelerPluginException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t61' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for plugin compilation. Fatal error&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t62' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t63' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerEncryptionException</span><span class='op'>(</span><span class='nam'>VogelerException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t64' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;Exception for an error in the encryption component&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t65' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t66' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>
