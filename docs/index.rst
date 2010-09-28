@@ -23,7 +23,6 @@ Contents:
    persistence
    persistence/couch
    plugins
-   log
    exceptions
    encryption
 

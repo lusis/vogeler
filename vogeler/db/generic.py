@@ -1,16 +1,175 @@
-import vogeler.db.couch as couch
+import urlparse, json, yaml, datetime
+
+import vogeler.logger as logger
+import vogeler.exceptions as exceptions
+
+log = logger.LogWrapper(name='vogeler.db').logger()
 
 class GenericPersistence(object):
 
-    def __init__(self, scheme, dsn):
-        self.scheme = scheme
-        self.dsn = dsn
+    def __init__(self, dsn, **kwargs):
+        try:
+            _parsed = urlparse.urlparse(dsn)
+            self.username, self.password = _parsed.username, _parsed.password
+            self.host, self.port = _parsed.hostname, _parsed.port
 
-    def connect(self):
-        engine = getattr(self, '_connect_%s' % self.scheme)
-        return engine
+            db = _parsed.path.split("/")[1]
+            if self.host is None or self.port is None:
+                log.fatal("Invalid DSN provided: %s" % dsn)
+            if db is None:
+                log.fatal("Invalid DSN provided: %s" % dsn)
+        except:
+            raise
 
-    def connect_couch(self):
-        engine = couch.VogelerStore(self.dsn)
-        return engine
+        self.dbname = db
+        self.connect()
+
+    def connect(self, **kwargs):
+        """
+        Method for connection to a server
+        """
+        self._connect(**kwargs)
+
+    def _connect(self, **kwargs):
+        """You should override this method"""
+        pass
+
+    def create_db(self, dbname=None):
+        """
+        Method for creating a database
+        Should gracefully handle existing databases
+        """
+        try:
+            if dbname is None:
+                dbname = self.dbname
+            else:
+                self.dbname = dbname
+
+            self._createdb(dbname)
+        except:
+            raise
+
+    def _createdb(self, dbname):
+        """You should override this method"""
+        pass
+
+    def drop_db(self, dbname=None):
+        """
+        Method for dropping a database
+        """
+        try:
+            if dbname is None:
+                dbname = self.dbname
+            else:
+                self.dbname = dbname
+
+            self._dropdb(dbname)
+        except:
+            raise
+
+    def _dropdb(self, dbname):
+        """You should override this method"""
+        pass
+
+    def use_db(self, dbname=None):
+        """
+        Helper method for using a database
+        """
+        try:
+            if dbname is None:
+                dbname = self.dbname
+            else:
+                self.dbname = dbname
+            self._usedb(dbname)
+        except:
+            raise
+
+    def _usedb(self, dbname):
+        """You should override this method"""
+        pass
+
+    def create(self, node_name):
+        """Method for getting a node's record"""
+        try:
+            self._create(node_name)
+        except:
+            raise
+
+    def _create(self, node_name):
+        """You should override this method"""
+        pass
+
+    def get(self, node_name):
+        """Method for getting a node's record"""
+        try:
+            node = self._get(node_name)
+            self.node = node_name
+            return node
+        except:
+            raise
+
+    def _get(self, node_name):
+        """You should override this method"""
+        pass
+
+    def touch(self, node_name):
+        """Convenience method for updating a node's timestamp"""
+        try:
+            self._touch(node_name)
+        except:
+            raise
+
+    def _touch(self, node_name):
+        """You should override this method"""
+        pass
+
+    def update(self, node_name, key, value, datatype):
+        """Update a node record with the given key/value/datatype"""
+
+        try:
+            datatype_method = getattr(self, '_update_%s' % datatype)
+            data = datatype_method(node_name, key, value)
+            self._update(node_name, key, value)
+        except AttributeError:
+            log.warn("Don't know how to handle datatype: '%r'" % datatype)
+            raise exceptions.VogelerPersistenceDataTypeException()
+
+    def _update(self, node_name, key, value):
+        """You should override this method"""
+        pass
+
+    """
+    Do not mess with the following methods.
+    All the logic is handled here for you.
+    Just be ready to accept each of these datatypes
+    """
+    def _update_output(self, node, key, value):
+        """ process output handler. split at newlines """
+        v = [z.strip() for z in value.split("\n")]
+        return v
+
+    def _update_json(self, node, key, value):
+        """ json handler. load json and persist """
+        return json.loads(value)
+
+    def _update_pylist(self, node, key, value):
+        """ python list datatype handler """
+        return value
+
+    def _update_pydict(self, node, key, value):
+        """ python dictionary datatype handler """
+        return value
+
+    def _update_yaml(self, node, key, value):
+        """ yaml datatype handler. load yaml and persist """
+        return yaml.load(value)
+
+    def _update_raw(self, node, key, value):
+        """ raw datatype handler """
+        return value
+
+    def _update_string(self, node, key, value):
+        """ simple value handler """
+        return value
+
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
