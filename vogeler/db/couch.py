@@ -1,110 +1,57 @@
-import datetime, yaml, json, urlparse
-
+import datetime
 import couchdbkit as couch
 from couchdbkit.loaders import FileSystemDocsLoader
 
 import vogeler.exceptions as exceptions
 import vogeler.logger as logger
 
-log = logger.LogWrapper(name='vogeler').logger()
+from vogeler.db.generic import GenericPersistence
+
+log = logger.LogWrapper(name='vogeler.db.couch').logger()
 
 class SystemRecord(couch.Document):
     """
     A couchdbkit document for storing our base information
+    All documents, regardless of backend, should support
+    the following fields:
+    system_name
+    created_at
+    updated_at
     """
     system_name = couch.StringProperty()
     created_at = couch.DateTimeProperty()
     updated_at = couch.DateTimeProperty()
 
-class VogelerStore(object):
-    """
-    Base class for interacting with a given persistence engine
+class Persistence(GenericPersistence):
 
-    Any VogelerStore object should understand how to parse a vogeler engine uri.
+    def hook_connect(self, **kwargs):
+        if self.username is None or self.password is None:
+            connection_string = "http://%s:%s" % (self.host, self.port)
+        else:
+            connection_string = "http://%s:%s@%s:%s" % (self.username, self.password, self.host, self.port)
+        self._server = couch.Server(uri=connection_string)
 
-    The object instance should directly allow all persistence operations directly against it.
-
-        .. see:`vogeler.persistence`
-
-    :param string dsn: A valid Vogeler DSN, optionally containing credentials
-        
-        i.e. "couch://127.0.0.1:5984/system_records"
-
-    .. attribute:: server
-
-        typically an instance of the driver connection method.
-
-    .. attribute:: dbname
-
-        name of the database to operate against
-
-
-    :raises: :class:`vogeler.exceptions.VogelerPersistenceException`
-
-    """
-
-    def __init__(self, dsn, **kwargs):
+    def hook_createdb(self, dbname):
         try:
-            _parsed = urlparse.urlparse(dsn)
-            username, password = _parsed.username, _parsed.password
-            host, port = _parsed.hostname, _parsed.port
-            db = _parsed.path.split("/")[1]
-            if host is None or port is None:
-                log.error("Invalid DSN provided: %s" % dsn)
-                raise
-            if db is None:
-                log.error("Invalid DSN provided: %s" % dsn)
-                raise
-            if username is None or password is None:
-                connection_string = "http://%s:%s" % (host, port)
-            else:
-                connection_string = "http://%s:%s@%s:%s" % (username, password, host, port)
-
-            self.server = couch.Server(uri=connection_string)
-            self.dbname = db
-        except:
-            raise
-
-    def create_db(self, dbname=None):
-        """
-        native method for creating a database
-        should allow gracefully handle existing databases
-        """
-        try:
-            if not dbname:
-                dbname = self.dbname
-
-            self.db = self.server.get_or_create_db(dbname)
+            self.db = self._server.get_or_create_db(dbname)
             SystemRecord.set_db(self.db)
         except:
             raise
 
-    def drop_db(self, dbname=None):
-        """ native method for dropping a database """
+    def hook_dropdb(self, dbname):
         try:
-            if not dbname:
-                dbname = self.dbname
-
-            self.server.delete_db(dbname)
+            self._server.delete_db(dbname)
         except:
             raise
 
-    def use_db(self, dbname=None):
-        """ native method for using a database """
+    def hook_usedb(self, dbname):
         try:
-            if not dbname:
-                dbname = self.dbname
-
-            self.db = self.server.get_or_create_db(dbname)
+            self.db = self._server.get_or_create_db(dbname)
             SystemRecord.set_db(self.db)
         except:
             raise
 
-    def create(self, node_name):
-        """
-        native method for creating a node record
-        should gracefully handle existing node
-        """
+    def hook_create(self, node_name):
         try:
             node = SystemRecord.get_or_create(node_name)
             node.system_name = node_name
@@ -113,8 +60,7 @@ class VogelerStore(object):
         except:
             raise
 
-    def get(self, node_name):
-        """ native method for getting a node """
+    def hook_get(self, node_name):
         try:
             node = SystemRecord.get(node_name)
             self.node = node
@@ -122,8 +68,7 @@ class VogelerStore(object):
         except:
             raise
 
-    def touch(self, node_name):
-        """ convenience method for updating the timestamp on a node """
+    def hook_touch(self, node_name):
         try:
             node = SystemRecord.get(node_name)
             node.updated_at = datetime.datetime.utcnow()
@@ -131,19 +76,15 @@ class VogelerStore(object):
         except:
             raise
 
-    def update(self, node_name, key, value, datatype):
-        """Update a node record with a given key/value/datatype"""
-        node = SystemRecord.get_or_create(node_name)
 
+    def hook_update(self, node_name, key, value):
         try:
-            datatype_method = getattr(self, '_update_%s' % datatype)
-            node[key] = datatype_method(node, key, value)
-        except AttributeError:
-            log.warn("Don't know how to handle datatype: '%r'" % datatype)
-            raise exceptions.VogelerPersistenceDataTypeException()
-
-        node.updated_at = datetime.datetime.utcnow()
-        node.save()
+            node = SystemRecord.get_or_create(node_name)
+            node[key] = value
+            node.updated_at = datetime.datetime.utcnow()
+            node.save()
+        except:
+            raise
 
     def load_views(self, lp):
         self.loadpath = lp
@@ -156,35 +97,6 @@ class VogelerStore(object):
         except:
             log.fatal("Document load path not found: %s" % lp)
             raise exceptions.VogelerPersistenceException()
-
-    def _update_output(self, node, key, value):
-        """ process output handler. split at newlines """
-        v = [z.strip() for z in value.split("\n")]
-        return v
-
-    def _update_json(self, node, key, value):
-        """ json handler. load json and persist """
-        return json.loads(value)
-
-    def _update_pylist(self, node, key, value):
-        """ python list datatype handler """
-        return value
-
-    def _update_pydict(self, node, key, value):
-        """ python dictionary datatype handler """
-        return value
-
-    def _update_yaml(self, node, key, value):
-        """ yaml datatype handler. load yaml and persist """
-        return yaml.load(value)
-
-    def _update_raw(self, node, key, value):
-        """ raw datatype handler """
-        return value
-
-    def _update_string(self, node, key, value):
-        """ simple value handler """
-        return value
 
 class VogelerCouchPersistenceException(exceptions.VogelerPersistenceException):
     pass

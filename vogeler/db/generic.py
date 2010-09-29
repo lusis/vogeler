@@ -28,9 +28,9 @@ class GenericPersistence(object):
         """
         Method for connection to a server
         """
-        self._connect(**kwargs)
+        self.hook_connect(**kwargs)
 
-    def _connect(self, **kwargs):
+    def hook_connect(self, **kwargs):
         """You should override this method"""
         pass
 
@@ -45,11 +45,11 @@ class GenericPersistence(object):
             else:
                 self.dbname = dbname
 
-            self._createdb(dbname)
+            self.hook_createdb(dbname)
         except:
             raise
 
-    def _createdb(self, dbname):
+    def hook_createdb(self, dbname):
         """You should override this method"""
         pass
 
@@ -63,11 +63,11 @@ class GenericPersistence(object):
             else:
                 self.dbname = dbname
 
-            self._dropdb(dbname)
+            self.hook_dropdb(dbname)
         except:
             raise
 
-    def _dropdb(self, dbname):
+    def hook_dropdb(self, dbname):
         """You should override this method"""
         pass
 
@@ -80,46 +80,46 @@ class GenericPersistence(object):
                 dbname = self.dbname
             else:
                 self.dbname = dbname
-            self._usedb(dbname)
+            self.hook_usedb(dbname)
         except:
             raise
 
-    def _usedb(self, dbname):
+    def hook_usedb(self, dbname):
         """You should override this method"""
         pass
 
     def create(self, node_name):
         """Method for getting a node's record"""
         try:
-            self._create(node_name)
+            self.hook_create(node_name)
         except:
             raise
 
-    def _create(self, node_name):
+    def hook_create(self, node_name):
         """You should override this method"""
         pass
 
     def get(self, node_name):
         """Method for getting a node's record"""
         try:
-            node = self._get(node_name)
+            node = self.hook_get(node_name)
             self.node = node_name
             return node
         except:
             raise
 
-    def _get(self, node_name):
+    def hook_get(self, node_name):
         """You should override this method"""
         pass
 
     def touch(self, node_name):
         """Convenience method for updating a node's timestamp"""
         try:
-            self._touch(node_name)
+            self.hook_touch(node_name)
         except:
             raise
 
-    def _touch(self, node_name):
+    def hook_touch(self, node_name):
         """You should override this method"""
         pass
 
@@ -129,12 +129,12 @@ class GenericPersistence(object):
         try:
             datatype_method = getattr(self, '_update_%s' % datatype)
             data = datatype_method(node_name, key, value)
-            self._update(node_name, key, value)
+            self.hook_update(node_name, key, data)
         except AttributeError:
             log.warn("Don't know how to handle datatype: '%r'" % datatype)
             raise exceptions.VogelerPersistenceDataTypeException()
 
-    def _update(self, node_name, key, value):
+    def hook_update(self, node_name, key, value):
         """You should override this method"""
         pass
 
