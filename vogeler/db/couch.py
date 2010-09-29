@@ -98,6 +98,5 @@ class Persistence(GenericPersistence):
             log.fatal("Document load path not found: %s" % lp)
             raise exceptions.VogelerPersistenceException()
 
-class VogelerCouchPersistenceException(exceptions.VogelerPersistenceException):
-    pass
+class VogelerCouchPersistenceException(exceptions.VogelerPersistenceException): pass
 # vim: set ts=4 et sw=4 sts=4 sta filetype=python :
