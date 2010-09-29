@@ -33,13 +33,11 @@ class CouchPersistenceTestCase(unittest.TestCase):
 
     def test_create_node(self):
         """Test that creating a node works"""
-        doc_path = os.path.dirname(__file__)+"/fixtures/_design"
-        self.conn.load_views(doc_path)
         nodename = 'node_'+str(uuid4())
         self.conn.create(nodename)
         n = self.conn.get(nodename)
-        self.assertEquals(n.system_name, nodename)
-        self.assertEquals(n.system_name, n._id)
+        self.assertEquals(n['system_name'], nodename)
+        self.assertEquals(n['system_name'], n['_id'])
 
     def test_touch_node(self):
         """Test that touching a node works"""
@@ -48,7 +46,7 @@ class CouchPersistenceTestCase(unittest.TestCase):
         sleep(7)
         self.conn.touch(nodename)
         n = self.conn.get(nodename)
-        timediff = (n.updated_at - n.created_at) > dt.timedelta (seconds = 5)
+        timediff = (n['updated_at'] - n['created_at']) > dt.timedelta (seconds = 5)
         self.assertTrue(timediff)
 
     def test_update_node_output(self):

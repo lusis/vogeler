@@ -24,8 +24,8 @@ class MongoPersistenceTestCase(unittest.TestCase):
         nodename = 'node_'+str(uuid4())
         self.conn.create(nodename)
         n = self.conn.get(nodename)
-        self.assertEquals(n.system_name, nodename)
-        self.assertEquals(n.system_name, n._id)
+        self.assertEquals(n['system_name'], nodename)
+        self.assertEquals(n['system_name'], n['_id'])
 
     def test_touch_node(self):
         """Test that touching a node works"""
@@ -34,12 +34,13 @@ class MongoPersistenceTestCase(unittest.TestCase):
         sleep(7)
         self.conn.touch(nodename)
         n = self.conn.get(nodename)
-        timediff = (n.updated_at - n.created_at) > dt.timedelta (seconds = 5)
+        timediff = (n['updated_at'] - n['created_at']) > dt.timedelta (seconds = 5)
         self.assertTrue(timediff)
 
     def test_update_node_output(self):
         """Test that updating a node with output datatype works"""
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         key, value = "packages", "package-1.0.4.rpm\npackage2-2.0.2.rpm"
         self.conn.update(nodename, key, value, 'output')
         n = self.conn.get(nodename)
@@ -48,6 +49,7 @@ class MongoPersistenceTestCase(unittest.TestCase):
     def test_update_node_pylist(self):
         """Test updating a node with pylist datatype works"""
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         key, value = "mylist", ['foo', 'bar', 'baz']
         self.conn.update(nodename, key, value, 'pylist')
         n = self.conn.get(nodename)
@@ -56,6 +58,7 @@ class MongoPersistenceTestCase(unittest.TestCase):
     def test_update_node_pydict(self):
         """Test updating a node with pydict datatype works"""
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         key, value = "mydict", {'foo' : 1, 'bar' : 2, 'baz' : 'shoe'}
         self.conn.update(nodename, key, value, 'pydict')
         n = self.conn.get(nodename)
@@ -66,6 +69,7 @@ class MongoPersistenceTestCase(unittest.TestCase):
         f = open(os.path.dirname(__file__)+'/fixtures/sample_complex.yaml')
         value = f.read()
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         self.conn.update(nodename, 'complex_yaml', value, 'yaml')
         n = self.conn.get(nodename)
         f.close()
@@ -75,6 +79,7 @@ class MongoPersistenceTestCase(unittest.TestCase):
         f = open(os.path.dirname(__file__)+'/fixtures/sample_complex.json')
         value = f.read()
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         self.conn.update(nodename, 'complex_json', value, 'json')
         n = self.conn.get(nodename)
         f.close()
@@ -82,6 +87,7 @@ class MongoPersistenceTestCase(unittest.TestCase):
     def test_update_node_string(self):
         """Test updating a node with string datatype works"""
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         key, value = "mystring", "192.168.1.2"
         self.conn.update(nodename, key, value, 'string')
         n = self.conn.get(nodename)
@@ -90,6 +96,7 @@ class MongoPersistenceTestCase(unittest.TestCase):
     def test_update_node_raw(self):
         """Test updating a node with raw datatype works"""
         nodename = 'node_'+str(uuid4())
+        self.conn.create(nodename)
         key, value = "mystring", "192.168.1.2"
         self.conn.update(nodename, key, value, 'raw')
         n = self.conn.get(nodename)

@@ -96,10 +96,12 @@ class Persistence(GenericPersistence):
         We use $set to update the single value
         """
         try:
-            _params = {"$set": {key: value, "updated_at": datetime.datetime.utcnow()}}
+            _params = {"$set": {key: value}}
             node = self.hook_get(node_name)
+            _spec = {'_id': node['_id']}
             _collection = self.db
-            _collection.update(node, _params, safe=True)
+            _collection.update(_spec, _params, safe=True)
+            self.hook_touch(node_name)
         except:
             raise
 

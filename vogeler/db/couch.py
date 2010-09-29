@@ -54,8 +54,8 @@ class Persistence(GenericPersistence):
     def hook_create(self, node_name):
         try:
             node = SystemRecord.get_or_create(node_name)
-            node.system_name = node_name
-            node.created_at = datetime.datetime.utcnow()
+            node['system_name'] = node_name
+            node['created_at'] = datetime.datetime.utcnow()
             node.save()
         except:
             raise
@@ -71,7 +71,7 @@ class Persistence(GenericPersistence):
     def hook_touch(self, node_name):
         try:
             node = SystemRecord.get(node_name)
-            node.updated_at = datetime.datetime.utcnow()
+            node['updated_at'] = datetime.datetime.utcnow()
             node.save()
         except:
             raise
@@ -81,7 +81,7 @@ class Persistence(GenericPersistence):
         try:
             node = SystemRecord.get_or_create(node_name)
             node[key] = value
-            node.updated_at = datetime.datetime.utcnow()
+            node['updated_at'] = datetime.datetime.utcnow()
             node.save()
         except:
             raise
