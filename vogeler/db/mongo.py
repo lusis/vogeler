@@ -19,7 +19,7 @@ class Persistence(GenericPersistence):
     Also, all inserts/saves are done with safe=True
     """
 
-    def hook_connection(self, **kwargs):
+    def hook_connect(self, **kwargs):
         if self.username is None or self.password is None:
             connection_string = "mongodb://%s:%s" % (self.host, self.port)
         else:
@@ -34,8 +34,15 @@ class Persistence(GenericPersistence):
         """
         try:
             _collection = "%s_collection" % dbname
-            # self.db is a bit of a misnomer since we operate on the colleciton
-            self.db = self._server[_collection]
+            """
+            self.db is a bit of a misnomer since we operate on the collection
+            We'll just do it all in one shot here
+            The following is essentially the same as
+            >>> database = self._server['vogeler']
+            >>> self.db = database['vogeler_collection']
+            self.db is now a reference to the collection
+            """
+            self.db = eval("self._server['%s']['%s']" % (dbname, _collection))
         except:
             raise
 
@@ -46,16 +53,8 @@ class Persistence(GenericPersistence):
             raise
 
     def hook_usedb(self, dbname):
-        """
-        mongodb does lazy creation for databases and collections.
-        We'll use space to go ahead and define our collection and return it
-        All operations are on the collection anyway as opposed to the database
-        """
-        try:
-            _collection = "%s_collection" % dbname
-            self.db = self._server[_collection]
-        except:
-            raise
+        """eliminate error and just call createdb"""
+        self.hook_createdb(dbname)
 
     def hook_create(self, node_name):
         """Reminder: We operate on the collection in mongodb, not the database"""

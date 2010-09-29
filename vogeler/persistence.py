@@ -1,6 +1,5 @@
 import urlparse
-#import vogeler.db.couch as couch
-import vogeler.db as db
+from vogeler.db import *
 """
 vogeler.persisistence is used like so:
 
@@ -36,7 +35,7 @@ def create_engine(dsn):
     """
     try:
         scheme = urlparse.urlparse(dsn).scheme
-        engine = eval('db.%s.Persistence("%s")' % (scheme, dsn))
+        engine = eval('%s.Persistence("%s")' % (scheme, dsn))
         return engine
     except:
         raise
