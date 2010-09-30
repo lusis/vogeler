@@ -1,4 +1,4 @@
-import datetime
+import datetime, json
 import pymongo as mongo
 
 import vogeler.exceptions as exceptions
@@ -96,7 +96,8 @@ class Persistence(GenericPersistence):
         We use $set to update the single value
         """
         try:
-            _params = {"$set": {key: value}}
+            _value = json.dumps(value)
+            _params = {"$set": {key: _value}}
             node = self.hook_get(node_name)
             _spec = {'_id': node['_id']}
             _collection = self.db
