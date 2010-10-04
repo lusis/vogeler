@@ -19,26 +19,26 @@ class ClientTestCase(unittest.TestCase):
 
     def test_vogeler_client_init(self):
         """Test that creating a Client object works"""
-        c = VogelerClient(callback_function=self.echo, dsn=self.good_amqp_dsn)
+        c = VogelerClient(callback_function=self.echo, role='client', dsn=self.good_amqp_dsn)
         self.assertType(c, 'vogeler.vogeler.VogelerClient')
         c.close()
 
     def test_vogeler_client_failure(self):
         """Test that Client object fails properly"""
-        with self.assertRaises(VogelerException):
-            VogelerClient(callback_function=self.echo, dsn=self.bad_amqp_dsn)
+        with self.assertRaises(Exception):
+            VogelerClient(callback_function=self.echo, role='client', dsn=self.bad_amqp_dsn)
 
     def test_client_message_durable(self):
         """Test that client can send durable messages"""
         test_message = 'this is a test'
-        c = VogelerClient(callback_function=self.echo, dsn=self.good_amqp_dsn)
+        c = VogelerClient(callback_function=self.echo, role='client', dsn=self.good_amqp_dsn)
         self.assertIsNone(c.message(test_message))
         c.close()
 
     def test_client_message_nondurable(self):
         """Test that client can send non-durable messages"""
         test_message = 'this is a test'
-        c = VogelerClient(callback_function=self.echo, dsn=self.good_amqp_dsn)
+        c = VogelerClient(callback_function=self.echo, role='client', dsn=self.good_amqp_dsn)
         self.assertIsNone(c.message(test_message, durable=False))
         c.close()
 
@@ -49,6 +49,7 @@ class ClientTestCase(unittest.TestCase):
         message_body = json.dumps(sample_text)
         test_message = message.SampleMessage(message_body)
         c = VogelerClient(callback_function=None,
+                        role='client',
                         host='localhost',
                         username='guest',
                         password='guest')

@@ -135,7 +135,7 @@ if __name__ == "__main__":
     try:
         db = engine.create_engine(persistence)
         db.create_db()
-        s = VogelerServer(callback_function=process_message, dsn=mq, loglevel=log_level)
+        s = VogelerServer(callback_function=process_message, role='server', dsn=mq, loglevel=log_level)
         startup()
     except KeyboardInterrupt:
         shutdown()

@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
     try:
         plugins = VogelerPlugin(plugin_dir=plugdir, loglevel=log_level)
-        c = VogelerClient(callback_function=process_request, dsn=mq, loglevel=log_level)
+        c = VogelerClient(callback_function=process_request, role='client', dsn=mq, loglevel=log_level)
     except Exception, e:
         raise
 

@@ -1,0 +1,120 @@
+#!/usr/bin/env python
+"""
+    Author: John E. Vincent
+	Email:	lusis.org+github.com@gmail.com
+"""
+import argparse
+import sys
+
+import vogeler.persistence as engine
+import vogeler.conf as conf
+import vogeler.logger as logger
+
+def startup():
+    pass
+
+def setup():
+    pass
+
+def shutdown():
+    exit(0)
+
+
+if __name__ == "__main__":
+
+    appdesc = 'Vogeler admin utility'
+    parser = argparse.ArgumentParser(description=appdesc)
+    parser.add_argument('--config', '-c',
+            help='Configuration file',
+            default = None,
+            required=False)
+    parser.add_argument('--debug',
+            help='Debug output',
+            default = None,
+            required=False)
+    parser.add_argument('--verbose', '-v',
+            help='Verbose output',
+            action='store_false')
+    parser.add_argument('--loglevel',
+            help='Override log level',
+            default = None,
+            required=False)
+    parser.add_argument('--dbhost',
+            help='Persistence uri (i.e. couch://localhost:5984/system_records)',
+            default=None,
+            required=False)
+    parser.add_argument('--qhost',
+            help='Messaging server uri (i.e. amqp://guest:guest@localhost:5672/vogeler)',
+            default = None,
+            required=False)
+
+    setup_parser = parser.add_argument_group('setup', 'Setup options')
+    setup_group = setup_parser.add_mutually_exclusive_group()
+    setup_group.add_argument('--messaging', '-m',
+            help='Run any messaging setup tasks defined by messaging backend',
+            action='store_true')
+    setup_group.add_argument('--persistence', '-p',
+            help='Run any persistence setup tasks defined by persistence backend',
+            action='store_true')
+    setup_parser.set_defaults(func=setup)
+
+    node_query_parser = parser.add_argument_group('node', 'Node query tool')
+    node_query_parser.add_argument('name',
+            help='Node name to query. Defaults to all nodes',
+            default=None)
+    node_query_parser.add_argument('value',
+            help='Node value to query. Defaults to full document',
+            default=None)
+
+    queue_query_parser = parser.add_argument_group('queue', 'Queue query tool')
+    queue_query_parser.add_argument('--status', '-s',
+            action='store_true',
+            help='Query queue status. NYI')
+    queue_query_parser.add_argument('exchange',
+            help='Exchange to query. Defaults to all exchanges',
+            default=None)
+
+
+    args = parser.parse_args()
+
+    if args.config is not None:
+        try:
+            local_config = conf.configure(cfg=args.config)
+            if local_config.has_option('global', 'log_level'):
+                log_level = local_config.get('global', 'log_level')
+        except:
+            raise
+    else:
+        log_level = 'WARN'
+
+    if args.loglevel is not None:
+        log_level = args.loglevel
+
+    log = logger.LogWrapper(name='vogeler-admin', level=log_level).logger()
+
+    if args.qhost is not None:
+        log.info("Using qhost from command-line options")
+        mq = args.qhost
+    elif args.config is not None and local_config.has_option('amqp' , 'dsn'):
+        log.info("Using qhost from configuration file")
+        mq = local_config.get('amqp', 'dsn')
+    else:
+        log.fatal("No qhost specified or no configuration file provided")
+        sys.exit(0)
+
+    if args.dbhost is not None:
+        log.info("Using dbhost from command-line options")
+        persistence = args.dbhost
+    elif args.config is not None and local_config.has_option('couch', 'dsn'):
+        log.info("Using dbhost from configuration file")
+        persistence = local_config.get('couch', 'dsn')
+    else:
+        log.fatal("No dbhost specified or no configuration file provided")
+        sys.exit(0)
+
+
+    try:
+        startup()
+    except KeyboardInterrupt:
+        shutdown()
+# vim: set ts=4 et sw=4 sts=4 sta filetype=python :
