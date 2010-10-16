@@ -5,7 +5,7 @@
     
     
     <meta http-equiv='X-UA-Compatible' content='IE=emulateIE7' />
-    <title>Coverage for vogeler.db.couch: 80%</title>
+    <title>Coverage for vogeler.db.couch: 79%</title>
     <link rel='stylesheet' href='style.css' type='text/css'>
     <script type='text/javascript' src='jquery-1.3.2.min.js'></script>
     <script type='text/javascript' src='coverage_html.js'></script>
@@ -18,11 +18,11 @@
 <div id='header'>
     <div class='content'>
         <h1>Coverage for <b>vogeler.db.couch</b> :
-            <span class='pc_cov'>80%</span>
+            <span class='pc_cov'>79%</span>
         </h1>
         <h2 class='stats'>
-            77 statements
-            <span class='run hide_run' onclick='toggle_lines(this, "run")'>62 run</span>
+            76 statements
+            <span class='run hide_run' onclick='toggle_lines(this, "run")'>61 run</span>
             <span class='mis' onclick='toggle_lines(this, "mis")'>15 missing</span>
             <span class='exc' onclick='toggle_lines(this, "exc")'>0 excluded</span>
             
@@ -137,8 +137,7 @@
 <p id='n99' class='stm run hide_run'><a href='#n99'>99</a></p>
 <p id='n100' class='pln'><a href='#n100'>100</a></p>
 <p id='n101' class='stm run hide_run'><a href='#n101'>101</a></p>
-<p id='n102' class='stm run hide_run'><a href='#n102'>102</a></p>
-<p id='n103' class='pln'><a href='#n103'>103</a></p>
+<p id='n102' class='pln'><a href='#n102'>102</a></p>
                 
             </td>
             <td class='text' valign='top'>
@@ -198,8 +197,8 @@
 <p id='t54' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>hook_create</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>,</span> <span class='nam'>node_name</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t55' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t56' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span> <span class='op'>=</span> <span class='nam'>SystemRecord</span><span class='op'>.</span><span class='nam'>get_or_create</span><span class='op'>(</span><span class='nam'>node_name</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t57' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>system_name</span> <span class='op'>=</span> <span class='nam'>node_name</span><span class='strut'>&nbsp;</span></p>
-<p id='t58' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>created_at</span> <span class='op'>=</span> <span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>utcnow</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t57' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>[</span><span class='str'>&#39;system_name&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='nam'>node_name</span><span class='strut'>&nbsp;</span></p>
+<p id='t58' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>[</span><span class='str'>&#39;created_at&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>utcnow</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t59' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>save</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t60' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t61' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span><span class='strut'>&nbsp;</span></p>
@@ -215,7 +214,7 @@
 <p id='t71' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>def</span> <span class='nam'>hook_touch</span><span class='op'>(</span><span class='nam'>self</span><span class='op'>,</span> <span class='nam'>node_name</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t72' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t73' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span> <span class='op'>=</span> <span class='nam'>SystemRecord</span><span class='op'>.</span><span class='nam'>get</span><span class='op'>(</span><span class='nam'>node_name</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t74' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>updated_at</span> <span class='op'>=</span> <span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>utcnow</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t74' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>[</span><span class='str'>&#39;updated_at&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>utcnow</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t75' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>save</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t76' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t77' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span><span class='strut'>&nbsp;</span></p>
@@ -225,7 +224,7 @@
 <p id='t81' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t82' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span> <span class='op'>=</span> <span class='nam'>SystemRecord</span><span class='op'>.</span><span class='nam'>get_or_create</span><span class='op'>(</span><span class='nam'>node_name</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t83' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>[</span><span class='nam'>key</span><span class='op'>]</span> <span class='op'>=</span> <span class='nam'>value</span><span class='strut'>&nbsp;</span></p>
-<p id='t84' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>updated_at</span> <span class='op'>=</span> <span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>utcnow</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t84' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>[</span><span class='str'>&#39;updated_at&#39;</span><span class='op'>]</span> <span class='op'>=</span> <span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>datetime</span><span class='op'>.</span><span class='nam'>utcnow</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t85' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>node</span><span class='op'>.</span><span class='nam'>save</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t86' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
 <p id='t87' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span><span class='strut'>&nbsp;</span></p>
@@ -242,9 +241,8 @@
 <p id='t98' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>log</span><span class='op'>.</span><span class='nam'>fatal</span><span class='op'>(</span><span class='str'>&quot;Document load path not found: %s&quot;</span> <span class='op'>%</span> <span class='nam'>lp</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t99' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span> <span class='nam'>exceptions</span><span class='op'>.</span><span class='nam'>VogelerPersistenceException</span><span class='op'>(</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
 <p id='t100' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t101' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerCouchPersistenceException</span><span class='op'>(</span><span class='nam'>exceptions</span><span class='op'>.</span><span class='nam'>VogelerPersistenceException</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t102' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
-<p id='t103' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
+<p id='t101' class='stm run hide_run'><span class='key'>class</span> <span class='nam'>VogelerCouchPersistenceException</span><span class='op'>(</span><span class='nam'>exceptions</span><span class='op'>.</span><span class='nam'>VogelerPersistenceException</span><span class='op'>)</span><span class='op'>:</span> <span class='key'>pass</span><span class='strut'>&nbsp;</span></p>
+<p id='t102' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>

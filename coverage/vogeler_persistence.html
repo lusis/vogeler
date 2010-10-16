@@ -37,8 +37,8 @@
         <tr>
             <td class='linenos' valign='top'>
 <p id='n1' class='stm run hide_run'><a href='#n1'>1</a></p>
-<p id='n2' class='pln'><a href='#n2'>2</a></p>
-<p id='n3' class='stm run hide_run'><a href='#n3'>3</a></p>
+<p id='n2' class='stm run hide_run'><a href='#n2'>2</a></p>
+<p id='n3' class='pln'><a href='#n3'>3</a></p>
 <p id='n4' class='pln'><a href='#n4'>4</a></p>
 <p id='n5' class='pln'><a href='#n5'>5</a></p>
 <p id='n6' class='pln'><a href='#n6'>6</a></p>
@@ -60,8 +60,8 @@
 <p id='n22' class='pln'><a href='#n22'>22</a></p>
 <p id='n23' class='pln'><a href='#n23'>23</a></p>
 <p id='n24' class='pln'><a href='#n24'>24</a></p>
-<p id='n25' class='pln'><a href='#n25'>25</a></p>
-<p id='n26' class='stm run hide_run'><a href='#n26'>26</a></p>
+<p id='n25' class='stm run hide_run'><a href='#n25'>25</a></p>
+<p id='n26' class='pln'><a href='#n26'>26</a></p>
 <p id='n27' class='pln'><a href='#n27'>27</a></p>
 <p id='n28' class='pln'><a href='#n28'>28</a></p>
 <p id='n29' class='pln'><a href='#n29'>29</a></p>
@@ -71,62 +71,60 @@
 <p id='n33' class='pln'><a href='#n33'>33</a></p>
 <p id='n34' class='pln'><a href='#n34'>34</a></p>
 <p id='n35' class='pln'><a href='#n35'>35</a></p>
-<p id='n36' class='pln'><a href='#n36'>36</a></p>
+<p id='n36' class='stm run hide_run'><a href='#n36'>36</a></p>
 <p id='n37' class='stm run hide_run'><a href='#n37'>37</a></p>
 <p id='n38' class='stm run hide_run'><a href='#n38'>38</a></p>
 <p id='n39' class='stm run hide_run'><a href='#n39'>39</a></p>
-<p id='n40' class='stm run hide_run'><a href='#n40'>40</a></p>
+<p id='n40' class='stm mis'><a href='#n40'>40</a></p>
 <p id='n41' class='stm mis'><a href='#n41'>41</a></p>
-<p id='n42' class='stm mis'><a href='#n42'>42</a></p>
+<p id='n42' class='pln'><a href='#n42'>42</a></p>
 <p id='n43' class='pln'><a href='#n43'>43</a></p>
-<p id='n44' class='pln'><a href='#n44'>44</a></p>
                 
             </td>
             <td class='text' valign='top'>
 <p id='t1' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>urlparse</span><span class='strut'>&nbsp;</span></p>
-<p id='t2' class='pln'><span class='com'>#import vogeler.db.couch as couch</span><span class='strut'>&nbsp;</span></p>
-<p id='t3' class='stm run hide_run'><span class='key'>import</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>db</span> <span class='key'>as</span> <span class='nam'>db</span><span class='strut'>&nbsp;</span></p>
-<p id='t4' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t5' class='pln'><span class='str'>vogeler.persisistence is used like so:</span><span class='strut'>&nbsp;</span></p>
-<p id='t6' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t7' class='pln'><span class='str'>&gt;&gt;&gt; import vogeler.persistence as engine</span><span class='strut'>&nbsp;</span></p>
-<p id='t8' class='pln'><span class='str'>&gt;&gt;&gt; c = engine.create_engine(&#39;couch://127.0.0.1:5984/system_records&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t9' class='pln'><span class='str'>&gt;&gt;&gt; c.create_db()</span><span class='strut'>&nbsp;</span></p>
-<p id='t10' class='pln'><span class='str'>&gt;&gt;&gt; c.create(&#39;nodename&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t11' class='pln'><span class='str'>&gt;&gt;&gt; package_list = some_shell_command_output</span><span class='strut'>&nbsp;</span></p>
-<p id='t12' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;packages&#39;, &#39;package_list&#39;, &#39;output&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t13' class='pln'><span class='str'>&gt;&gt;&gt; mylist = [&#39;foo&#39;,&#39;bar&#39;,&#39;baz&#39;]</span><span class='strut'>&nbsp;</span></p>
-<p id='t14' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_python_list&#39;, mylist, &#39;pylist&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t15' class='pln'><span class='str'>&gt;&gt;&gt; mydict = {&#39;foo&#39; : 1, &#39;bar&#39; : 2, &#39;baz&#39; : &#39;shoe&#39;}</span><span class='strut'>&nbsp;</span></p>
-<p id='t16' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_python_dict&#39;, mydict, &#39;pydict&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t17' class='pln'><span class='str'>&gt;&gt;&gt; myyaml = some_yaml_data</span><span class='strut'>&nbsp;</span></p>
-<p id='t18' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_yaml_data&#39;, myyaml, &#39;yaml&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t19' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_string&#39;, &#39;some sting data&#39;, &#39;string&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t20' class='pln'><span class='str'>&gt;&gt;&gt; myxml = some_xml_data</span><span class='strut'>&nbsp;</span></p>
-<p id='t21' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_raw_data&#39;, myxml, &#39;raw&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t22' class='pln'><span class='str'>&gt;&gt;&gt; myjson = some_json_data</span><span class='strut'>&nbsp;</span></p>
-<p id='t23' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_json_data&#39;, myjson, &#39;json&#39;)</span><span class='strut'>&nbsp;</span></p>
-<p id='t24' class='pln'><span class='str'>&gt;&gt;&gt; c.drop_db()</span><span class='strut'>&nbsp;</span></p>
-<p id='t25' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t26' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>create_engine</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t27' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t28' class='pln'><span class='str'>&nbsp; &nbsp; Create a connection to a persistence backend.</span><span class='strut'>&nbsp;</span></p>
-<p id='t29' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t30' class='pln'><span class='str'>&nbsp; &nbsp; :param string dsn: A :class:`urlparse` parseable url defining a persistence backend</span><span class='strut'>&nbsp;</span></p>
-<p id='t31' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t32' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; e.g. `couch://127.0.0.1:5984/system_records`</span><span class='strut'>&nbsp;</span></p>
-<p id='t33' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t34' class='pln'><span class='str'>&nbsp; &nbsp; :returns: engine. instance of :class:`VogelerPersistence`</span><span class='strut'>&nbsp;</span></p>
-<p id='t35' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t36' class='pln'><span class='str'>&nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
-<p id='t37' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t38' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>scheme</span> <span class='op'>=</span> <span class='nam'>urlparse</span><span class='op'>.</span><span class='nam'>urlparse</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>scheme</span><span class='strut'>&nbsp;</span></p>
-<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>engine</span> <span class='op'>=</span> <span class='nam'>eval</span><span class='op'>(</span><span class='str'>&#39;db.%s.Persistence(&quot;%s&quot;)&#39;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>scheme</span><span class='op'>,</span> <span class='nam'>dsn</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
-<p id='t40' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>engine</span><span class='strut'>&nbsp;</span></p>
-<p id='t41' class='stm mis'>&nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
-<p id='t42' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span><span class='strut'>&nbsp;</span></p>
-<p id='t43' class='pln'><span class='strut'>&nbsp;</span></p>
-<p id='t44' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
+<p id='t2' class='stm run hide_run'><span class='key'>from</span> <span class='nam'>vogeler</span><span class='op'>.</span><span class='nam'>db</span> <span class='key'>import</span> <span class='op'>*</span><span class='strut'>&nbsp;</span></p>
+<p id='t3' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t4' class='pln'><span class='str'>vogeler.persisistence is used like so:</span><span class='strut'>&nbsp;</span></p>
+<p id='t5' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t6' class='pln'><span class='str'>&gt;&gt;&gt; import vogeler.persistence as engine</span><span class='strut'>&nbsp;</span></p>
+<p id='t7' class='pln'><span class='str'>&gt;&gt;&gt; c = engine.create_engine(&#39;couch://127.0.0.1:5984/system_records&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t8' class='pln'><span class='str'>&gt;&gt;&gt; c.create_db()</span><span class='strut'>&nbsp;</span></p>
+<p id='t9' class='pln'><span class='str'>&gt;&gt;&gt; c.create(&#39;nodename&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t10' class='pln'><span class='str'>&gt;&gt;&gt; package_list = some_shell_command_output</span><span class='strut'>&nbsp;</span></p>
+<p id='t11' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;packages&#39;, &#39;package_list&#39;, &#39;output&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t12' class='pln'><span class='str'>&gt;&gt;&gt; mylist = [&#39;foo&#39;,&#39;bar&#39;,&#39;baz&#39;]</span><span class='strut'>&nbsp;</span></p>
+<p id='t13' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_python_list&#39;, mylist, &#39;pylist&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t14' class='pln'><span class='str'>&gt;&gt;&gt; mydict = {&#39;foo&#39; : 1, &#39;bar&#39; : 2, &#39;baz&#39; : &#39;shoe&#39;}</span><span class='strut'>&nbsp;</span></p>
+<p id='t15' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_python_dict&#39;, mydict, &#39;pydict&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t16' class='pln'><span class='str'>&gt;&gt;&gt; myyaml = some_yaml_data</span><span class='strut'>&nbsp;</span></p>
+<p id='t17' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_yaml_data&#39;, myyaml, &#39;yaml&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t18' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_string&#39;, &#39;some sting data&#39;, &#39;string&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t19' class='pln'><span class='str'>&gt;&gt;&gt; myxml = some_xml_data</span><span class='strut'>&nbsp;</span></p>
+<p id='t20' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_raw_data&#39;, myxml, &#39;raw&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t21' class='pln'><span class='str'>&gt;&gt;&gt; myjson = some_json_data</span><span class='strut'>&nbsp;</span></p>
+<p id='t22' class='pln'><span class='str'>&gt;&gt;&gt; c.update(&#39;nodename&#39;, &#39;my_json_data&#39;, myjson, &#39;json&#39;)</span><span class='strut'>&nbsp;</span></p>
+<p id='t23' class='pln'><span class='str'>&gt;&gt;&gt; c.drop_db()</span><span class='strut'>&nbsp;</span></p>
+<p id='t24' class='pln'><span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t25' class='stm run hide_run'><span class='key'>def</span> <span class='nam'>create_engine</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t26' class='pln'>&nbsp; &nbsp; <span class='str'>&quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t27' class='pln'><span class='str'>&nbsp; &nbsp; Create a connection to a persistence backend.</span><span class='strut'>&nbsp;</span></p>
+<p id='t28' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t29' class='pln'><span class='str'>&nbsp; &nbsp; :param string dsn: A :class:`urlparse` parseable url defining a persistence backend</span><span class='strut'>&nbsp;</span></p>
+<p id='t30' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t31' class='pln'><span class='str'>&nbsp; &nbsp; &nbsp; &nbsp; e.g. `couch://127.0.0.1:5984/system_records`</span><span class='strut'>&nbsp;</span></p>
+<p id='t32' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t33' class='pln'><span class='str'>&nbsp; &nbsp; :returns: engine. instance of :class:`VogelerPersistence`</span><span class='strut'>&nbsp;</span></p>
+<p id='t34' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t35' class='pln'><span class='str'>&nbsp; &nbsp; &quot;&quot;&quot;</span><span class='strut'>&nbsp;</span></p>
+<p id='t36' class='stm run hide_run'>&nbsp; &nbsp; <span class='key'>try</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t37' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>scheme</span> <span class='op'>=</span> <span class='nam'>urlparse</span><span class='op'>.</span><span class='nam'>urlparse</span><span class='op'>(</span><span class='nam'>dsn</span><span class='op'>)</span><span class='op'>.</span><span class='nam'>scheme</span><span class='strut'>&nbsp;</span></p>
+<p id='t38' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='nam'>engine</span> <span class='op'>=</span> <span class='nam'>eval</span><span class='op'>(</span><span class='str'>&#39;%s.Persistence(&quot;%s&quot;)&#39;</span> <span class='op'>%</span> <span class='op'>(</span><span class='nam'>scheme</span><span class='op'>,</span> <span class='nam'>dsn</span><span class='op'>)</span><span class='op'>)</span><span class='strut'>&nbsp;</span></p>
+<p id='t39' class='stm run hide_run'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>return</span> <span class='nam'>engine</span><span class='strut'>&nbsp;</span></p>
+<p id='t40' class='stm mis'>&nbsp; &nbsp; <span class='key'>except</span><span class='op'>:</span><span class='strut'>&nbsp;</span></p>
+<p id='t41' class='stm mis'>&nbsp; &nbsp; &nbsp; &nbsp; <span class='key'>raise</span><span class='strut'>&nbsp;</span></p>
+<p id='t42' class='pln'><span class='strut'>&nbsp;</span></p>
+<p id='t43' class='pln'><span class='com'># vim: set ts=4 et sw=4 sts=4 sta filetype=python :</span><span class='strut'>&nbsp;</span></p>
                 
             </td>
         </tr>
